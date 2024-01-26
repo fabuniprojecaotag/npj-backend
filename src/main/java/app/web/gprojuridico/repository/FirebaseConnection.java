@@ -15,7 +15,7 @@ public class FirebaseConnection {
     private static final Logger logger = LoggerFactory.getLogger(FirebaseConnection.class);
     public static void initialization() {
         // aqui ele procura a key a partir da pasta back-end, então cuidado para já não estar dentro dela (editor)
-        try (FileInputStream serviceAccount = new FileInputStream("./back-end/firebaseAccountKey.json")) {
+        try (FileInputStream serviceAccount = new FileInputStream("./firebaseAccountKey.json")) {
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(credentials)
