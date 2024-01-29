@@ -26,11 +26,11 @@ public class UserService implements UserDetailsService {
     public User create(User user) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
-        // Verificar se nome e login sao unicos
+        // Verificar se username e login sao unicos
         Query emailQuery = dbFirestore.collection(COLLECTION_NAME).whereEqualTo("email", user.getEmail());
         QuerySnapshot emailQuerySnapshot = emailQuery.get().get();
 
-        Query nameQuery = dbFirestore.collection(COLLECTION_NAME).whereEqualTo("name", user.getNome());
+        Query nameQuery = dbFirestore.collection(COLLECTION_NAME).whereEqualTo("username", user.getUsername());
         QuerySnapshot nameQuerySnapshot = nameQuery.get().get();
 
         if (!emailQuerySnapshot.isEmpty()) {
@@ -55,11 +55,11 @@ public class UserService implements UserDetailsService {
             int newUserId = lastUserId + 1;
             user.setId(newUserId);
 
-            String pw_hash = BCrypt.withDefaults().hashToString(12, user.getSenha().toCharArray());
-            user.setSenha(pw_hash);
+            String pw_hash = BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray());
+            user.setPassword(pw_hash);
 
             System.out.println(pw_hash);
-            System.out.println("Senha criada:" + user.getSenha());
+            System.out.println("Senha criada:" + user.getPassword());
 
             DocumentReference documentReference = dbFirestore.collection(COLLECTION_NAME).document();
             ApiFuture<WriteResult> collectionApiFuture = documentReference.set(user);
@@ -114,7 +114,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (foundUser == null) {
-            throw new RuntimeException("Nenhum usuário encontrado com a senha e e-mail fornecidos.");
+            throw new RuntimeException("Nenhum usuário encontrado com a password e e-mail fornecidos.");
         }
 
         return foundUser;
@@ -149,15 +149,13 @@ public class UserService implements UserDetailsService {
 
             // Retrieve perfil data based on perfil_id
             System.out.println(foundUser);
-
-
         }
 
         if (foundUser == null) {
-            throw new RuntimeException("Nenhum usuário encontrado com a senha e e-mail fornecidos.");
+            throw new RuntimeException("Nenhum usuário encontrado com a password e e-mail fornecidos.");
         }
 
-        BCrypt.Result passwordCheck = BCrypt.verifyer().verify(password.toCharArray(), foundUser.getSenha());
+        BCrypt.Result passwordCheck = BCrypt.verifyer().verify(password.toCharArray(), foundUser.getPassword());
         if (passwordCheck.verified) {
             return foundUser;
         } else {
@@ -172,13 +170,13 @@ public class UserService implements UserDetailsService {
             DocumentReference userDocument = dbFirestore.collection(COLLECTION_NAME).document(documentId);
             ApiFuture<DocumentSnapshot> documentSnapshot = userDocument.get();
 
-            String currentStatus = documentSnapshot.get().getString("status");
+            String currentStatus = documentSnapshot.get().getString("accountNonLocked");
             String newStatus = "Ativo".equals(currentStatus) ? "Inativo" : "Ativo";
 
-            ApiFuture<WriteResult> updateResult = userDocument.update("status", newStatus);
+            ApiFuture<WriteResult> updateResult = userDocument.update("accountNonLocked", newStatus);
             updateResult.get();
 
-            // Include additional data if needed, e.g., updated status
+            // Include additional data if needed, e.g., updated accountNonLocked
             return new ArrayList<>();
         } catch (NotFoundException e) {
             throw new RuntimeException("Error usuário não encontrado: " + e.getMessage());
@@ -220,8 +218,8 @@ public class UserService implements UserDetailsService {
         CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
 
         try {
-            // Create a query with the filter on the "nome" field
-            Query query = usersCollection.whereEqualTo("nome", nome);
+            // Create a query with the filter on the "username" field
+            Query query = usersCollection.whereEqualTo("username", nome);
 
             ApiFuture<QuerySnapshot> querySnapshot = query.get();
             List<User> userList = new ArrayList<>();
@@ -267,12 +265,12 @@ public class UserService implements UserDetailsService {
             DocumentSnapshot userSnapshot = userDocRef.get().get();
             if (userSnapshot.exists()) {
                 userDocRef.update(
-                        "nome", updatedUser.getNome(),
+                        "username", updatedUser.getUsername(),
                         "email", updatedUser.getEmail(),
                         "semestre", updatedUser.getSemestre(),
-                        "senha", updatedUser.getSenha(),
+                        "password", updatedUser.getPassword(),
                         "perfil", updatedUser.getPerfil(),
-                        "status", updatedUser.getStatus()
+                        "accountNonLocked", updatedUser.isAccountNonLocked()
                 ).get();
 
                 // Recupere o usuário atualizado para retornar ao chamador

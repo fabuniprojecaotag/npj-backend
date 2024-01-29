@@ -41,10 +41,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> create(@RequestBody @Valid User data) throws ExecutionException, InterruptedException {
-        if (this.userService.findUserByEmail(data.getEmail()) != null) {
-            return ResponseEntity.badRequest().build();
-        }
-
         userService.create(data);
 
         return ResponseEntity.ok().build();
