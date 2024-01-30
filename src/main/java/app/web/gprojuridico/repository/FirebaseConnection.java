@@ -7,25 +7,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 @Service
 public class FirebaseConnection {
+
     private static final Logger logger = LoggerFactory.getLogger(FirebaseConnection.class);
+
     public static void initialization() {
-        // aqui ele procura a key a partir da pasta back-end, então cuidado para já não estar dentro dela (editor)
-        try (FileInputStream serviceAccount = new FileInputStream("./firebaseAccountKey.json")) {
-            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
+
+        try {
+            // Use the application default credentials
+            GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+            String projectId = "gprojuridico";
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(credentials)
+                    .setProjectId(projectId)
                     .build();
             FirebaseApp.initializeApp(options);
 
             logger.info("Firebase foi inicializado com sucesso!");
         } catch (IOException e) {
             logger.error("Error durante a inicialização do Firebase:", e);
-            throw new RuntimeException("Error durante a inicialização do Firebase:", e);
         }
     }
 }
