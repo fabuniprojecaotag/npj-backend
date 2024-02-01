@@ -14,22 +14,18 @@ import java.util.List;
 public class AssistidoController {
 
     @Autowired
-    private final AssistidoService assistidoService;
+    private AssistidoService assistidoService;
 
-    public AssistidoController(AssistidoService assistidoService) {
-        this.assistidoService = assistidoService;
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<Assistido>> getAllAssistidos() {
-        List<Assistido> assistidoList = assistidoService.getAllAssistidos();
+    @GetMapping("/todos")
+    public ResponseEntity<List<Assistido>> findAll() {
+        List<Assistido> assistidoList = assistidoService.findAll();
 
         return ResponseEntity.ok(assistidoList);
     }
 
-    @GetMapping("/get/{assistidoId}")
-    public ResponseEntity<Assistido> getAssistidoById(@PathVariable String assistidoId) {
-        Assistido assistido = assistidoService.getAssistidoById(assistidoId);
+    @GetMapping("/{assistidoId}")
+    public ResponseEntity<Assistido> findById(@PathVariable String assistidoId) {
+        Assistido assistido = assistidoService.findById(assistidoId);
 
         if (assistido != null) {
             return ResponseEntity.ok(assistido);
@@ -38,21 +34,21 @@ public class AssistidoController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Assistido> createAssistido(@RequestBody Assistido assistido) {
-        Assistido assistidoCriado = assistidoService.createAssistido(assistido);
+    @PostMapping("/criar")
+    public ResponseEntity<Assistido> insert(@RequestBody Assistido assistido) {
+        assistidoService.insert(assistido);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/update/{assistidoId}")
-    public ResponseEntity<Assistido> updateAssistido(@PathVariable String assistidoId, @RequestBody Assistido assistido) {
-        Assistido assistoAtualizado = assistidoService.updateAssistido(assistidoId, assistido);
+    @PutMapping("/atualizar/{assistidoId}")
+    public ResponseEntity<Assistido> update(@PathVariable String assistidoId, @RequestBody Assistido assistido) {
+        Assistido assistoAtualizado = assistidoService.update(assistidoId, assistido);
         return ResponseEntity.ok(assistoAtualizado);
     }
 
-    @DeleteMapping("/deleteUser/{assistidoId}")
-    public ResponseEntity deleteAssistido(@PathVariable String assistidoId) {
-        assistidoService.deleteAssistido(assistidoId);
+    @DeleteMapping("/deletar/{assistidoId}")
+    public ResponseEntity<?> deleteAssistido(@PathVariable String assistidoId) {
+        assistidoService.delete(assistidoId);
         return ResponseEntity.ok().build();
     }
 }

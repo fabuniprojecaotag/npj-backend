@@ -15,7 +15,7 @@ public class AssistidoService {
 
     private static final String COLLECTION_NAME = "assistidos";
 
-    public List<Assistido> getAllAssistidos() {
+    public List<Assistido> findAll() {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference assistidosCollection = dbFirestore.collection(COLLECTION_NAME);
 
@@ -37,7 +37,7 @@ public class AssistidoService {
         }
     }
 
-    public Assistido getAssistidoById(String assistidoId) {
+    public Assistido findById(String assistidoId) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference assistidoDocRef = dbFirestore.collection(COLLECTION_NAME).document(assistidoId);
 
@@ -50,29 +50,28 @@ public class AssistidoService {
                 assistido.setDocumentId(assistidoSnapshot.getId());
                 return assistido;
             } else {
-                return null; // ou lance uma exceção para indicar que o assistido não foi encontrado
+                return null;
             }
         } catch (InterruptedException | ExecutionException e) {
             System.err.println("Erro ao buscar assistido: " + e.getMessage());
             return null;
         }
     }
-    public Assistido createAssistido(Assistido assistido) {
+
+    public void insert(Assistido assistido) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference assistidosCollection = dbFirestore.collection(COLLECTION_NAME);
 
         try {
-            // Adiciona o assistido ao Firestore
             ApiFuture<DocumentReference> result = assistidosCollection.add(assistido);
             System.out.println("Assistido adicionado com sucesso. ID: " + result.get().getId());
 
-            return assistido;
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Erro ao criar assistido: ", e);
         }
     }
 
-    public Assistido updateAssistido(String assistidoId, Assistido assistido) {
+    public Assistido update(String assistidoId, Assistido assistido) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference assistidoDocRef = dbFirestore.collection(COLLECTION_NAME).document(assistidoId);
 
@@ -82,7 +81,7 @@ public class AssistidoService {
         return assistido;
     }
 
-    public void deleteAssistido(String assistidoId) {
+    public void delete(String assistidoId) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference assistidoDocRef = dbFirestore.collection(COLLECTION_NAME).document(assistidoId);
 
