@@ -60,6 +60,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/assistido/todos").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/assistido/atualizar/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/assistido/deletar/**").permitAll()
+                        /* endpoints de atendimento */
+                        .requestMatchers(HttpMethod.POST, "/atendimentos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/atendimentos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/atendimentos/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/atendimentos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/atendimentos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
