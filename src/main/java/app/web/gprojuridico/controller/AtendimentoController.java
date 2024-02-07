@@ -26,13 +26,13 @@ public class AtendimentoController {
     }
 
     @GetMapping
-    public List<Atendimento> findAll()  {
+    public List<Object> findAll()  {
         System.out.println("GET Atendimentos chamado!");
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public Atendimento findById(@PathVariable String id)  {
+    public Object findById(@PathVariable String id)  {
         System.out.println("GET Atendimento by id chamado!");
         return service.findById(id);
     }

@@ -2,7 +2,6 @@ package app.web.gprojuridico.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.cloud.Timestamp;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,15 +11,14 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "tipo")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = FichaCivil.class, name = "FichaCivilDTO"),
-        @JsonSubTypes.Type(value = FichaTrabalhista.class, name = "FichaTrabalhistaDTO")
+        @JsonSubTypes.Type(value = FichaCivil.class, name = "FichaCivil"),
+        @JsonSubTypes.Type(value = FichaTrabalhista.class, name = "FichaTrabalhista")
 })
 public abstract class Ficha {
 
     private String assinatura;
-    private final Timestamp instante = Timestamp.now();
     private Boolean dadosSensiveis;
     private List<Testemunha> testemunhas;
 
@@ -29,4 +27,6 @@ public abstract class Ficha {
         this.dadosSensiveis = dadosSensiveis;
         this.testemunhas = testemunhas;
     }
+
+    // TODO: criar métodos que adicionam e removem elementos do atributo 'testemunhas'
 }
