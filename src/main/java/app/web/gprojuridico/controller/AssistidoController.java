@@ -1,54 +1,47 @@
 package app.web.gprojuridico.controller;
 
-import app.web.gprojuridico.model.Assistido;
 import app.web.gprojuridico.service.AssistidoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/assistido")
+@RequestMapping("/assistidos")
 public class AssistidoController {
 
     @Autowired
-    private AssistidoService assistidoService;
+    private AssistidoService service;
 
-    @GetMapping("/todos")
-    public ResponseEntity<List<Assistido>> findAll() {
-        List<Assistido> assistidoList = assistidoService.findAll();
-
-        return ResponseEntity.ok(assistidoList);
-    }
-
-    @GetMapping("/{assistidoId}")
-    public ResponseEntity<Assistido> findById(@PathVariable String assistidoId) {
-        Assistido assistido = assistidoService.findById(assistidoId);
-
-        if (assistido != null) {
-            return ResponseEntity.ok(assistido);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    @PostMapping("/criar")
-    public ResponseEntity<Assistido> insert(@RequestBody Assistido assistido) {
-        assistidoService.insert(assistido);
+    @PostMapping
+    public ResponseEntity<Object> insert(@RequestBody Object data) {
+        service.insert(data);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/atualizar/{assistidoId}")
-    public ResponseEntity<Assistido> update(@PathVariable String assistidoId, @RequestBody Assistido assistido) {
-        Assistido assistoAtualizado = assistidoService.update(assistidoId, assistido);
-        return ResponseEntity.ok(assistoAtualizado);
+    @GetMapping
+    public ResponseEntity<List<Object>> findAll() {
+        List<Object> list = service.findAll();
+        return ResponseEntity.ok(list);
     }
 
-    @DeleteMapping("/deletar/{assistidoId}")
-    public ResponseEntity<?> deleteAssistido(@PathVariable String assistidoId) {
-        assistidoService.delete(assistidoId);
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable String id) {
+        Object object = service.findById(id);
+        return ResponseEntity.ok(object);
+    }
+
+    @PutMapping("/id}")
+    public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
+        service.update(id, data);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/id}")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

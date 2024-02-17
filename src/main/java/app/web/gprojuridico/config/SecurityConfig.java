@@ -55,11 +55,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/perfil/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/perfil/get/**").permitAll()
                         /* endpoints de assistidos */
-                        .requestMatchers(HttpMethod.POST, "/assistido/criar").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/assistido/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/assistido/todos").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/assistido/atualizar/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/assistido/deletar/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/assistidos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/assistidos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/assistidos/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/assistidos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/assistidos/**").permitAll()
                         /* endpoints de atendimento */
                         .requestMatchers(HttpMethod.POST, "/atendimentos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/atendimentos").permitAll()
