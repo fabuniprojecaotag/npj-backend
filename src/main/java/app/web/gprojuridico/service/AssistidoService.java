@@ -1,100 +1,153 @@
 package app.web.gprojuridico.service;
 
-import app.web.gprojuridico.model.Assistido;
-import com.google.api.core.ApiFuture;
+import app.web.gprojuridico.exception.ResourceNotFoundException;
+import app.web.gprojuridico.model.AssistidoCivil;
+import app.web.gprojuridico.model.AssistidoFull;
+import app.web.gprojuridico.model.AssistidoTrabalhista;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class AssistidoService {
 
-    private static final String COLLECTION_NAME = "assistidos";
+    CollectionReference collection = FirestoreClient.getFirestore().collection("assistidos");
 
-    public List<Assistido> findAll() {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference assistidosCollection = dbFirestore.collection(COLLECTION_NAME);
+    public Object insert(Object data) {
 
         try {
-            ApiFuture<QuerySnapshot> query = assistidosCollection.get();
-            QuerySnapshot querySnapshot = query.get();
-            List<Assistido> assistidoList = new ArrayList<>();
+            System.out.println("\nPayload recebido: " + data.toString());
+            DocumentReference result = collection.add(data).get();
 
-            for (QueryDocumentSnapshot document : querySnapshot) {
-                Assistido assistido = document.toObject(Assistido.class);
-                assistido.setDocumentId(document.getId());
+            System.out.println("\nAssistido adicionado. ID: " + result.getId());
 
-                assistidoList.add(assistido);
+            return findById(result.getId());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Object> findAll() {
+
+        try {
+            QuerySnapshot query = collection.get().get();
+            List<Object> list = new ArrayList<>();
+            for (QueryDocumentSnapshot document : query) {
+                Object object = convertSnapshotToCorrespondingModel(document);
+                list.add(object);
             }
 
-            return assistidoList;
+            return list;
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Erro ao procurar os assistidos: ", e);
+            throw new RuntimeException(e);
         }
     }
 
-    public Assistido findById(String assistidoId) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference assistidoDocRef = dbFirestore.collection(COLLECTION_NAME).document(assistidoId);
+    public Object findById(String id) {
+        
+        try {
+            DocumentReference document = collection.document(id);
+            DocumentSnapshot snapshot = document.get().get();
+
+            return verifySnapshotToFindObjectById(snapshot);
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void update(String id,  Map<String, Object> data) {
 
         try {
-            DocumentSnapshot assistidoSnapshot = assistidoDocRef.get().get();
-
-            if (assistidoSnapshot.exists()) {
-                Assistido assistido = assistidoSnapshot.toObject(Assistido.class);
-                assert assistido != null;
-                assistido.setDocumentId(assistidoSnapshot.getId());
-                return assistido;
-            } else {
-                return null;
-            }
+            DocumentReference document = collection.document(id);
+            DocumentSnapshot snapshot = document.get().get();
+            verifySnapshotToUpdateObject(snapshot, document, data);
         } catch (InterruptedException | ExecutionException e) {
-            System.err.println("Erro ao buscar assistido: " + e.getMessage());
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
-    public void insert(Assistido assistido) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference assistidosCollection = dbFirestore.collection(COLLECTION_NAME);
+    public void delete(String id) {
 
         try {
-            ApiFuture<DocumentReference> result = assistidosCollection.add(assistido);
-            System.out.println("Assistido adicionado com sucesso. ID: " + result.get().getId());
-
+            DocumentReference document = collection.document(id);
+            DocumentSnapshot snapshot = document.get().get();
+            verifySnapshotToDeleteObject(snapshot, document);
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Erro ao criar assistido: ", e);
+            throw new RuntimeException(e);
         }
     }
 
-    public Assistido update(String assistidoId, Assistido assistido) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference assistidoDocRef = dbFirestore.collection(COLLECTION_NAME).document(assistidoId);
-
-        ApiFuture<WriteResult> result = assistidoDocRef.set(assistido);
-        System.out.println("Assistido atualizado com sucesso. ID: " + assistidoId);
-
-        return assistido;
-    }
-
-    public void delete(String assistidoId) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference assistidoDocRef = dbFirestore.collection(COLLECTION_NAME).document(assistidoId);
-
-        ApiFuture<WriteResult> result = assistidoDocRef.delete();
-
-        try {
-            result.get();
-            System.out.println("Assistido com a ID " + assistidoId + " deletado com sucesso.");
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Error ao deletar o assistido: " + e.getMessage());
+    private Object verifySnapshotToFindObjectById(DocumentSnapshot snapshot) {
+        /*
+         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
+         * que não existe no Firestore é, de alguma forma, encontrado e retornado
+         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
+         */
+        if (snapshot.exists()) {
+            return convertSnapshotToCorrespondingModel(snapshot);
+        } else {
+            throw new ResourceNotFoundException();
         }
     }
 
+    private void verifySnapshotToUpdateObject(DocumentSnapshot snapshot, DocumentReference document, Map<String, Object> data) {
+        /*
+         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
+         * que não existe no Firestore é, de alguma forma, encontrado e retornado
+         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
+         */
+        if (snapshot.exists()) {
+            document.update(data);
+        } else {
+            throw new ResourceNotFoundException();
+        }
+    }
 
+    private void verifySnapshotToDeleteObject(DocumentSnapshot snapshot, DocumentReference document) {
+        /*
+         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
+         * que não existe no Firestore é, de alguma forma, encontrado e retornado
+         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
+         */
+        if (snapshot.exists()) {
+            document.delete();
+        } else {
+            throw new ResourceNotFoundException();
+        }
+    }
+
+    /**
+     * Converts the passed snapshot to the corresponding model through the
+     * relationship that the person assisted has with the service(s).
+     */
+    private Object convertSnapshotToCorrespondingModel(DocumentSnapshot snapshot) {
+
+        Boolean dadosFCivil = snapshot.contains("naturalidade") && snapshot.contains("dataNascimento") && snapshot.contains("numDependentes");
+        Boolean dadosFTrabalhista = snapshot.contains("ctps") && snapshot.contains("pis") && snapshot.contains("empregadoAtualmente");
+
+        // primeiro, se o snapshot passado possui dados exclusivos de ambas as fichas (civil e trabalhista) para um assistido...
+        if (dadosFCivil && dadosFTrabalhista) {
+            // então o snapshot é uma instância de AssistidoFull.
+            return snapshot.toObject(AssistidoFull.class);
+        }
+        // ou se o snapshot passado possui dados exclusivos da ficha civil para um assistido...
+        else if (dadosFCivil) {
+            // então o snapshot é uma instância de AssistidoCivil.
+            return snapshot.toObject(AssistidoCivil.class);
+        }
+        // ou se o snapshot passado possui dados exclusivos da ficha trabalhista para um assistido...
+        else if (dadosFTrabalhista) {
+            // então o snapshot é uma instância de AssistidoTrabalhista.
+            return snapshot.toObject(AssistidoTrabalhista.class);
+        } else {
+            // senão, caso não haja compatatibilidade do snapshot com as três condicionais acima, lance então uma exceção.
+            throw new ResourceNotFoundException();
+        }
+    }
 }
 
