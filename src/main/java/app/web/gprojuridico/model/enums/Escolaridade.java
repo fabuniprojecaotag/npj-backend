@@ -8,7 +8,7 @@ public enum Escolaridade {
     FUNDAMENTAL("Fundamental"),
     MEDIO("Médio"),
     SUPERIOR("Superior"),
-    POS_GRADUACAO("Pós Graduaação"),
+    POS_GRADUACAO("Pós Graduação"),
     MESTRADO("Mestrado"),
     DOUTORADO("Doutorado");
 

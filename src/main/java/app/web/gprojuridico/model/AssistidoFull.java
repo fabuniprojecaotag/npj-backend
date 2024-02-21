@@ -15,8 +15,8 @@ public class AssistidoFull {
     private String rg;
     private String cpf;
     private String nacionalidade;
-    private Escolaridade escolaridade;
-    private EstadoCivil estadoCivil;
+    private String escolaridade;
+    private String estadoCivil;
     private String profissao;
     private String telefone;
     private String email;
@@ -27,7 +27,7 @@ public class AssistidoFull {
     // dados exclusivos da ficha civil
     private String naturalidade;
     private String dataNascimento;
-    private Integer numDependentes;
+    private Integer dependentes;
 
     // dados exclusivos da ficha trabalhista
     private Ctps ctps;

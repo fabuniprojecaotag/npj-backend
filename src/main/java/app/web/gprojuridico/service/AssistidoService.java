@@ -4,10 +4,12 @@ import app.web.gprojuridico.exception.ResourceNotFoundException;
 import app.web.gprojuridico.model.AssistidoCivil;
 import app.web.gprojuridico.model.AssistidoFull;
 import app.web.gprojuridico.model.AssistidoTrabalhista;
+import app.web.gprojuridico.model.Ctps;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,7 @@ public class AssistidoService {
 
         try {
             System.out.println("\nPayload recebido: " + data.toString());
-            DocumentReference result = collection.add(data).get();
+            DocumentReference result = collection.add(verifyDataToInsertAssistido(data)).get();
 
             System.out.println("\nAssistido adicionado. ID: " + result.getId());
 
@@ -82,6 +84,55 @@ public class AssistidoService {
         }
     }
 
+    private Boolean objectHasProperty(Object obj, String propertyName){
+        List<Field> properties = getAllFields(new ArrayList<>(), obj.getClass());
+        for (Field field : properties){
+            if (field.getName().equalsIgnoreCase(propertyName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        for (Field field: type.getDeclaredFields()) {
+            fields.add(field);
+        }
+        return fields;
+    }
+
+    private static Boolean isInstanceOf(Object obj, Class<?> type) {
+        List<Field> properties = getAllFields(new ArrayList<>(), obj.getClass());
+        for (Field field : properties){
+            String name = field.getType().getSimpleName();
+            String classType = type.getSimpleName();
+            if (classType.equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Object verifyDataToInsertAssistido(Object data) {
+
+        Boolean naturalidade = objectHasProperty(data, "naturalidade");
+        Boolean dataNascimento = objectHasProperty(data, "dataNascimento");
+        Boolean dependentes = objectHasProperty(data, "dependentes");
+
+        Boolean ctps = isInstanceOf(data, Ctps.class);
+        Boolean pis = objectHasProperty(data, "pis");
+        Boolean empregadoAtualmente = objectHasProperty(data, "empregadoAtualmente");
+
+        boolean dadosFCivil = naturalidade && dataNascimento && dependentes;
+        boolean dadosFTrabalhista = ctps && pis && empregadoAtualmente;
+
+        if (dadosFCivil || dadosFTrabalhista) {
+            return data;
+        } else {
+            throw new RuntimeException("O objeto passado não corresponde à nenhuma instância de Assistido.");
+        }
+    }
+
     private Object verifySnapshotToFindObjectById(DocumentSnapshot snapshot) {
         /*
          * Existe um erro no método .get() do DocumentSnapshot, pois um documento
@@ -127,7 +178,7 @@ public class AssistidoService {
      */
     private Object convertSnapshotToCorrespondingModel(DocumentSnapshot snapshot) {
 
-        Boolean dadosFCivil = snapshot.contains("naturalidade") && snapshot.contains("dataNascimento") && snapshot.contains("numDependentes");
+        Boolean dadosFCivil = snapshot.contains("naturalidade") && snapshot.contains("dataNascimento") && snapshot.contains("dependentes");
         Boolean dadosFTrabalhista = snapshot.contains("ctps") && snapshot.contains("pis") && snapshot.contains("empregadoAtualmente");
 
         // primeiro, se o snapshot passado possui dados exclusivos de ambas as fichas (civil e trabalhista) para um assistido...

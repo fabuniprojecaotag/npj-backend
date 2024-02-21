@@ -2,8 +2,10 @@ package app.web.gprojuridico.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Endereco {
 
@@ -14,4 +16,8 @@ public class Endereco {
     private String cep;
     private String cidade;
 
+    public Endereco(String logradouro, String number) {
+        this.logradouro = logradouro;
+        this.numero = number;
+    }
 }
