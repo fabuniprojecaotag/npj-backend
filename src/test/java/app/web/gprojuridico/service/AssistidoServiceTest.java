@@ -6,7 +6,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +17,9 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class Auxiliar {
 
@@ -85,18 +84,39 @@ class AssistidoServiceTest {
                 .hasMessageContaining("O objeto passado não corresponde à nenhuma instância de Assistido.");
     }
 
-    // ---------- Find methods tests ----------
+    // ---------- Test Suite for Find Methods ----------
     @Test
-    @DisplayName("Should find and return all Assistido objects available in Firestore")
-    @Disabled("The 'then' clause must perform a relevant operation")
-    void shouldFindAllAssistidos() {
+    @DisplayName("Must verify if inserted Assistido object is contained in findAll()")
+    void verifyFindAllAssistidos() {
         // given
-        underTest.collection = FirestoreClient.getFirestore().collection("assistidos");
+        Object data = FakeData.assistidoCivil();
+
         // when
+        when(underTest.insert(any(Object.class))).thenCallRealMethod();
+        when(underTest.findById(any(String.class))).thenCallRealMethod();
         when(underTest.findAll()).thenCallRealMethod();
-        List<Object> list = underTest.findAll();
+
         // then
-        assertTrue(list.isEmpty());
+        Object object = underTest.insert(data);
+        List<Object> result = underTest.findAll();
+        verify(underTest).findAll();
+        assertTrue(result.contains(object));
+    }
+
+    @Test
+    @DisplayName("Must verify if the inserted Assistido object was returned by findById()")
+    void verifyFindAssistidoById() {
+        // given
+        Object data = FakeData.assistidoCivil();
+
+        // when
+        when(underTest.insert(any(Object.class))).thenCallRealMethod();
+        when(underTest.findById(any(String.class))).thenCallRealMethod();
+
+        // then
+        Object object = underTest.insert(data);
+        verify(underTest).findById(any(String.class));
+        assertEquals(object, data);
     }
 
     private void insertAssistido(Object data) {
