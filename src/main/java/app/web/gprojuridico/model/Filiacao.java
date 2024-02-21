@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class Filiacao {
 
-    private String nomeMae;
-    private String nomePai;
+    private String mae;
+    private String pai;
 
 }

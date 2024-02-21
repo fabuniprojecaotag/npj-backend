@@ -15,8 +15,8 @@ public class AssistidoTrabalhista {
     private String rg;
     private String cpf;
     private String nacionalidade;
-    private Escolaridade escolaridade;
-    private EstadoCivil estadoCivil;
+    private String escolaridade;
+    private String estadoCivil;
     private String profissao;
     private String telefone;
     private String email;

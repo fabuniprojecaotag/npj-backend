@@ -1,7 +1,5 @@
 package app.web.gprojuridico.model;
 
-import app.web.gprojuridico.model.enums.Escolaridade;
-import app.web.gprojuridico.model.enums.EstadoCivil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +13,8 @@ public class AssistidoCivil {
     private String rg;
     private String cpf;
     private String nacionalidade;
-    private Escolaridade escolaridade;
-    private EstadoCivil estadoCivil;
+    private String escolaridade;
+    private String estadoCivil;
     private String profissao;
     private String telefone;
     private String email;
@@ -27,6 +25,6 @@ public class AssistidoCivil {
     // dados exclusivos da ficha civil
     private String naturalidade;
     private String dataNascimento;
-    private String numDependentes;
+    private Integer dependentes;
 
 }
