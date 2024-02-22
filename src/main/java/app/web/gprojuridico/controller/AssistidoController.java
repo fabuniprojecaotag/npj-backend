@@ -22,9 +22,15 @@ public class AssistidoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll() {
-        List<Object> list = service.findAll();
+    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit) {
+        List<Object> list = service.findAll(limit);
         return ResponseEntity.ok(list);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit) {
+        service.deleteAll(limit);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
