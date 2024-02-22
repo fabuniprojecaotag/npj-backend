@@ -4,16 +4,12 @@ import app.web.gprojuridico.exception.ResourceNotFoundException;
 import app.web.gprojuridico.model.AssistidoCivil;
 import app.web.gprojuridico.model.AssistidoFull;
 import app.web.gprojuridico.model.AssistidoTrabalhista;
-import app.web.gprojuridico.model.Ctps;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -21,20 +17,19 @@ public class AssistidoService {
 
     CollectionReference collection = FirestoreClient.getFirestore().collection("assistidos");
 
-    public Map<String, Object> insert(Object data) {
+    public Map<String, Object> insert(Map<String, Object> data) {
 
         try {
             System.out.println("\nPayload recebido: " + data.toString());
-            Object verifiedData = verifyDataToInsertAssistido(data);
+            Map<String, Object> verifiedData = verifyDataToInsertAssistido(data);
             DocumentReference result = collection.add(verifiedData).get();
             String assistidoId = result.getId();
 
             System.out.println("\nAssistido adicionado. ID: " + assistidoId);
 
-            Map<String, Object> objectMap = convertUsingReflection(verifiedData);
-            objectMap.put("id", assistidoId);
+            verifiedData.put("id", assistidoId);
 
-            return objectMap;
+            return verifiedData;
         } catch (InterruptedException | ExecutionException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -92,23 +87,6 @@ public class AssistidoService {
         }
     }
 
-    private Boolean objectHasProperty(Object obj, String propertyName){
-        List<Field> properties = getAllFields(new ArrayList<>(), obj.getClass());
-        for (Field field : properties){
-            if (field.getName().equalsIgnoreCase(propertyName)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-        for (Field field: type.getDeclaredFields()) {
-            fields.add(field);
-        }
-        return fields;
-    }
-
     private static List<String> getAllFieldNames(List<String> fields, Class<?> type) {
         for (Field field: type.getDeclaredFields()) {
             fields.add(field.getName());
@@ -116,48 +94,31 @@ public class AssistidoService {
         return fields;
     }
 
-    private static Boolean isInstanceOf(Object obj, Class<?> type) {
-        List<Field> properties = getAllFields(new ArrayList<>(), obj.getClass());
-        for (Field field : properties){
-            String name = field.getType().getSimpleName();
-            String classType = type.getSimpleName();
-            if (classType.equals(name)){
-                return true;
+    private Map<String, Object> verifyDataToInsertAssistido(Map<String, Object> data) throws IllegalAccessException {
+        Object field = data.get("tipo");
+        System.out.println("\nTipo de payload recebido para verificar: " + field);
+
+        if (Objects.equals(field, "AssistidoCivil")) {
+            Boolean naturalidade = data.containsKey("naturalidade");
+            Boolean dataNascimento = data.containsKey("dataNascimento");
+            Boolean dependentes = data.containsKey("dependentes");
+            if (naturalidade && dataNascimento && dependentes) {
+                return data;
+            } else {
+                throw new RuntimeException("O objeto passado não corresponde à nenhuma instância de Assistido.");
+            }
+        } else if (Objects.equals(field, "AssistidoTrabalhista")) {
+            Boolean ctps = data.containsKey("ctps");
+            Boolean pis = data.containsKey("pis");
+            Boolean empregadoAtualmente = data.containsKey("empregadoAtualmente");
+            if (ctps && pis && empregadoAtualmente) {
+                return data;
+            } else {
+                throw new RuntimeException("O objeto passado não corresponde à nenhuma instância de Assistido.");
             }
         }
-        return false;
-    }
 
-    private Map<String, Object> convertUsingReflection(Object object) throws IllegalAccessException {
-        Map<String, Object> map = new HashMap<>();
-        Field[] fields = object.getClass().getDeclaredFields();
-
-        for (Field field: fields) {
-            field.setAccessible(true);
-            map.put(field.getName(), field.get(object));
-        }
-
-        return map;
-    }
-
-    private Object verifyDataToInsertAssistido(Object data) {
-
-        Boolean naturalidade = objectHasProperty(data, "naturalidade");
-        Boolean dataNascimento = objectHasProperty(data, "dataNascimento");
-        Boolean dependentes = objectHasProperty(data, "dependentes");
-
-        Boolean ctps = isInstanceOf(data, Ctps.class);
-        Boolean pis = objectHasProperty(data, "pis");
-        Boolean empregadoAtualmente = objectHasProperty(data, "empregadoAtualmente");
-
-        boolean dadosFCivil = naturalidade && dataNascimento && dependentes;
-        boolean dadosFTrabalhista = ctps && pis && empregadoAtualmente;
-
-        if (dadosFCivil || dadosFTrabalhista) {
-            return data;
-        } else {
-            throw new RuntimeException("O objeto passado não corresponde à nenhuma instância de Assistido.");
-        }
+        return null;
     }
 
     private Map<String, Object> verifyDataToUpdateAssistido(Map<String, Object> data) {

@@ -16,7 +16,7 @@ public class AssistidoController {
     private AssistidoService service;
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody Object data) {
+    public ResponseEntity<Object> insert(@RequestBody Map<String, Object> data) {
         service.insert(data);
         return ResponseEntity.ok().build();
     }
@@ -33,13 +33,13 @@ public class AssistidoController {
         return ResponseEntity.ok(object);
     }
 
-    @PutMapping("/id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
         service.update(id, data);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
