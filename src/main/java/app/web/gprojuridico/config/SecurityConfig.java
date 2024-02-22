@@ -63,6 +63,7 @@ public class SecurityConfig {
                         /* endpoints de atendimento */
                         .requestMatchers(HttpMethod.POST, "/atendimentos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/atendimentos").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/atendimentos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/atendimentos/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/atendimentos/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/atendimentos/**").permitAll()

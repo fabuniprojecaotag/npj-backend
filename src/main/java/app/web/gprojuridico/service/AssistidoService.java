@@ -1,84 +1,64 @@
 package app.web.gprojuridico.service;
 
+import app.web.gprojuridico.repository.BaseRepository;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 import static app.web.gprojuridico.service.utils.AssistidoUtils.*;
-import static app.web.gprojuridico.service.utils.Utils.verifySnapshotToDeleteObject;
 
 @Service
 public class AssistidoService {
+
+    @Autowired
+    BaseRepository repository;
 
     CollectionReference collection = FirestoreClient.getFirestore().collection("assistidos");
 
     public Map<String, Object> insert(Map<String, Object> data) {
         try {
-            System.out.println("\nPayload recebido: " + data.toString());
             Map<String, Object> verifiedData = verifyDataToInsertAssistido(data);
-            DocumentReference result = collection.add(verifiedData).get();
+            DocumentReference result = repository.save(collection, verifiedData);
+
             String assistidoId = result.getId();
-
             System.out.println("\nAssistido adicionado. ID: " + assistidoId);
-
             verifiedData.put("id", assistidoId);
 
             return verifiedData;
-        } catch (InterruptedException | ExecutionException | IllegalAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<Object> findAll() {
-        try {
-            QuerySnapshot query = collection.get().get();
-            List<Object> list = new ArrayList<>();
-            for (QueryDocumentSnapshot document : query) {
-                Object object = convertSnapshotToCorrespondingAssistidoModel(document);
-                list.add(object);
-            }
+    public List<Object> findAll(String limit) {
+        List<QueryDocumentSnapshot> result = repository.findAll(collection, Integer.parseInt(limit));
+        List<Object> list = new ArrayList<>();
 
-            return list;
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+        for (QueryDocumentSnapshot document : result) {
+            list.add(convertSnapshotToCorrespondingAssistidoModel(document));
         }
+
+        return list;
     }
 
     public Object findById(String id) {
-        try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = document.get().get();
-
-            return verifySnapshotToFindAssistidoById(snapshot);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        DocumentSnapshot snapshot = repository.findById(collection, id);
+        return verifySnapshotToFindAssistidoById(snapshot);
     }
 
     public Boolean update(String id,  Map<String, Object> data) {
-        try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = document.get().get();
-            verifySnapshotToUpdateAssistido(snapshot, document, data);
-            return true;
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        return repository.update(collection, id, data);
     }
 
     public Boolean delete(String id) {
+        return repository.delete(collection, id);
+    }
 
-        try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = document.get().get();
-            verifySnapshotToDeleteObject(snapshot, document);
-            return true;
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public Boolean deleteAll(String limit) {
+        return repository.deleteAll(collection, Integer.parseInt(limit));
     }
 }
 
