@@ -4,33 +4,47 @@ import app.web.gprojuridico.model.*;
 import app.web.gprojuridico.model.enums.Escolaridade;
 import app.web.gprojuridico.model.enums.EstadoCivil;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FakeData {
 
-    public static Object assistidoCivil() {
-       return new AssistidoCivil(
-               "Rafael Mendes Mendonça Carvalho",
-               "11.782.956-0",
-               "897.688.780-88",
-               "Brasileiro",
-               Escolaridade.SUPERIOR.getRotulo(),
-               EstadoCivil.CASADO.getRotulo(),
-               "Professor universitário",
-               "(61) 99320-1050",
-               "mendoca.rafael@example.com",
-               new Filiacao("Maria Santos Carvalho", "Túlio Machado Mendes"),
-               "R$ 9300",
-               new Endereco("QNB 14 Conjunto D", "12"),
-               "Brasiliense",
-               "1992-02-10",
-               3
-       );
+    private static Map<String, Object> convertUsingReflection(Object object) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        Field[] fields = object.getClass().getDeclaredFields();
+
+        for (Field field: fields) {
+            field.setAccessible(true);
+            map.put(field.getName(), field.get(object));
+        }
+
+        return map;
     }
 
-    public static Object assistidoFull() {
-        return new AssistidoFull(
+    public static Map<String, Object> assistidoCivil() throws IllegalAccessException {
+        AssistidoCivil assistido = new AssistidoCivil(
+                "Rafael Mendes Mendonça Carvalho",
+                "11.782.956-0",
+                "897.688.780-88",
+                "Brasileiro",
+                Escolaridade.SUPERIOR.getRotulo(),
+                EstadoCivil.CASADO.getRotulo(),
+                "Professor universitário",
+                "(61) 99320-1050",
+                "mendoca.rafael@example.com",
+                new Filiacao("Maria Santos Carvalho", "Túlio Machado Mendes"),
+                "R$ 9300",
+                new Endereco("QNB 14 Conjunto D", "12"),
+                "Brasiliense",
+                "1992-02-10",
+                3
+        );
+       return convertUsingReflection(assistido);
+    }
+
+    public static Map<String, Object> assistidoFull() throws IllegalAccessException {
+        AssistidoFull assistido = new AssistidoFull(
                 "Rafael Mendes Mendonça Carvalho",
                 "11.782.956-0",
                 "897.688.780-88",
@@ -50,10 +64,11 @@ public class FakeData {
                 "92386192",
                 true
         );
+        return convertUsingReflection(assistido);
     }
 
-    public static Object assistidoTrabalhista() {
-        return new AssistidoTrabalhista(
+    public static Map<String, Object> assistidoTrabalhista() throws IllegalAccessException {
+        AssistidoTrabalhista assistido = new AssistidoTrabalhista(
                 "Rafael Mendes Mendonça Carvalho",
                 "11.782.956-0",
                 "897.688.780-88",
@@ -70,9 +85,10 @@ public class FakeData {
                 "92386192",
                 true
         );
+        return convertUsingReflection(assistido);
     }
 
-    public static Object incorrectAssistido() {
+    public static Map<String, Object> incorrectAssistido() {
         Map<String, Object> object = new HashMap<>();
         object.put("nome", "Helena Rodrigues de Souza Ribeiro");
         object.put("rg", "11.782.956-0");
@@ -90,7 +106,7 @@ public class FakeData {
     }
     public static Map<String, Object> fieldsToUpdateAssistidoCivilToFull(){
         return Map.of(
-                "ctps", "",
+                "ctps", new Ctps(),
                 "pis", "1286391029",
                 "empregadoAtualmente", true
         );
