@@ -1,7 +1,5 @@
 package app.web.gprojuridico.model;
 
-import app.web.gprojuridico.model.enums.Escolaridade;
-import app.web.gprojuridico.model.enums.EstadoCivil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +23,7 @@ public class AssistidoTrabalhista {
     private Endereco endereco;
 
     // dados exclusivos da ficha trabalhista
-    private Ctps cpts;
+    private Ctps ctps;
     private String pis;
     private Boolean empregadoAtualmente;
 
