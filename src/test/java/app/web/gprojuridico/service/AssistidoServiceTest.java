@@ -5,15 +5,14 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -119,6 +118,42 @@ class AssistidoServiceTest {
         assertEquals(object, data);
     }
 
+    // ---------- Test Suite for Update Method ----------
+    @Nested
+    @DisplayName("Tests nested for update Assistido")
+    class UpdateAssistido {
+
+        @Test
+        @DisplayName("Updates an AssistidoCivil with some data")
+        void updateAssistidoCivil() {
+            updateAssistido(FakeData.assistidoCivil(), FakeData.fieldsToUpdateAssistido());
+        }
+
+        @Test
+        @DisplayName("Updates an Assistido to allow this have a linked labor service")
+        void updateAssistidoCivilToFull() {
+            updateAssistido(FakeData.assistidoCivil(), FakeData.fieldsToUpdateAssistidoCivilToFull());
+        }
+
+        @Test
+        @DisplayName("Updates an AssistidoFull with some data")
+        void updateAssistidoFull() {
+            updateAssistido(FakeData.assistidoFull(), FakeData.fieldsToUpdateAssistido());
+        }
+
+        @Test
+        @DisplayName("Updates an AssistidoTrabalhista with some data")
+        void updateAssistidoTrabalhista() {
+            updateAssistido(FakeData.assistidoTrabalhista(), FakeData.fieldsToUpdateAssistido());
+        }
+
+        @Test
+        @DisplayName("Updates an Assistido to allow this have a linked civil service")
+        void updateAssistidoTrabalhistaToFull() {
+            updateAssistido(FakeData.assistidoTrabalhista(), FakeData.fieldsToUpdateAssistidoTrabalhistaToFull());
+        }
+    }
+
     private void insertAssistido(Object data) {
         // given
 
@@ -131,5 +166,17 @@ class AssistidoServiceTest {
         verify(underTest).insert(captor.capture());
         Object capturedData = captor.getValue();
         assertThat(capturedData).isEqualTo(data);
+    }
+
+    private void updateAssistido(Object assistido, Map<String, Object> data) {
+        // when
+        when(underTest.insert(any(Object.class))).thenCallRealMethod();
+        when(underTest.update(any(String.class), any())).thenCallRealMethod();
+
+        // then
+        Map<String, Object> document = underTest.insert(assistido);
+
+        Boolean updatedData = underTest.update((String) document.get("id"), data);
+        assertTrue(updatedData);
     }
 }

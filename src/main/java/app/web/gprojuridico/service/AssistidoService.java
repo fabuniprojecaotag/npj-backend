@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -20,16 +21,21 @@ public class AssistidoService {
 
     CollectionReference collection = FirestoreClient.getFirestore().collection("assistidos");
 
-    public Object insert(Object data) {
+    public Map<String, Object> insert(Object data) {
 
         try {
             System.out.println("\nPayload recebido: " + data.toString());
-            DocumentReference result = collection.add(verifyDataToInsertAssistido(data)).get();
+            Object verifiedData = verifyDataToInsertAssistido(data);
+            DocumentReference result = collection.add(verifiedData).get();
+            String assistidoId = result.getId();
 
-            System.out.println("\nAssistido adicionado. ID: " + result.getId());
+            System.out.println("\nAssistido adicionado. ID: " + assistidoId);
 
-            return findById(result.getId());
-        } catch (InterruptedException | ExecutionException e) {
+            Map<String, Object> objectMap = convertUsingReflection(verifiedData);
+            objectMap.put("id", assistidoId);
+
+            return objectMap;
+        } catch (InterruptedException | ExecutionException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -62,12 +68,13 @@ public class AssistidoService {
         }
     }
 
-    public void update(String id,  Map<String, Object> data) {
+    public Boolean update(String id,  Map<String, Object> data) {
 
         try {
             DocumentReference document = collection.document(id);
             DocumentSnapshot snapshot = document.get().get();
             verifySnapshotToUpdateObject(snapshot, document, data);
+            return true;
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -101,6 +108,13 @@ public class AssistidoService {
         return fields;
     }
 
+    private static List<String> getAllFieldNames(List<String> fields, Class<?> type) {
+        for (Field field: type.getDeclaredFields()) {
+            fields.add(field.getName());
+        }
+        return fields;
+    }
+
     private static Boolean isInstanceOf(Object obj, Class<?> type) {
         List<Field> properties = getAllFields(new ArrayList<>(), obj.getClass());
         for (Field field : properties){
@@ -111,6 +125,18 @@ public class AssistidoService {
             }
         }
         return false;
+    }
+
+    private Map<String, Object> convertUsingReflection(Object object) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        Field[] fields = object.getClass().getDeclaredFields();
+
+        for (Field field: fields) {
+            field.setAccessible(true);
+            map.put(field.getName(), field.get(object));
+        }
+
+        return map;
     }
 
     private Object verifyDataToInsertAssistido(Object data) {
@@ -133,6 +159,18 @@ public class AssistidoService {
         }
     }
 
+    private Map<String, Object> verifyDataToUpdateAssistido(Map<String, Object> data) {
+        List<String> assistidoFields = getAllFieldNames(new ArrayList<>(), AssistidoFull.class);
+
+        for (String key : data.keySet()) {
+            if (!assistidoFields.contains(key)) {
+                throw new RuntimeException("O campo " + key + "de payload recebido não existe em Assistido");
+            }
+        }
+
+        return data;
+    }
+
     private Object verifySnapshotToFindObjectById(DocumentSnapshot snapshot) {
         /*
          * Existe um erro no método .get() do DocumentSnapshot, pois um documento
@@ -153,7 +191,7 @@ public class AssistidoService {
          * com campos null. Por isso, faz-se necessário essa condicional abaixo.
          */
         if (snapshot.exists()) {
-            document.update(data);
+            document.update(verifyDataToUpdateAssistido(data));
         } else {
             throw new ResourceNotFoundException();
         }

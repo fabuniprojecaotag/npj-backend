@@ -82,4 +82,24 @@ public class FakeData {
 
         return object;
     }
+
+    public static Map<String, Object> fieldsToUpdateAssistido(){
+        return Map.of(
+                "telefone", "(61) 99327-9391"
+        );
+    }
+    public static Map<String, Object> fieldsToUpdateAssistidoCivilToFull(){
+        return Map.of(
+                "ctps", "",
+                "pis", "1286391029",
+                "empregadoAtualmente", true
+        );
+    }
+    public static Map<String, Object> fieldsToUpdateAssistidoTrabalhistaToFull(){
+        return Map.of(
+                "naturalidade", "Brasiliense",
+                "dataNascimento", "1998-10-30",
+                "dependentes", 2
+        );
+    }
 }
