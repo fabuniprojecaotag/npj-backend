@@ -154,6 +154,26 @@ class AssistidoServiceTest {
         }
     }
 
+    // ---------- Test for Delete Method ----------
+    @Test
+    @DisplayName("Must delete the inserted Assistido object by id")
+    void deleteAssistido() throws InterruptedException {
+        // given
+        Object assistido = FakeData.assistidoCivil();
+
+        // when
+        when(underTest.insert(any())).thenCallRealMethod();
+        when(underTest.delete(any())).thenCallRealMethod();
+
+        // then
+        Map<String, Object> document = underTest.insert(assistido);
+
+        System.out.println("\n------ Sleep method was called ------");
+        Thread.sleep(2000);
+        Boolean deletedDocument = underTest.delete((String) document.get("id"));
+        assertTrue(deletedDocument);
+    }
+
     private void insertAssistido(Object data) {
         // given
 
