@@ -80,12 +80,13 @@ public class AssistidoService {
         }
     }
 
-    public void delete(String id) {
+    public Boolean delete(String id) {
 
         try {
             DocumentReference document = collection.document(id);
             DocumentSnapshot snapshot = document.get().get();
             verifySnapshotToDeleteObject(snapshot, document);
+            return true;
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
