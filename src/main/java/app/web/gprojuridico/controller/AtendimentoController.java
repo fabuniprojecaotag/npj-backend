@@ -20,7 +20,7 @@ public class AtendimentoController {
     private AtendimentoService service;
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody Atendimento data)  {
+    public ResponseEntity<Object> insert(@RequestBody Atendimento data) {
         Map<String, Object> result = service.insert(data);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(result.get("id")).toUri();
@@ -28,25 +28,25 @@ public class AtendimentoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit)  {
+    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit) {
         List<Object> list = service.findAll(limit);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable String id)  {
+    public ResponseEntity<Object> findById(@PathVariable String id) {
         Object object = service.findById(id);
         return ResponseEntity.ok(object);
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable String id, @RequestBody Map<String, Object> data)  {
-        System.out.println("PUT Atendimento chamado!");
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
         service.update(id, data);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id)  {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         System.out.println("DELETE Atendimento chamado!");
         service.delete(id);
         return ResponseEntity.noContent().build();

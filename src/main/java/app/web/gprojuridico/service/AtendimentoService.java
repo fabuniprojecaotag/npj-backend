@@ -1,10 +1,7 @@
 package app.web.gprojuridico.service;
 
-import app.web.gprojuridico.dto.AtendimentoCivilDTO;
-import app.web.gprojuridico.dto.AtendimentoTrabalhistaDTO;
 import app.web.gprojuridico.exception.ResourceNotFoundException;
 import app.web.gprojuridico.model.Atendimento;
-
 import app.web.gprojuridico.repository.BaseRepository;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
@@ -63,15 +60,8 @@ public class AtendimentoService {
         return convertSnapshotToCorrespondingAtendimentoDTO(snapshot);
     }
 
-    public void update(String id, Map<String, Object> data) {
-
-        try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = document.get().get();
-            verifySnapshot(snapshot, document, data);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public Boolean update(String id, Map<String, Object> data) {
+        return repository.update(collection, id, data);
     }
 
     public void delete(String id) {
