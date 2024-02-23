@@ -33,6 +33,12 @@ public class AtendimentoController {
         return ResponseEntity.ok(list);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit) {
+        service.deleteAll(limit);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable String id) {
         Object object = service.findById(id);
@@ -47,7 +53,6 @@ public class AtendimentoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
-        System.out.println("DELETE Atendimento chamado!");
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
