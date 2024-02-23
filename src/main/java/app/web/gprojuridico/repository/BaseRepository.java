@@ -5,17 +5,24 @@ import com.google.cloud.firestore.*;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Repository;
 
-import javax.print.Doc;
 import java.util.List;
 import java.util.Map;
 
-import static app.web.gprojuridico.service.utils.AssistidoUtils.verifySnapshotToUpdateAssistido;
-import static app.web.gprojuridico.service.utils.Utils.verifySnapshotToDeleteObject;
+import static app.web.gprojuridico.service.utils.Utils.verifySnapshotIfDocumentExists;
 
 @Repository
 public class BaseRepository implements CrudRepository {
     @Override
     public DocumentReference save(CollectionReference collection, Map<String, Object> data) {
+        try {
+            return collection.add(data).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public DocumentReference save(CollectionReference collection, Object data) {
         try {
             return collection.add(data).get();
         } catch (Exception e) {
@@ -50,8 +57,9 @@ public class BaseRepository implements CrudRepository {
     public Boolean update(CollectionReference collection, String id, Map<String, Object> data) {
         try {
             DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = findById(collection, id); // verify if the document really exist
-            verifySnapshotToUpdateAssistido(snapshot, document, data);
+            DocumentSnapshot snapshot = findById(collection, id);
+            verifySnapshotIfDocumentExists(snapshot);
+            document.update(data);
             return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -63,7 +71,8 @@ public class BaseRepository implements CrudRepository {
         try {
             DocumentReference document = collection.document(id);
             DocumentSnapshot snapshot = document.get().get();
-            verifySnapshotToDeleteObject(snapshot, document);
+            verifySnapshotIfDocumentExists(snapshot);
+            document.delete();
             return true;
         } catch (Exception e) {
             throw new RuntimeException(e);

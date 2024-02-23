@@ -12,6 +12,8 @@ interface CrudRepository {
 
     DocumentReference save(CollectionReference collection, Map<String, Object> data);
 
+    DocumentReference save(CollectionReference collection, Object data);
+
     List<QueryDocumentSnapshot> findAll(CollectionReference collection, Integer limit);
 
     DocumentSnapshot findById(CollectionReference collection, String id);

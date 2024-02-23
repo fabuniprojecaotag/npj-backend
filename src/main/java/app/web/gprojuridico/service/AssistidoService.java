@@ -50,7 +50,7 @@ public class AssistidoService {
     }
 
     public Boolean update(String id,  Map<String, Object> data) {
-        return repository.update(collection, id, data);
+        return repository.update(collection, id, verifyDataToUpdateAssistido(data));
     }
 
     public Boolean delete(String id) {

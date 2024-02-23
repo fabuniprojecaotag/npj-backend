@@ -5,31 +5,44 @@ import app.web.gprojuridico.dto.AtendimentoTrabalhistaDTO;
 import app.web.gprojuridico.exception.ResourceNotFoundException;
 import app.web.gprojuridico.model.Atendimento;
 
+import app.web.gprojuridico.repository.BaseRepository;
+import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class AtendimentoService {
 
+    @Autowired
+    BaseRepository repository;
+
     CollectionReference collection = FirestoreClient.getFirestore().collection("atendimentos");
 
-    public void insert(Atendimento data) {
+    public Map<String, Object> insert(Atendimento data) {
+        DocumentReference result = repository.save(collection, data);
+
+        ApiFuture<DocumentSnapshot> future = result.get();
+        Object o;
 
         try {
-            DocumentReference result = collection.add(data).get();
-            System.out.println("Atendimento adicionado. ID: " + result.getId());
-        } catch (InterruptedException | ExecutionException e) {
+            o = convertSnapshotToCorrespondingDTO(future.get());
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+        String documentId = result.getId();
+        System.out.println("\nAtendimento adicionado. ID: " + documentId);
+
+        return Map.of(
+                "object", o,
+                "id", documentId
+        );
     }
 
     public List<Object> findAll() {
