@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+import static app.web.gprojuridico.service.utils.AtendimentoUtils.convertSnapshotToCorrespondingAtendimentoDTO;
+
 @Service
 public class AtendimentoService {
 
@@ -31,7 +33,7 @@ public class AtendimentoService {
         Object o;
 
         try {
-            o = convertSnapshotToCorrespondingDTO(future.get());
+            o = convertSnapshotToCorrespondingAtendimentoDTO(future.get());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -45,32 +47,20 @@ public class AtendimentoService {
         );
     }
 
-    public List<Object> findAll() {
+    public List<Object> findAll(String limit) {
+        List<QueryDocumentSnapshot> result = repository.findAll(collection, Integer.parseInt(limit));
+        List<Object> list = new ArrayList<>();
 
-        try {
-            QuerySnapshot query = collection.get().get();
-            List<Object> list = new ArrayList<>();
-            for (QueryDocumentSnapshot document : query) {
-                Object object = convertSnapshotToCorrespondingDTO(document);
-                list.add(object);
-            }
-
-            return list;
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+        for (QueryDocumentSnapshot document : result) {
+            list.add(convertSnapshotToCorrespondingAtendimentoDTO(document));
         }
+
+        return list;
     }
 
     public Object findById(String id) {
-
-        try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = document.get().get();
-
-            return verifySnapshot(snapshot);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        DocumentSnapshot snapshot = repository.findById(collection, id);
+        return convertSnapshotToCorrespondingAtendimentoDTO(snapshot);
     }
 
     public void update(String id, Map<String, Object> data) {
@@ -92,19 +82,6 @@ public class AtendimentoService {
             verifySnapshot(snapshot, document);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private Object verifySnapshot(DocumentSnapshot snapshot) {
-        /*
-         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
-         * que não existe no Firestore é, de alguma forma, encontrado e retornado
-         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
-         */
-        if (snapshot.exists()) {
-            return convertSnapshotToCorrespondingDTO(snapshot);
-        } else {
-            throw new ResourceNotFoundException();
         }
     }
 
@@ -132,19 +109,5 @@ public class AtendimentoService {
         } else {
             throw new ResourceNotFoundException();
         }
-    }
-
-    /**
-     * Converts the passed snapshot to the corresponding DTO through the
-     * registered service area
-     */
-    private Object convertSnapshotToCorrespondingDTO(DocumentSnapshot snapshot) {
-        String area = snapshot.getString("area");
-        if (Objects.equals(area, "Trabalhista")) {
-            return snapshot.toObject(AtendimentoTrabalhistaDTO.class);
-        } else if (Objects.equals(area, "Civil") || Objects.equals(area, "Família") || Objects.equals(area, "Penal")) {
-            return snapshot.toObject(AtendimentoCivilDTO.class);
-        }
-        return null;
     }
 }
