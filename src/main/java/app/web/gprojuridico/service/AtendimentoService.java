@@ -1,6 +1,5 @@
 package app.web.gprojuridico.service;
 
-import app.web.gprojuridico.exception.ResourceNotFoundException;
 import app.web.gprojuridico.model.Atendimento;
 import app.web.gprojuridico.repository.BaseRepository;
 import com.google.api.core.ApiFuture;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 import static app.web.gprojuridico.service.utils.AtendimentoUtils.convertSnapshotToCorrespondingAtendimentoDTO;
 
@@ -70,31 +68,5 @@ public class AtendimentoService {
 
     public Boolean deleteAll(String limit) {
         return repository.deleteAll(collection, Integer.parseInt(limit));
-    }
-
-    private void verifySnapshot(DocumentSnapshot snapshot, DocumentReference document) {
-        /*
-         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
-         * que não existe no Firestore é, de alguma forma, encontrado e retornado
-         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
-         */
-        if (snapshot.exists()) {
-            document.delete();
-        } else {
-            throw new ResourceNotFoundException();
-        }
-    }
-
-    private void verifySnapshot(DocumentSnapshot snapshot, DocumentReference document, Map<String, Object> data) {
-        /*
-         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
-         * que não existe no Firestore é, de alguma forma, encontrado e retornado
-         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
-         */
-        if (snapshot.exists()) {
-            document.update(data);
-        } else {
-            throw new ResourceNotFoundException();
-        }
     }
 }
