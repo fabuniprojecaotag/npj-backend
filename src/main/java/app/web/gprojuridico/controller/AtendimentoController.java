@@ -28,15 +28,15 @@ public class AtendimentoController {
     }
 
     @GetMapping
-    public List<Object> findAll()  {
-        System.out.println("GET Atendimentos chamado!");
-        return service.findAll();
+    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit)  {
+        List<Object> list = service.findAll(limit);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    public Object findById(@PathVariable String id)  {
-        System.out.println("GET Atendimento by id chamado!");
-        return service.findById(id);
+    public ResponseEntity<Object> findById(@PathVariable String id)  {
+        Object object = service.findById(id);
+        return ResponseEntity.ok(object);
     }
 
     @PutMapping("/{id}")

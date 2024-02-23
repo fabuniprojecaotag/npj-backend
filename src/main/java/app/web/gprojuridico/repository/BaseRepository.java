@@ -47,7 +47,9 @@ public class BaseRepository implements CrudRepository {
     public DocumentSnapshot findById(CollectionReference collection, String id) {
         try {
             DocumentReference document = collection.document(id);
-            return document.get().get();
+            DocumentSnapshot snapshot = document.get().get();
+            verifySnapshotIfDocumentExists(snapshot);
+            return snapshot;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
