@@ -64,15 +64,12 @@ public class AtendimentoService {
         return repository.update(collection, id, data);
     }
 
-    public void delete(String id) {
+    public Boolean delete(String id) {
+        return repository.delete(collection, id);
+    }
 
-        try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = document.get().get();
-            verifySnapshot(snapshot, document);
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public Boolean deleteAll(String limit) {
+        return repository.deleteAll(collection, Integer.parseInt(limit));
     }
 
     private void verifySnapshot(DocumentSnapshot snapshot, DocumentReference document) {
