@@ -4,7 +4,6 @@ import app.web.gprojuridico.exception.ResourceNotFoundException;
 import app.web.gprojuridico.model.AssistidoCivil;
 import app.web.gprojuridico.model.AssistidoFull;
 import app.web.gprojuridico.model.AssistidoTrabalhista;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Objects;
 import static app.web.gprojuridico.service.utils.Utils.getAllFieldNames;
 
 public class AssistidoUtils {
-    public static Map<String, Object> verifyDataToInsertAssistido(Map<String, Object> data) throws IllegalAccessException {
+    public static Map<String, Object> verifyDataToInsertAssistido(Map<String, Object> data) {
         Object field = data.get("tipo");
         System.out.println("\nTipo de payload recebido para verificar: " + field);
 
@@ -62,19 +61,6 @@ public class AssistidoUtils {
          */
         if (snapshot.exists()) {
             return convertSnapshotToCorrespondingAssistidoModel(snapshot);
-        } else {
-            throw new ResourceNotFoundException();
-        }
-    }
-
-    public static void verifySnapshotToUpdateAssistido(DocumentSnapshot snapshot, DocumentReference document, Map<String, Object> data) {
-        /*
-         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
-         * que não existe no Firestore é, de alguma forma, encontrado e retornado
-         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
-         */
-        if (snapshot.exists()) {
-            document.update(verifyDataToUpdateAssistido(data));
         } else {
             throw new ResourceNotFoundException();
         }
