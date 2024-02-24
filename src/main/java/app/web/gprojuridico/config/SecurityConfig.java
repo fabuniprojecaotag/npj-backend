@@ -67,6 +67,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/atendimentos/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/atendimentos/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/atendimentos/**").permitAll()
+                        /* endpoints de processo */
+                        .requestMatchers(HttpMethod.POST, "/processos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/processos").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/processos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/processos/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/processos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/processos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
