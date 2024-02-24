@@ -57,6 +57,7 @@ public class SecurityConfig {
                         /* endpoints de assistidos */
                         .requestMatchers(HttpMethod.POST, "/assistidos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/assistidos").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/assistidos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/assistidos/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/assistidos/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/assistidos/**").permitAll()
