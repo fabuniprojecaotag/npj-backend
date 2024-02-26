@@ -9,6 +9,7 @@ import com.google.api.core.ApiFuture;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,15 +23,17 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class UserService implements UserDetailsService {
     private static final String COLLECTION_NAME = "acesso";
+    
+    @Autowired
+    Firestore firestore;
 
     public User create(User user) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
 
         // Verificar se username e login sao unicos
-        Query emailQuery = dbFirestore.collection(COLLECTION_NAME).whereEqualTo("email", user.getEmail());
+        Query emailQuery = firestore.collection(COLLECTION_NAME).whereEqualTo("email", user.getEmail());
         QuerySnapshot emailQuerySnapshot = emailQuery.get().get();
 
-        Query nameQuery = dbFirestore.collection(COLLECTION_NAME).whereEqualTo("username", user.getUsername());
+        Query nameQuery = firestore.collection(COLLECTION_NAME).whereEqualTo("username", user.getUsername());
         QuerySnapshot nameQuerySnapshot = nameQuery.get().get();
 
         if (!emailQuerySnapshot.isEmpty()) {
@@ -43,7 +46,7 @@ public class UserService implements UserDetailsService {
 
         } else {
             // Pegar e incrementar id
-            Query lastUserQuery = dbFirestore.collection(COLLECTION_NAME).orderBy("id", Query.Direction.DESCENDING).limit(1);
+            Query lastUserQuery = firestore.collection(COLLECTION_NAME).orderBy("id", Query.Direction.DESCENDING).limit(1);
             QuerySnapshot lastUserQuerySnapshot = lastUserQuery.get().get();
 
             int lastUserId = 0;
@@ -61,7 +64,7 @@ public class UserService implements UserDetailsService {
             System.out.println(pw_hash);
             System.out.println("Senha criada:" + user.getPassword());
 
-            DocumentReference documentReference = dbFirestore.collection(COLLECTION_NAME).document();
+            DocumentReference documentReference = firestore.collection(COLLECTION_NAME).document();
             ApiFuture<WriteResult> collectionApiFuture = documentReference.set(user);
 
             return user; // Retorna o usuário criado
@@ -69,8 +72,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUserById(String documentId) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
+        
+        CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
 
         DocumentReference documentReference = usersCollection.document(documentId);
 
@@ -87,8 +90,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserByEmail(String email) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
+        
+        CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
 
         User foundUser = null;
 
@@ -121,8 +124,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserByEmailAndPassword(AuthenticationDTO user) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
+        
+        CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
 
         User foundUser = null;
 
@@ -164,10 +167,9 @@ public class UserService implements UserDetailsService {
     }
 
     public ArrayList toggleUserStatus(String documentId) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
 
         try {
-            DocumentReference userDocument = dbFirestore.collection(COLLECTION_NAME).document(documentId);
+            DocumentReference userDocument = firestore.collection(COLLECTION_NAME).document(documentId);
             ApiFuture<DocumentSnapshot> documentSnapshot = userDocument.get();
 
             String currentStatus = documentSnapshot.get().getString("accountNonLocked");
@@ -186,9 +188,9 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAllUsers() {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
-        CollectionReference perfisCollection = dbFirestore.collection("perfis");
+        
+        CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
+        CollectionReference perfisCollection = firestore.collection("perfis");
 
         try {
             ApiFuture<QuerySnapshot> query = usersCollection.get();
@@ -214,8 +216,8 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getUserByName(String nome) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
+        
+        CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
 
         try {
             // Create a query with the filter on the "username" field
@@ -239,8 +241,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserById(String userId) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference userDocRef = dbFirestore.collection(COLLECTION_NAME).document(userId);
+        
+        DocumentReference userDocRef = firestore.collection(COLLECTION_NAME).document(userId);
 
         try {
             DocumentSnapshot userSnapshot = userDocRef.get().get();
@@ -258,8 +260,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUser(User updatedUser) {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference userDocRef = dbFirestore.collection(COLLECTION_NAME).document(updatedUser.getDocumentId());
+        DocumentReference userDocRef = firestore.collection(COLLECTION_NAME).document(updatedUser.getDocumentId());
 
         try {
             DocumentSnapshot userSnapshot = userDocRef.get().get();

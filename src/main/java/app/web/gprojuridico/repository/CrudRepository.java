@@ -1,6 +1,5 @@
 package app.web.gprojuridico.repository;
 
-import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
@@ -10,17 +9,17 @@ import java.util.Map;
 
 interface CrudRepository {
 
-    DocumentReference save(CollectionReference collection, Map<String, Object> data);
+    DocumentReference save(String collection, Map<String, Object> data);
 
-    DocumentReference save(CollectionReference collection, Object data);
+    DocumentReference save(String collection, Object data);
 
-    List<QueryDocumentSnapshot> findAll(CollectionReference collection, Integer limit);
+    List<QueryDocumentSnapshot> findAll(String collection, Integer limit);
 
-    DocumentSnapshot findById(CollectionReference collection, String id);
+    DocumentSnapshot findById(String collection, String id);
 
-    Boolean update(CollectionReference collection, String id, Map<String, Object> data);
+    Boolean update(String collection, String id, Map<String, Object> data);
 
-    Boolean delete(CollectionReference collection, String id);
+    Boolean delete(String collection, String id);
 
-    Boolean deleteAll(CollectionReference collection, Integer limit);
+    Boolean deleteAll(String collection, Integer limit);
 }
