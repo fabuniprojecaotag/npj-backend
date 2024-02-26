@@ -3,6 +3,7 @@ package app.web.gprojuridico.repository;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import jakarta.annotation.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,30 +13,35 @@ import static app.web.gprojuridico.service.utils.Utils.verifySnapshotIfDocumentE
 
 @Repository
 public class BaseRepository implements CrudRepository {
+
+    @Autowired
+    Firestore firestore;
+
     @Override
-    public DocumentReference save(CollectionReference collection, Map<String, Object> data) {
+    public DocumentReference save(String collectionName, Map<String, Object> data) {
+
         try {
-            return collection.add(data).get();
+            return firestore.collection(collectionName).add(data).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public DocumentReference save(CollectionReference collection, Object data) {
+    public DocumentReference save(String collectionName, Object data) {
         try {
-            return collection.add(data).get();
+            return firestore.collection(collectionName).add(data).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public List<QueryDocumentSnapshot> findAll(CollectionReference collection, @Nullable Integer limit) {
+    public List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit) {
         if (limit == null) limit = 20;
         try {
             // asynchronously retrieve multiple documents
-            ApiFuture<QuerySnapshot> future = collection.limit(limit).get();
+            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).limit(limit).get();
 
             return future.get().getDocuments();
         } catch (Exception e) {
@@ -44,9 +50,9 @@ public class BaseRepository implements CrudRepository {
     }
 
     @Override
-    public DocumentSnapshot findById(CollectionReference collection, String id) {
+    public DocumentSnapshot findById(String collectionName, String id) {
         try {
-            DocumentReference document = collection.document(id);
+            DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
             verifySnapshotIfDocumentExists(snapshot);
             return snapshot;
@@ -56,10 +62,10 @@ public class BaseRepository implements CrudRepository {
     }
 
     @Override
-    public Boolean update(CollectionReference collection, String id, Map<String, Object> data) {
+    public Boolean update(String collectionName, String id, Map<String, Object> data) {
         try {
-            DocumentReference document = collection.document(id);
-            DocumentSnapshot snapshot = findById(collection, id);
+            DocumentReference document = firestore.collection(collectionName).document(id);
+            DocumentSnapshot snapshot = findById(collectionName, id);
             verifySnapshotIfDocumentExists(snapshot);
             document.update(data);
             return true;
@@ -69,9 +75,9 @@ public class BaseRepository implements CrudRepository {
     }
 
     @Override
-    public Boolean delete(CollectionReference collection, String id) {
+    public Boolean delete(String collectionName, String id) {
         try {
-            DocumentReference document = collection.document(id);
+            DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
             verifySnapshotIfDocumentExists(snapshot);
             document.delete();
@@ -82,8 +88,8 @@ public class BaseRepository implements CrudRepository {
     }
 
     @Override
-    public Boolean deleteAll(CollectionReference collection, Integer limit) {
-        List<QueryDocumentSnapshot> result = findAll(collection, limit);
+    public Boolean deleteAll(String collectionName, Integer limit) {
+        List<QueryDocumentSnapshot> result = findAll(collectionName, limit);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();
         }

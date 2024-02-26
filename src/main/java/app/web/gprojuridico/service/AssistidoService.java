@@ -1,8 +1,9 @@
 package app.web.gprojuridico.service;
 
 import app.web.gprojuridico.repository.BaseRepository;
-import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,12 @@ public class AssistidoService {
     @Autowired
     BaseRepository repository;
 
-    CollectionReference collection = FirestoreClient.getFirestore().collection("assistidos");
+    private static final String COLLECTION_NAME = "assistidos";
 
     public Map<String, Object> insert(Map<String, Object> data) {
         try {
             Map<String, Object> verifiedData = verifyDataToInsertAssistido(data);
-            DocumentReference result = repository.save(collection, verifiedData);
+            DocumentReference result = repository.save(COLLECTION_NAME, verifiedData);
 
             String assistidoId = result.getId();
             System.out.println("\nAssistido adicionado. ID: " + assistidoId);
@@ -34,7 +35,7 @@ public class AssistidoService {
     }
 
     public List<Object> findAll(String limit) {
-        List<QueryDocumentSnapshot> result = repository.findAll(collection, Integer.parseInt(limit));
+        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
         List<Object> list = new ArrayList<>();
 
         for (QueryDocumentSnapshot document : result) {
@@ -45,20 +46,20 @@ public class AssistidoService {
     }
 
     public Object findById(String id) {
-        DocumentSnapshot snapshot = repository.findById(collection, id);
+        DocumentSnapshot snapshot = repository.findById(COLLECTION_NAME, id);
         return verifySnapshotToFindAssistidoById(snapshot);
     }
 
     public Boolean update(String id,  Map<String, Object> data) {
-        return repository.update(collection, id, verifyDataToUpdateAssistido(data));
+        return repository.update(COLLECTION_NAME, id, verifyDataToUpdateAssistido(data));
     }
 
     public Boolean delete(String id) {
-        return repository.delete(collection, id);
+        return repository.delete(COLLECTION_NAME, id);
     }
 
     public Boolean deleteAll(String limit) {
-        return repository.deleteAll(collection, Integer.parseInt(limit));
+        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
     }
 }
 

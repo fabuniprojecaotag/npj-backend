@@ -47,7 +47,6 @@ class AssistidoServiceTest {
 
             Auxiliar.initializedApp = true;
         }
-            underTest.collection = FirestoreClient.getFirestore().collection("assistidos");
     }
 
     // ---------- Test Suite for Insertion Methods ----------
