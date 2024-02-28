@@ -20,7 +20,7 @@ public class TokenService {
     public String generateToken(User user) {
         Algorithm algoritmo = Algorithm.HMAC256(secretKey);
         return JWT.create()
-                .withSubject(user.getEmail())
+                .withSubject(user.getLogin())
                 .withIssuer("NPJ-Api")
                 .withIssuedAt(new Date())
                 .withExpiresAt(genExpirationDate())

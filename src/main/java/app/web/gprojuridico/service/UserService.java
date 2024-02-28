@@ -8,7 +8,6 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,7 +29,7 @@ public class UserService implements UserDetailsService {
     public User create(User user) throws ExecutionException, InterruptedException {
 
         // Verificar se username e login sao unicos
-        Query emailQuery = firestore.collection(COLLECTION_NAME).whereEqualTo("email", user.getEmail());
+        Query emailQuery = firestore.collection(COLLECTION_NAME).whereEqualTo("login", user.getLogin());
         QuerySnapshot emailQuerySnapshot = emailQuery.get().get();
 
         Query nameQuery = firestore.collection(COLLECTION_NAME).whereEqualTo("username", user.getUsername());
@@ -89,7 +88,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User findUserByEmail(String email) throws ExecutionException, InterruptedException {
+    public User findUserByEmail(String login) throws ExecutionException, InterruptedException {
         
         CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
 
@@ -99,7 +98,7 @@ public class UserService implements UserDetailsService {
         List<QueryDocumentSnapshot> matchingUsers;
         try {
             matchingUsers = usersCollection
-                    .whereEqualTo("email", email)
+                    .whereEqualTo("login", login)
                     .get().get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Erro ao consultar o banco firebase: " + e.getMessage(), e);
@@ -130,14 +129,14 @@ public class UserService implements UserDetailsService {
         User foundUser = null;
 
         // Extract login and password from the user object
-        String email = user.login();
+        String login = user.login();
         String password = user.password();
 
         // Query Firestore to find a user with matching login and password
         List<QueryDocumentSnapshot> matchingUsers;
         try {
             matchingUsers = usersCollection
-                    .whereEqualTo("email", email)
+                    .whereEqualTo("login", login)
                     .get().get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Erro ao consultar o banco firebase: " + e.getMessage(), e);
@@ -188,9 +187,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAllUsers() {
-        
         CollectionReference usersCollection = firestore.collection(COLLECTION_NAME);
-        CollectionReference perfisCollection = firestore.collection("perfis");
 
         try {
             ApiFuture<QuerySnapshot> query = usersCollection.get();
@@ -267,7 +264,7 @@ public class UserService implements UserDetailsService {
             if (userSnapshot.exists()) {
                 userDocRef.update(
                         "username", updatedUser.getUsername(),
-                        "email", updatedUser.getEmail(),
+                        "login", updatedUser.getLogin(),
                         "semestre", updatedUser.getSemestre(),
                         "password", updatedUser.getPassword(),
                         "perfil", updatedUser.getPerfil(),

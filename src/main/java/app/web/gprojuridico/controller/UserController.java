@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,11 +33,20 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> verifyLogin(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        System.out.println("antes do auth");
+        try {
+            var auth = this.authenticationManager.authenticate(usernamePassword);
+            // Restante do código aqui
+        } catch (AuthenticationException e) {
+            // Lidar com a exceção de autenticação
+            e.printStackTrace(); // ou logue a exceção para análise
+            // Retorne uma resposta de erro ou faça outro tratamento necessário
+        }
+        System.out.println("depois do auth");
 
-        String access_token = tokenService.generateToken((User) auth.getPrincipal());
+        // String access_token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(access_token));
+        return ResponseEntity.ok(new LoginResponseDTO("access_token"));
     }
 
     @PostMapping("/register")

@@ -18,14 +18,14 @@ import java.util.Set;
 public class User implements UserDetails {
 
     private int id;
-    private String email;
+    private String documentId;
+    private String login; // email
     private String password;
     private String username; // nome
     private String matricula;
     private Perfil perfil;
     private String semestre;
-    private boolean accountNonLocked; // status
-    private String documentId;
+    private boolean accountNonLocked; // status (trancado ou não)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Aqui você pode mapear os perfis (Perfil) para GrantedAuthority
@@ -35,24 +35,21 @@ public class User implements UserDetails {
 
         authorities.add(new SimpleGrantedAuthority("ROLE_" + perfil.getNome()));
 
-        // Adicione mais autoridades conforme necessário
-        // authorities.add(new SimpleGrantedAuthority("ROLE_OUTRO_PERFIL"));
-
         return authorities;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
