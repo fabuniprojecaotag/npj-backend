@@ -2,16 +2,23 @@ package app.web.gprojuridico.service.utils;
 
 import app.web.gprojuridico.exception.ResourceNotFoundException;
 import com.google.cloud.firestore.DocumentSnapshot;
+import jakarta.annotation.Nullable;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
-    public static Map<String, Object> convertUsingReflection(Object object) throws IllegalAccessException {
+    public static Map<String, Object> convertUsingReflection(Object object, @Nullable Boolean useSuperClass) throws IllegalAccessException {
         Map<String, Object> map = new HashMap<>();
-        Field[] fields = object.getClass().getDeclaredFields();
+        Class<?> t = object.getClass();
+        List<Field> fields = new ArrayList<>();
+
+        if (useSuperClass) {
+            fields.addAll(List.of(t.getSuperclass().getDeclaredFields()));
+            fields.addAll(List.of(t.getDeclaredFields()));
+        } else {
+            fields.addAll(List.of(t.getDeclaredFields()));
+        }
 
         for (Field field: fields) {
             field.setAccessible(true);

@@ -1,6 +1,6 @@
 package app.web.gprojuridico.security;
 
-import app.web.gprojuridico.model.user.User;
+import app.web.gprojuridico.model.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -17,10 +17,10 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secretKey;
 
-    public String generateToken(User user) {
+    public String generateToken(Usuario usuario) {
         Algorithm algoritmo = Algorithm.HMAC256(secretKey);
         return JWT.create()
-                .withSubject(user.getEmail())
+                .withSubject(usuario.getEmail())
                 .withIssuer("NPJ-Api")
                 .withIssuedAt(new Date())
                 .withExpiresAt(genExpirationDate())

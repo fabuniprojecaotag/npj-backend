@@ -44,7 +44,7 @@ public class ProcessoService {
 
         try {
             return Map.of(
-                    "object", convertUsingReflection(o),
+                    "object", convertUsingReflection(o, null),
                     "id", documentId
             );
         } catch (IllegalAccessException e) {

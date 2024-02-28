@@ -1,6 +1,6 @@
 package app.web.gprojuridico.service;
 
-import app.web.gprojuridico.model.user.Perfil;
+import app.web.gprojuridico.model.Role;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.firestore.*;
@@ -16,34 +16,33 @@ public class PerfilService {
 
     private static final String COLLECTION_NAME = "perfis";
 
-    public List<Perfil> getAll() {
+    public List<Role> getAll() {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         CollectionReference usersCollection = dbFirestore.collection(COLLECTION_NAME);
 
         try {
             ApiFuture<QuerySnapshot> query = usersCollection.get();
             QuerySnapshot querySnapshot = query.get();
-            List<Perfil> perfilList = new ArrayList<>();
+            List<Role> roleList = new ArrayList<>();
 
             for (QueryDocumentSnapshot document : querySnapshot) {
                 // Convert Firestore document to your User object
-                Perfil perfil = document.toObject(Perfil.class);
-                perfil.setDocumentId(document.getId());
+                Role role = document.toObject(Role.class);
 
                 // Check if the user is already in the list
-                if (!perfilList.contains(perfil)) {
-                    perfilList.add(perfil);
+                if (!roleList.contains(role)) {
+                    roleList.add(role);
                 }
             }
             // Assuming you want to return the perfilList as data in your ResponseModel
-            return perfilList;
+            return roleList;
         } catch (InterruptedException | ExecutionException e) {
             // Handle any exceptions
             throw new RuntimeException("Erro ao procurar perfis:", e);
         }
     }
 
-    public Perfil getPerfilById(String perfilId) {
+    public Role getPerfilById(String perfilId) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference perfilDocRef = dbFirestore.collection(COLLECTION_NAME).document(perfilId);
 
@@ -52,11 +51,10 @@ public class PerfilService {
 
             DocumentSnapshot perfilSnapshot = perfilDocRef.get().get();
 
-            Perfil perfil = perfilSnapshot.toObject(Perfil.class);
-            perfil.setDocumentId(perfilSnapshot.getId());
-            System.out.println("Perfil found: " + perfil);
+            Role role = perfilSnapshot.toObject(Role.class);
+            System.out.println("Perfil found: " + role);
 
-            return perfil;
+            return role;
         } catch (NotFoundException e) {
             System.out.println("Perfil not found for ID: " + perfilId);
             // Return null or handle the case where the perfil with the given ID doesn't exist

@@ -1,7 +1,7 @@
 package app.web.gprojuridico.controller;
 
 
-import app.web.gprojuridico.model.user.Perfil;
+import app.web.gprojuridico.model.Role;
 import app.web.gprojuridico.service.PerfilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,18 +17,18 @@ public class PerfilController {
     private PerfilService perfilService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Perfil>> getAllUsers() {
-        List<Perfil> listaPerfis = perfilService.getAll();
+    public ResponseEntity<List<Role>> getAllUsers() {
+        List<Role> listaPerfis = perfilService.getAll();
 
         return ResponseEntity.ok(listaPerfis);
     }
 
     @GetMapping("/get/{perfilId}")
-    public ResponseEntity<Perfil> getPerfilById(@PathVariable String perfilId) {
-        Perfil perfilResponse = perfilService.getPerfilById(perfilId);
+    public ResponseEntity<Role> getPerfilById(@PathVariable String perfilId) {
+        Role roleResponse = perfilService.getPerfilById(perfilId);
 
-        if (perfilResponse != null) {
-            return ResponseEntity.ok(perfilResponse);
+        if (roleResponse != null) {
+            return ResponseEntity.ok(roleResponse);
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

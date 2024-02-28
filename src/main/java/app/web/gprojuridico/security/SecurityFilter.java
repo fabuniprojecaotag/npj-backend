@@ -1,6 +1,6 @@
 package app.web.gprojuridico.security;
 
-import app.web.gprojuridico.model.user.User;
+import app.web.gprojuridico.model.Usuario;
 import app.web.gprojuridico.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,9 +30,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 var loginEmail = this.tokenService.validateToken(token);
-                User user = userService.findUserByEmail(loginEmail);
+                Usuario usuario = userService.findUserByEmail(loginEmail);
 
-                var autenticacao = new UsernamePasswordAuthenticationToken(user, null,user.getAuthorities());
+                var autenticacao = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(autenticacao);
             } catch (RuntimeException e) {
                 SecurityContextHolder.clearContext();

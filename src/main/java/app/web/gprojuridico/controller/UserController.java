@@ -2,7 +2,7 @@ package app.web.gprojuridico.controller;
 
 import app.web.gprojuridico.model.user.AuthenticationDTO;
 import app.web.gprojuridico.model.user.LoginResponseDTO;
-import app.web.gprojuridico.model.user.User;
+import app.web.gprojuridico.model.Usuario;
 import app.web.gprojuridico.security.TokenService;
 import app.web.gprojuridico.service.UserService;
 import jakarta.validation.Valid;
@@ -14,9 +14,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -34,67 +37,68 @@ public class UserController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        String access_token = tokenService.generateToken((User) auth.getPrincipal());
+        String access_token = tokenService.generateToken((Usuario) auth.getPrincipal());
 
         return ResponseEntity.ok(new LoginResponseDTO(access_token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> create(@RequestBody @Valid User data) throws ExecutionException, InterruptedException {
-        userService.create(data);
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Object> create(@RequestBody @Valid Usuario data) {
+        Map<String, Object> result = userService.create(data);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(result.get("id")).toUri();
+        return ResponseEntity.created(uri).body(result.get("object"));
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-
-        System.out.println("Tamanho da lista de usuários: " + users.size());
-        System.out.println("Lista de usuários: " + users);
-
-        return ResponseEntity.ok(users);
-    }
-
-    @GetMapping("/my-profile")
-    public ResponseEntity<User> obterMeuPerfil() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() instanceof User) {
-            User usuarioAutenticado = (User) authentication.getPrincipal();
-            return ResponseEntity.ok(usuarioAutenticado);
-        } else {
-            // Lida com a situação em que o principal não é do tipo User
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-
-    @GetMapping("/get/{usuarioId}")
-    public ResponseEntity<User> getUserById(@PathVariable String usuarioId) {
-        User user = userService.getUserById(usuarioId);
-
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/deleteUser/{docId}")
-    public ResponseEntity<String> deleteUser(@PathVariable String docId) {
-        userService.deleteUserById(docId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/toggleStatus/{docId}")
-    public ResponseEntity<ArrayList> toggleStatus(@PathVariable String docId) {
-        ArrayList response = userService.toggleUserStatus(docId);
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/updateUser/{docId}")
-    public ResponseEntity<User> editUser(@PathVariable User data) {
-        userService.updateUser(data);
-        return ResponseEntity.ok().build();
-    }
+//    @GetMapping("/list")
+//    public ResponseEntity<List<Usuario>> getAllUsers() {
+//        List<Usuario> usuarios = userService.getAllUsers();
+//
+//        System.out.println("Tamanho da lista de usuários: " + usuarios.size());
+//        System.out.println("Lista de usuários: " + usuarios);
+//
+//        return ResponseEntity.ok(usuarios);
+//    }
+//
+//    @GetMapping("/my-profile")
+//    public ResponseEntity<Usuario> obterMeuPerfil() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication.getPrincipal() instanceof Usuario) {
+//            Usuario usuarioAutenticado = (Usuario) authentication.getPrincipal();
+//            return ResponseEntity.ok(usuarioAutenticado);
+//        } else {
+//            // Lida com a situação em que o principal não é do tipo User
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//    }
+//
+//    @GetMapping("/get/{usuarioId}")
+//    public ResponseEntity<Usuario> getUserById(@PathVariable String usuarioId) {
+//        Usuario usuario = userService.getUserById(usuarioId);
+//
+//        if (usuario != null) {
+//            return ResponseEntity.ok(usuario);
+//        } else {
+//            return new ResponseEntity(HttpStatus.NOT_FOUND);
+//        }
+//    }
+//
+//    @DeleteMapping("/deleteUser/{docId}")
+//    public ResponseEntity<String> deleteUser(@PathVariable String docId) {
+//        userService.deleteUserById(docId);
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @PutMapping("/toggleStatus/{docId}")
+//    public ResponseEntity<ArrayList> toggleStatus(@PathVariable String docId) {
+//        ArrayList response = userService.toggleUserStatus(docId);
+//        return ResponseEntity.ok(response);
+//    }
+//
+//    @PatchMapping("/updateUser/{docId}")
+//    public ResponseEntity<Usuario> editUser(@PathVariable Usuario data) {
+//        userService.updateUser(data);
+//        return ResponseEntity.ok().build();
+//    }
 }
