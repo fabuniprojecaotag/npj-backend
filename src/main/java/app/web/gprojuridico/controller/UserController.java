@@ -62,6 +62,11 @@ public class UserController {
     }
 
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
+        userService.update(id, data);
+        return ResponseEntity.ok().build();
+    }
 
 //    @GetMapping("/my-profile")
 //    public ResponseEntity<Usuario> obterMeuPerfil() {
@@ -85,11 +90,5 @@ public class UserController {
 //    public ResponseEntity<ArrayList> toggleStatus(@PathVariable String docId) {
 //        ArrayList response = userService.toggleUserStatus(docId);
 //        return ResponseEntity.ok(response);
-//    }
-//
-//    @PatchMapping("/updateUser/{docId}")
-//    public ResponseEntity<Usuario> editUser(@PathVariable Usuario data) {
-//        userService.updateUser(data);
-//        return ResponseEntity.ok().build();
 //    }
 }

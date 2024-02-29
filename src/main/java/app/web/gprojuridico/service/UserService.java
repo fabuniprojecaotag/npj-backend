@@ -76,4 +76,8 @@ public class UserService implements UserDetailsService {
         if (snapshot.contains("matricula")) return snapshot.toObject(Estagiario.class);
         else return snapshot.toObject(Usuario.class);
     }
+
+    public Boolean update(String id, Map<String, Object> data) {
+        return repository.update(COLLECTION_NAME, id, data);
+    }
 }
