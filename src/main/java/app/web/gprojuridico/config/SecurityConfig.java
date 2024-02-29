@@ -48,8 +48,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/my-profile").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/deleteUser/**").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/updateUser/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/auth").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/toggleStatus/**").permitAll()
                         /* endpoints de perfil */
                         .requestMatchers(HttpMethod.GET, "/perfil/all").permitAll()

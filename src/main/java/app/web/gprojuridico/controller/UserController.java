@@ -55,6 +55,12 @@ public class UserController {
         return ResponseEntity.ok(usuarios);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit) {
+        userService.deleteAll(limit);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable String id) {
         Object usuario = userService.loadUserByUsername(id);
@@ -66,6 +72,12 @@ public class UserController {
     public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
         userService.update(id, data);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 //    @GetMapping("/my-profile")
@@ -80,12 +92,6 @@ public class UserController {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 //        }
 //    }
-//    @DeleteMapping("/deleteUser/{docId}")
-//    public ResponseEntity<String> deleteUser(@PathVariable String docId) {
-//        userService.deleteUserById(docId);
-//        return ResponseEntity.ok().build();
-//    }
-//
 //    @PutMapping("/toggleStatus/{docId}")
 //    public ResponseEntity<ArrayList> toggleStatus(@PathVariable String docId) {
 //        ArrayList response = userService.toggleUserStatus(docId);

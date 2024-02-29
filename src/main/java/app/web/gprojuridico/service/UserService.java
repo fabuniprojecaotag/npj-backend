@@ -80,4 +80,12 @@ public class UserService implements UserDetailsService {
     public Boolean update(String id, Map<String, Object> data) {
         return repository.update(COLLECTION_NAME, id, data);
     }
+
+    public Boolean delete(String id) {
+        return repository.delete(COLLECTION_NAME, id);
+    }
+
+    public Boolean deleteAll(String limit) {
+        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
+    }
 }
