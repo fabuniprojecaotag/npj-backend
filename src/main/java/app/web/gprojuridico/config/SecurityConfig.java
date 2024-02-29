@@ -41,20 +41,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // pre-flight
+                        /* endpoint de login */
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         /* endpoints de usuario */
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/filter").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/my-profile").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/auth").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/toggleStatus/**").permitAll()
-                        /* endpoints de perfil */
-                        .requestMatchers(HttpMethod.GET, "/perfil/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/perfil/get/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuários").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuários").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/usuários").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuários/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/usuários/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/usuários/**").permitAll()
                         /* endpoints de assistidos */
                         .requestMatchers(HttpMethod.POST, "/assistidos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/assistidos").permitAll()

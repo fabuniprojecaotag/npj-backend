@@ -1,4 +1,4 @@
-package app.web.gprojuridico.model.user;
+package app.web.gprojuridico.dto;
 
 public record AuthenticationDTO(String login, String password) {
 }
