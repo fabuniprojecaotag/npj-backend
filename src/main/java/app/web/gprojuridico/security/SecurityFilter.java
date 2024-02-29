@@ -27,20 +27,20 @@ public class SecurityFilter extends OncePerRequestFilter {
         System.out.println("Filtro JWT está sendo chamado");
         var token = this.recoverToken(request);
 
-        if (token != null) {
-            try {
-                var loginEmail = this.tokenService.validateToken(token);
-                Usuario usuario = userService.findUserByEmail(loginEmail);
-
-                var autenticacao = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(autenticacao);
-            } catch (RuntimeException e) {
-                SecurityContextHolder.clearContext();
-                throw e;
-            } catch (ExecutionException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        if (token != null) {
+//            try {
+//                var loginEmail = this.tokenService.validateToken(token);
+//                Usuario usuario = userService.findUserByEmail(loginEmail);
+//
+//                var autenticacao = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+//                SecurityContextHolder.getContext().setAuthentication(autenticacao);
+//            } catch (RuntimeException e) {
+//                SecurityContextHolder.clearContext();
+//                throw e;
+//            } catch (ExecutionException | InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
         filterChain.doFilter(request, response);
     }
 

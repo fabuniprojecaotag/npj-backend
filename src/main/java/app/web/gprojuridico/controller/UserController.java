@@ -7,7 +7,6 @@ import app.web.gprojuridico.security.TokenService;
 import app.web.gprojuridico.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,16 +49,20 @@ public class UserController {
         return ResponseEntity.created(uri).body(result.get("object"));
     }
 
-//    @GetMapping("/list")
-//    public ResponseEntity<List<Usuario>> getAllUsers() {
-//        List<Usuario> usuarios = userService.getAllUsers();
-//
-//        System.out.println("Tamanho da lista de usuários: " + usuarios.size());
-//        System.out.println("Lista de usuários: " + usuarios);
-//
-//        return ResponseEntity.ok(usuarios);
-//    }
-//
+    @GetMapping
+    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit) {
+        List<Object> usuarios = userService.findAll(limit);
+        return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable String id) {
+        Object usuario = userService.loadUserByUsername(id);
+        return ResponseEntity.ok(usuario);
+    }
+
+
+
 //    @GetMapping("/my-profile")
 //    public ResponseEntity<Usuario> obterMeuPerfil() {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -72,18 +75,6 @@ public class UserController {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 //        }
 //    }
-//
-//    @GetMapping("/get/{usuarioId}")
-//    public ResponseEntity<Usuario> getUserById(@PathVariable String usuarioId) {
-//        Usuario usuario = userService.getUserById(usuarioId);
-//
-//        if (usuario != null) {
-//            return ResponseEntity.ok(usuario);
-//        } else {
-//            return new ResponseEntity(HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
 //    @DeleteMapping("/deleteUser/{docId}")
 //    public ResponseEntity<String> deleteUser(@PathVariable String docId) {
 //        userService.deleteUserById(docId);

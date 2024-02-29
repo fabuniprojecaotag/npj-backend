@@ -2,14 +2,16 @@ package app.web.gprojuridico.service;
 
 import app.web.gprojuridico.model.Estagiario;
 import app.web.gprojuridico.model.Usuario;
+import app.web.gprojuridico.repository.BaseRepository;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static app.web.gprojuridico.service.utils.Utils.convertUsingReflection;
@@ -18,10 +20,14 @@ import static app.web.gprojuridico.service.utils.Utils.convertUsingReflection;
 public class UserService implements UserDetailsService {
 
     private static final String COLLECTION_NAME = "usuarios";
-    
+
     @Autowired
     Firestore firestore;
 
+    @Autowired
+    BaseRepository repository;
+
+    // TODO: finalizar implementação do método abaixo
     public Map<String, Object> create(Usuario usuario) {
 
         // TODO (login): Implementar lógica de verificar se email passado possui @projecao.br ou @projecao.edu.br
@@ -39,6 +45,8 @@ public class UserService implements UserDetailsService {
         try {
             Boolean useSuperClass = usuario instanceof Estagiario;
             Map<String, Object> map = convertUsingReflection(usuario, useSuperClass);
+            // TODO: Retirar campo email do map retornado, porque o atributo email é id e é populado automaticamente pelo @DocumentId no modelo
+            map.remove("email");
             String id = usuario.getEmail();
             firestore.collection(COLLECTION_NAME).document(id).set(map);
             return Map.of(
@@ -50,12 +58,22 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public List<Object> findAll(String limit) {
+        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+        List<Object> list = new ArrayList<>();
+
+        for (QueryDocumentSnapshot document : result) {
+            if (document.contains("matricula")) list.add(document.toObject(Estagiario.class));
+            else list.add(document.toObject(Usuario.class));
+        }
+
+        return list;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) {
-        try {
-            return null;
-        } catch (Exception e) {
-            throw new UsernameNotFoundException(null);
-        }
+        DocumentSnapshot snapshot = repository.findById(COLLECTION_NAME, username);
+        if (snapshot.contains("matricula")) return snapshot.toObject(Estagiario.class);
+        else return snapshot.toObject(Usuario.class);
     }
 }

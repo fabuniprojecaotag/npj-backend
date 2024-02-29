@@ -61,6 +61,7 @@ public class Usuario implements UserDetails {
 
     @Override
     @JsonProperty("role")
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<Role> list = new ArrayList<>();
         list.add(new Role(role));
@@ -69,12 +70,14 @@ public class Usuario implements UserDetails {
 
     @Override
     @JsonProperty("senha")
+    @JsonIgnore
     public String getPassword() {
         return senha;
     }
 
     @Override
     @JsonProperty("nome")
+    @JsonIgnore
     public String getUsername() {
         return nome;
     }
@@ -102,6 +105,7 @@ public class Usuario implements UserDetails {
 
     @Override
     @JsonProperty("status")
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
