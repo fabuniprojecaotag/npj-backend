@@ -3,11 +3,9 @@ package app.web.gprojuridico.service;
 import app.web.gprojuridico.model.Processo;
 import app.web.gprojuridico.repository.BaseRepository;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static app.web.gprojuridico.service.utils.AtendimentoUtils.convertSnapshotToCorrespondingAtendimentoDTO;
 import static app.web.gprojuridico.service.utils.Utils.convertUsingReflection;
 
 @Service
