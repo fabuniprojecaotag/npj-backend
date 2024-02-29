@@ -28,9 +28,6 @@ public class User implements UserDetails {
     private boolean accountNonLocked; // status (trancado ou não)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Aqui você pode mapear os perfis (Perfil) para GrantedAuthority
-        // Neste exemplo, assumindo que 'perfil' é uma lista de strings representando os papéis
-
         Set<GrantedAuthority> authorities = new HashSet<>();
 
         authorities.add(new SimpleGrantedAuthority("ROLE_" + perfil.getNome()));
