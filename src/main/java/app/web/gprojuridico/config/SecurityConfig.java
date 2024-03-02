@@ -22,55 +22,38 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.*;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
     @Autowired
-    UserAuthenticationEntryPoint userAuthenticationEntryPoint;
-    @Autowired
     SecurityFilter securityFilter;
 
+    private final String professorRole = "PROFESSOR";
+    private final String secretariaRole = "SECRETARIA";
+    private final String coordenadorRole = "COORDENADOR";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .exceptionHandling(e -> e.authenticationEntryPoint(userAuthenticationEntryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // pre-flight
-                        /* endpoint de login */
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        /* endpoints de usuario */
-                        .requestMatchers(HttpMethod.POST, "/usuários").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuários").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/usuários").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuários/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/usuários/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/usuários/**").permitAll()
-                        /* endpoints de assistidos */
-                        .requestMatchers(HttpMethod.POST, "/assistidos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/assistidos").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/assistidos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/assistidos/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/assistidos/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/assistidos/**").permitAll()
-                        /* endpoints de atendimento */
-                        .requestMatchers(HttpMethod.POST, "/atendimentos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/atendimentos").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/atendimentos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/atendimentos/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/atendimentos/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/atendimentos/**").permitAll()
-                        /* endpoints de processo */
-                        .requestMatchers(HttpMethod.POST, "/processos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/processos").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/processos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/processos/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/processos/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/processos/**").permitAll()
+
+                        .requestMatchers(POST, "/login").permitAll()
+
+                        .requestMatchers(POST, "/usuários").hasRole(secretariaRole)
+                        .requestMatchers(POST, "/processos").hasRole(professorRole)
+
+                        .requestMatchers(PUT, "/usuários/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(secretariaRole)
+
+                        .requestMatchers(DELETE, "/usuários", "/assistidos", "/atendimentos", "/processos").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "/usuários/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(coordenadorRole)
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 
 @Service
 public class TokenService {
@@ -18,26 +17,29 @@ public class TokenService {
     private String secretKey;
 
     public String generateToken(Usuario usuario) {
-        Algorithm algoritmo = Algorithm.HMAC256(secretKey);
-        return JWT.create()
-                .withSubject(usuario.getEmail())
-                .withIssuer("NPJ-Api")
-                .withIssuedAt(new Date())
-                .withExpiresAt(genExpirationDate())
-                .sign(algoritmo);
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            return JWT.create()
+                    .withIssuer("NPJ-Api")
+                    .withSubject(usuario.getEmail())
+                    .withExpiresAt(genExpirationDate())
+                    .sign(algorithm);
+        } catch (JWTVerificationException e) {
+            throw new RuntimeException("Error to generate token" + e);
+        }
+
     }
 
     public String validateToken(String token) {
         try{
-            Algorithm algoritmo = Algorithm.HMAC256(secretKey);
-
-            return JWT.require(algoritmo)
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            return JWT.require(algorithm)
                     .withIssuer("NPJ-Api")
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Erro ao validar Token:" + exception);
+        } catch (JWTVerificationException e) {
+            throw new RuntimeException("Error to validate token" + e);
         }
     }
     private Instant genExpirationDate(){
