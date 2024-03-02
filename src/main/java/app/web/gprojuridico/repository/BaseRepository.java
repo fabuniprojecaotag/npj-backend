@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
-import static app.web.gprojuridico.service.utils.Utils.verifySnapshotIfDocumentExists;
+import static app.web.gprojuridico.services.utils.Utils.verifySnapshotIfDocumentExists;
 
 @Repository
 public class BaseRepository implements CrudRepository {

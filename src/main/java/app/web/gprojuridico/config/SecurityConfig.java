@@ -1,6 +1,6 @@
 package app.web.gprojuridico.config;
 
-import app.web.gprojuridico.security.SecurityFilter;
+import app.web.gprojuridico.services.security.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

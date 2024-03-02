@@ -1,6 +1,6 @@
 package app.web.gprojuridico.dto;
 
-import app.web.gprojuridico.model.FichaCivil;
+import app.web.gprojuridico.domains.atendimento.FichaCivil;
 import com.google.cloud.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;

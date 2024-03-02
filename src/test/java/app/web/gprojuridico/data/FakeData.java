@@ -1,8 +1,9 @@
 package app.web.gprojuridico.data;
 
-import app.web.gprojuridico.model.*;
-import app.web.gprojuridico.model.enums.Escolaridade;
-import app.web.gprojuridico.model.enums.EstadoCivil;
+import app.web.gprojuridico.domains.assistido.*;
+import app.web.gprojuridico.domains.atendimento.Filiacao;
+import app.web.gprojuridico.domains.enums.Escolaridade;
+import app.web.gprojuridico.domains.enums.EstadoCivil;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
