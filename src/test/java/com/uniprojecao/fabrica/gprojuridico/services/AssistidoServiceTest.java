@@ -2,9 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.data.FakeData;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.cloud.FirestoreClient;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,32 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class Auxiliar {
-
-    static Boolean initializedApp = false;
-}
-
 
 @ExtendWith(MockitoExtension.class)
 class AssistidoServiceTest {
 
     @Mock
     private AssistidoService underTest;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        if (!Auxiliar.initializedApp) {
-            GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
-            String projectId = "gprojuridico";
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(credentials)
-                    .setProjectId(projectId)
-                    .build();
-            FirebaseApp.initializeApp(options);
-
-            Auxiliar.initializedApp = true;
-        }
-    }
 
     // ---------- Test Suite for Insertion Methods ----------
     @Nested
