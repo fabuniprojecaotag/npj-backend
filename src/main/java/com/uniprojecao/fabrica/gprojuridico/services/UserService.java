@@ -1,11 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
-import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -75,6 +79,13 @@ public class UserService implements UserDetailsService {
         DocumentSnapshot snapshot = repository.findById(COLLECTION_NAME, username);
         if (snapshot.contains("matricula")) return snapshot.toObject(Estagiario.class);
         else return snapshot.toObject(Usuario.class);
+    }
+
+    public Usuario authenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuario = (Usuario) authentication.getPrincipal();
+        String username = usuario.getEmail();
+        return (Usuario) loadUserByUsername(username);
     }
 
     public Boolean update(String id, Map<String, Object> data) {

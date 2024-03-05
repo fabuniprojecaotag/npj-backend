@@ -44,6 +44,12 @@ public class UserController {
         return ResponseEntity.ok(usuario);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Object> getMe() {
+        Object usuario = service.authenticated();
+        return ResponseEntity.ok(usuario);
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
