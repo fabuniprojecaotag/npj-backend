@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,9 @@ public class AtendimentoService {
         );
     }
 
-    public List<Object> findAll(String limit) {
-        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+    public List<Object> findAll(String limit, String field, String filter, String value) {
+        FilterType filterType = FilterType.valueOf(filter);
+        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, filterType, value);
         List<Object> list = new ArrayList<>();
 
         for (QueryDocumentSnapshot document : result) {

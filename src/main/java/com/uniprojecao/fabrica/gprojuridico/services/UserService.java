@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
@@ -62,8 +63,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Object> findAll(String limit) {
-        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+    public List<Object> findAll(String limit, String field, String filter, String value) {
+        FilterType filterType = FilterType.valueOf(filter);
+        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, filterType, value);
         List<Object> list = new ArrayList<>();
 
         for (QueryDocumentSnapshot document : result) {

@@ -27,8 +27,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit) {
-        List<Object> usuarios = service.findAll(limit);
+    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
+                                                @RequestParam String field,
+                                                @RequestParam String filter,
+                                                @RequestParam String value) {
+        List<Object> usuarios = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(usuarios);
     }
 

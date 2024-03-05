@@ -4,6 +4,8 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,8 @@ interface CrudRepository {
     WriteResult saveWithCustomId(String collectionName, String CustomId, Object data);
 
     List<QueryDocumentSnapshot> findAll(String collection, Integer limit);
+
+    List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit, String field, FilterType filterType, String value);
 
     DocumentSnapshot findLast(String collectionName);
 

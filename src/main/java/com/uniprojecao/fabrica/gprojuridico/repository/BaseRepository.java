@@ -2,7 +2,9 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.services.utils.Utils;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.cloud.firestore.Query.Direction.DESCENDING;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 
 @Repository
 public class BaseRepository implements CrudRepository {
@@ -50,16 +53,29 @@ public class BaseRepository implements CrudRepository {
     @Override
     public List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit) {
         if (limit == null) limit = 20;
-        try {
-            // asynchronously retrieve multiple documents
-            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).limit(limit).get();
 
+        try {
+            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).limit(limit).get();
             return future.get().getDocuments();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit, @Nonnull String field,
+                                               @Nonnull FilterType filterType , @Nonnull String value) {
+        if (limit == null) limit = 20;
+
+        try {
+            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).where(filter(field, filterType, value)).limit(limit).get();
+            return future.get().getDocuments();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public DocumentSnapshot findLast(String collectionName) {
         try {
             ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).orderBy("instante", DESCENDING).limit(1).get();

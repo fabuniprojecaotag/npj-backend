@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -34,8 +35,9 @@ public class AssistidoService {
         }
     }
 
-    public List<Object> findAll(String limit) {
-        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+    public List<Object> findAll(String limit, String field, String filter, String value) {
+        FilterType filterType = FilterType.valueOf(filter);
+        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, filterType, value);
         List<Object> list = new ArrayList<>();
 
         for (QueryDocumentSnapshot document : result) {
