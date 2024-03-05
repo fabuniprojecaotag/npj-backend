@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers.handlers;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ReflectionOperationException;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 import com.uniprojecao.fabrica.gprojuridico.dto.ErrorResponse;
@@ -34,6 +35,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleReflectionOperationException(ReflectionOperationException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ErrorResponse error = new ErrorResponse(status.value(), e.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> tokenExpiredException(TokenExpiredException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
         ErrorResponse error = new ErrorResponse(status.value(), e.getMessage(), request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);
