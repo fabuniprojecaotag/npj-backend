@@ -1,18 +1,18 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.convertSnapshotToCorrespondingAtendimentoDTO;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.setAndReturnId;
 
 @Service
 public class AtendimentoService {
@@ -23,23 +23,14 @@ public class AtendimentoService {
     private static final String COLLECTION_NAME = "atendimentos";
 
     public Map<String, Object> insert(Atendimento data) {
-        DocumentReference result = repository.save(COLLECTION_NAME, data);
-
-        ApiFuture<DocumentSnapshot> future = result.get();
-        Object o;
-
-        try {
-            o = convertSnapshotToCorrespondingAtendimentoDTO(future.get());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        String documentId = result.getId();
-        System.out.println("\nAtendimento adicionado. ID: " + documentId);
+        DocumentSnapshot doc = repository.findLast(COLLECTION_NAME);
+        String id = (String) doc.get("id");
+        String customId = doc.exists() ? setAndReturnId(data, id) : setAndReturnId(data, null);
+        repository.saveWithCustomId(COLLECTION_NAME, customId, data);
 
         return Map.of(
-                "object", o,
-                "id", documentId
+                "object", data,
+                "id", customId
         );
     }
 

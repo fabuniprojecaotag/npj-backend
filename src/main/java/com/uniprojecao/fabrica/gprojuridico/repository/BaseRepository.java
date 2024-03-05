@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.cloud.firestore.Query.Direction.DESCENDING;
+
 @Repository
 public class BaseRepository implements CrudRepository {
 
@@ -36,6 +38,16 @@ public class BaseRepository implements CrudRepository {
     }
 
     @Override
+    public WriteResult saveWithCustomId(String collectionName, String CustomId, Object data) {
+
+        try {
+            return firestore.collection(collectionName).document(CustomId).set(data).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit) {
         if (limit == null) limit = 20;
         try {
@@ -43,6 +55,16 @@ public class BaseRepository implements CrudRepository {
             ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).limit(limit).get();
 
             return future.get().getDocuments();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DocumentSnapshot findLast(String collectionName) {
+        try {
+            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).orderBy("instante", DESCENDING).limit(1).get();
+            var list = future.get().getDocuments();
+            return list.get(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
