@@ -132,4 +132,14 @@ public class BaseRepository implements CrudRepository {
         }
         return true;
     }
+
+    @Override
+    public Boolean deleteAll(String collectionName, Integer limit, @Nonnull String field,
+                             @Nonnull FilterType filterType , @Nonnull String value) {
+        List<QueryDocumentSnapshot> result = findAll(collectionName, limit, field, filterType, value);
+        for (QueryDocumentSnapshot document : result) {
+            document.getReference().delete();
+        }
+        return true;
+    }
 }

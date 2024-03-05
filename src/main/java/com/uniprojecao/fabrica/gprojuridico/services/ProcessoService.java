@@ -74,7 +74,8 @@ public class ProcessoService {
         return repository.delete(COLLECTION_NAME, id);
     }
 
-    public Boolean deleteAll(String limit) {
-        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
+    public Boolean deleteAll(String limit, String field, String filter, String value) {
+        FilterType filterType = FilterType.valueOf(filter);
+        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), field, filterType, value);
     }
 }

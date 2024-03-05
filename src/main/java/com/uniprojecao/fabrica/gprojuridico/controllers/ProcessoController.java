@@ -36,8 +36,11 @@ public class ProcessoController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit) {
-        service.deleteAll(limit);
+    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit,
+                                       @RequestParam String field,
+                                       @RequestParam String filter,
+                                       @RequestParam String value) {
+        service.deleteAll(limit, field, filter, value);
         return ResponseEntity.noContent().build();
     }
 
