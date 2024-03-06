@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -16,7 +17,7 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils
 public class AssistidoService {
 
     @Autowired
-    BaseRepository repository;
+    AssistidoRepository repository;
 
     private static final String COLLECTION_NAME = "assistidos";
 
@@ -41,11 +42,11 @@ public class AssistidoService {
         boolean useQueryParams = (field != null) && (filter != null) && (value != null);
 
         result = (useQueryParams) ?
-                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
-                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit));
 
         for (QueryDocumentSnapshot document : result) {
-            list.add(convertSnapshotToCorrespondingAssistidoModel(document));
+            list.add(convertSnapshotToCorrespondingAssistidoModel(document, true));
         }
 
         return list;

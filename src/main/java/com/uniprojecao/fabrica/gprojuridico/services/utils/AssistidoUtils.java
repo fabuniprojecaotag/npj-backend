@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
@@ -60,7 +61,7 @@ public class AssistidoUtils {
          * com campos null. Por isso, faz-se necessário essa condicional abaixo.
          */
         if (snapshot.exists()) {
-            return convertSnapshotToCorrespondingAssistidoModel(snapshot);
+            return convertSnapshotToCorrespondingAssistidoModel(snapshot, false);
         } else {
             throw new ResourceNotFoundException();
         }
@@ -70,7 +71,11 @@ public class AssistidoUtils {
      * Converts the passed snapshot to the corresponding model through the
      * relationship that the person assisted has with the service(s).
      */
-    public static Object convertSnapshotToCorrespondingAssistidoModel(DocumentSnapshot snapshot) {
+    public static Object convertSnapshotToCorrespondingAssistidoModel(DocumentSnapshot snapshot, Boolean returnMinDTO) {
+
+        if (returnMinDTO) {
+            return snapshot.toObject(AssistidoMinDTO.class);
+        }
 
         Boolean dadosFCivil = snapshot.contains("naturalidade") && snapshot.contains("dataNascimento") && snapshot.contains("dependentes");
         Boolean dadosFTrabalhista = snapshot.contains("ctps") && snapshot.contains("pis") && snapshot.contains("empregadoAtualmente");
