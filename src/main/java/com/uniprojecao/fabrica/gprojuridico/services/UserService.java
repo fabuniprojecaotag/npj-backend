@@ -7,7 +7,10 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.EstagiarioMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +34,7 @@ public class UserService implements UserDetailsService {
     Firestore firestore;
 
     @Autowired
-    BaseRepository repository;
+    UserRepository repository;
 
     // TODO: finalizar implementação do método abaixo
     public Map<String, Object> create(Usuario usuario) {
@@ -70,12 +73,12 @@ public class UserService implements UserDetailsService {
         boolean useQueryParams = (field != null) && (filter != null) && (value != null);
 
         result = (useQueryParams) ?
-                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
-                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit));
 
         for (QueryDocumentSnapshot document : result) {
-            if (document.contains("matricula")) list.add(document.toObject(Estagiario.class));
-            else list.add(document.toObject(Usuario.class));
+            if (document.contains("matricula")) list.add(document.toObject(EstagiarioMinDTO.class));
+            else list.add(document.toObject(UsuarioMinDTO.class));
         }
 
         return list;

@@ -7,6 +7,7 @@ import com.uniprojecao.fabrica.gprojuridico.services.utils.Utils;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 
 @Repository
+@Primary
 public class BaseRepository implements CrudRepository {
 
     @Autowired
