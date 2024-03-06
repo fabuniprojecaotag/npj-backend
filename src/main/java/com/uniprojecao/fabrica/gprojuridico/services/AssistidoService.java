@@ -36,9 +36,13 @@ public class AssistidoService {
     }
 
     public List<Object> findAll(String limit, String field, String filter, String value) {
-        FilterType filterType = FilterType.valueOf(filter);
-        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, filterType, value);
+        List<QueryDocumentSnapshot> result;
         List<Object> list = new ArrayList<>();
+        boolean useQueryParams = (field != null) && (filter != null) && (value != null);
+
+        result = (useQueryParams) ?
+                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
 
         for (QueryDocumentSnapshot document : result) {
             list.add(convertSnapshotToCorrespondingAssistidoModel(document));
@@ -61,8 +65,10 @@ public class AssistidoService {
     }
 
     public Boolean deleteAll(String limit, String field, String filter, String value) {
-        FilterType filterType = FilterType.valueOf(filter);
-        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), field, filterType, value);
+        boolean useQueryParams = (field != null) && (filter != null) && (value != null);
+        return (useQueryParams) ?
+                repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
     }
 }
 

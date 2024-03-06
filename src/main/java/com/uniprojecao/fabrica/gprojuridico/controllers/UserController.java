@@ -28,18 +28,18 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
-                                                @RequestParam String field,
-                                                @RequestParam String filter,
-                                                @RequestParam String value) {
+                                                @RequestParam(required = false) String field,
+                                                @RequestParam(required = false) String filter,
+                                                @RequestParam(required = false) String value) {
         List<Object> usuarios = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(usuarios);
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit,
-                                       @RequestParam String field,
-                                       @RequestParam String filter,
-                                       @RequestParam String value) {
+                                       @RequestParam(required = false) String field,
+                                       @RequestParam(required = false) String filter,
+                                       @RequestParam(required = false) String value) {
         service.deleteAll(limit, field, filter, value);
         return ResponseEntity.noContent().build();
     }
