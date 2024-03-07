@@ -10,6 +10,7 @@ As versões das tecnologias acima encontram-se no arquivo **pom.xml**.
 
 - [Instalação](#instalação)
 - [Uso](#uso)
+  - [Firebase Suite Emulator](#firebase-suite-emulator)
 - [Endpoints da API](#endpoints-da-api)
   - [Login e Autenticação](#login-e-autenticação)
 - [Autorização](#autorização)
@@ -37,10 +38,36 @@ As versões das tecnologias acima encontram-se no arquivo **pom.xml**.
    2. Certifique-se que você autenticou usando as **credenciais de usuário** em **ambiente de desenvolvimento local** do projeto, conforme o [link](https://cloud.google.com/docs/authentication/provide-credentials-adc#google-idp) acima;
    3. **OBS**: É necessário que algum proprietário do projeto adicione o seu usuário do Google para ter acesso ao projeto, tanto no **CLI** quanto no **console web do Firebase**.
 
+4. (opcional) Instale o [Firebase Suite Emulator](https://firebase.google.com/docs/cli#install_the_firebase_cli).
+
 ## Uso
 
 1. Inicie a aplicação com o Maven.
 2. Realize o login (de algum usuário cadastro) para acessar os endpoints da aplicação.
+
+### Firebase Suite Emulator
+
+Para aqueles que necessitam desenvolver e testar **localmente**, sem interferir nos dados que operam no ambiente de desenvolvimento na nuvem, pode usar o **Firestore emulator**.
+
+Após seguir o passo 4 da seção [Instalação](#instalação), você pode trocar **temporariamente** o perfil de projeto para **local-dev** e iniciar o emulador em seguida juntamente com aplicação. 
+
+   1. Para trocar o perfil de projeto, acesse o arquivo `application.properties` e troque o nome `dev` para `local-dev`, de modo que fique conforme a instrução abaixo:
+
+      ````properties
+      spring.profiles.active=${APP_PROFILE:local-dev} # não esquecer de voltar para o valor inicial (dev)
+      ````
+
+   2. Para iniciar o emulador, execute o seguinte comando:
+
+      ````bash
+      firebase emulators:start --import=./dir --export-on-exit
+      ````
+      Sobre as flags:
+
+      1. `--import`: sinaliza que ao iniciar o emulador, o emulador **deve** fazer a **importação** dos dados que ficaram salvos no diretório especificado.
+      2. `--export-on-exit`: sinaliza que ao sair do emulador, através da combinação das teclas `Crtl + C`, o emulador **deve** fazer a **exportação** dos dados que estão disponíveis no momento em que o emulador está rodando.
+
+Feito estes procedimentos, de ter **instalado o emulador**, ter **trocado o perfil** e ter **inicado o emulador**, lhe restará, portanto, apenas **iniciar a aplicação** normalmente, conforme a seção [Uso](#uso) instrui. 
 
 ## Endpoints da API
 
