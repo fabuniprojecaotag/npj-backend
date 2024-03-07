@@ -4,14 +4,13 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.convertSnapshotToCorrespondingAtendimentoDTO;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.setAndReturnId;
@@ -20,7 +19,7 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUti
 public class AtendimentoService {
 
     @Autowired
-    BaseRepository repository;
+    AtendimentoRepository repository;
 
     private static final String COLLECTION_NAME = "atendimentos";
 
@@ -39,14 +38,14 @@ public class AtendimentoService {
     public List<Object> findAll(String limit, String field, String filter, String value) {
         List<QueryDocumentSnapshot> result;
         List<Object> list = new ArrayList<>();
-        boolean useQueryParams = (field != null) && (filter != null) && (value != null);
+        boolean useQueryParams = !(field.isEmpty()) && !(filter.isEmpty()) && !(value.isEmpty());
 
         result = (useQueryParams) ?
-                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
-                repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit));
 
         for (QueryDocumentSnapshot document : result) {
-            list.add(convertSnapshotToCorrespondingAtendimentoDTO(document));
+            list.add(convertSnapshotToCorrespondingAtendimentoDTO(document, true));
         }
 
         return list;
@@ -54,7 +53,7 @@ public class AtendimentoService {
 
     public Object findById(String id) {
         DocumentSnapshot snapshot = repository.findById(COLLECTION_NAME, id);
-        return convertSnapshotToCorrespondingAtendimentoDTO(snapshot);
+        return convertSnapshotToCorrespondingAtendimentoDTO(snapshot, false);
     }
 
     public Boolean update(String id, Map<String, Object> data) {

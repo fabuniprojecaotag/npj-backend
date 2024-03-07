@@ -4,18 +4,35 @@ import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.AtendimentoCivilDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.AtendimentoTrabalhistaDTO;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import jakarta.annotation.Nullable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.convertUsingReflection;
 
 public class AtendimentoUtils {
     /**
      * Converts the passed snapshot to the corresponding DTO through the
      * registered service area
      */
-    public static Object convertSnapshotToCorrespondingAtendimentoDTO(DocumentSnapshot snapshot) {
+    public static Object convertSnapshotToCorrespondingAtendimentoDTO(DocumentSnapshot snapshot, Boolean returnMinDTO) {
+        if (returnMinDTO) {
+            var dto = snapshot.toObject(AtendimentoMinDTO.class);
+            dto.setAssistido((String) snapshot.get("envolvidos.assistido.nome")); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
+            Date date = snapshot.getCreateTime().toDate();
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            dto.setDataCriacao(df.format(date));
+            return dto;
+        }
+
         String area = snapshot.getString("area");
         if (Objects.equals(area, "Trabalhista")) {
             return snapshot.toObject(AtendimentoTrabalhistaDTO.class);
