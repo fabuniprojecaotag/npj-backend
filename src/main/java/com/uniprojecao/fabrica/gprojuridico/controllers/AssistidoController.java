@@ -23,18 +23,18 @@ public class AssistidoController {
 
     @GetMapping
     public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
-                                                @RequestParam(required = false) String field,
-                                                @RequestParam(required = false) String filter,
-                                                @RequestParam(required = false) String value) {
+                                                @RequestParam(defaultValue = "") String field,
+                                                @RequestParam(defaultValue = "") String filter,
+                                                @RequestParam(defaultValue = "") String value) {
         List<Object> list = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(list);
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit,
-                                       @RequestParam(required = false) String field,
-                                       @RequestParam(required = false) String filter,
-                                       @RequestParam(required = false) String value) {
+                                       @RequestParam(defaultValue = "") String field,
+                                       @RequestParam(defaultValue = "") String filter,
+                                       @RequestParam(defaultValue = "") String value) {
         service.deleteAll(limit, field, filter, value);
         return ResponseEntity.noContent().build();
     }

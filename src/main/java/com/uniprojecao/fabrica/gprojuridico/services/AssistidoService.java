@@ -39,7 +39,7 @@ public class AssistidoService {
     public List<Object> findAll(String limit, String field, String filter, String value) {
         List<QueryDocumentSnapshot> result;
         List<Object> list = new ArrayList<>();
-        boolean useQueryParams = (field != null) && (filter != null) && (value != null);
+        boolean useQueryParams = !(field.isEmpty()) && !(filter.isEmpty()) && !(value.isEmpty());
 
         result = (useQueryParams) ?
                 repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
