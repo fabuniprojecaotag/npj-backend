@@ -27,14 +27,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit) {
-        List<Object> usuarios = service.findAll(limit);
+    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
+                                                @RequestParam(defaultValue = "") String field,
+                                                @RequestParam(defaultValue = "") String filter,
+                                                @RequestParam(defaultValue = "") String value) {
+        List<Object> usuarios = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(usuarios);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit) {
-        service.deleteAll(limit);
+    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit,
+                                       @RequestParam(defaultValue = "") String field,
+                                       @RequestParam(defaultValue = "") String filter,
+                                       @RequestParam(defaultValue = "") String value) {
+        service.deleteAll(limit, field, filter, value);
         return ResponseEntity.noContent().build();
     }
 

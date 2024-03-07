@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.domains.usuario;
+package com.uniprojecao.fabrica.gprojuridico.dto.min;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Estagiario extends Usuario {
+public class EstagiarioMinDTO extends UsuarioMinDTO {
     private String matricula;
     private String semestre;
-    private String supervisor;
 }

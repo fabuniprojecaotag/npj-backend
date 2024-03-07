@@ -1,11 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
+import com.google.cloud.firestore.Filter;
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 import com.google.cloud.firestore.DocumentSnapshot;
 import jakarta.annotation.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static com.google.cloud.firestore.Filter.*;
 
 public class Utils {
     public static Map<String, Object> convertUsingReflection(Object object, @Nullable Boolean useSuperClass) throws IllegalAccessException {
@@ -44,5 +48,16 @@ public class Utils {
         if (!snapshot.exists()) {
             throw new ResourceNotFoundException();
         }
+    }
+
+    public static Filter filter(String field, FilterType filterType, String value) {
+        return switch (filterType) {
+            case EQUAL -> equalTo(field, value);
+            case GREATER_THAN -> greaterThan(field, value);
+            case GREATER_THAN_OR_EQUAL -> greaterThanOrEqualTo(field, value);
+            case LESS_THAN -> lessThan(field, value);
+            case LESS_THAN_OR_EQUAL -> lessThanOrEqualTo(field, value);
+            case NOT_EQUAL -> notEqualTo(field, value);
+        };
     }
 }

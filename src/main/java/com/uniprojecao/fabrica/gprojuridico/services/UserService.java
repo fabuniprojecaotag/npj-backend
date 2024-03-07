@@ -4,9 +4,13 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.EstagiarioMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.convertUsingReflection;
 
@@ -29,7 +34,7 @@ public class UserService implements UserDetailsService {
     Firestore firestore;
 
     @Autowired
-    BaseRepository repository;
+    UserRepository repository;
 
     // TODO: finalizar implementação do método abaixo
     public Map<String, Object> create(Usuario usuario) {
@@ -62,13 +67,18 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Object> findAll(String limit) {
-        List<QueryDocumentSnapshot> result = repository.findAll(COLLECTION_NAME, Integer.parseInt(limit));
+    public List<Object> findAll(String limit, String field, String filter, String value) {
+        List<QueryDocumentSnapshot> result;
         List<Object> list = new ArrayList<>();
+        boolean useQueryParams = !(field.isEmpty()) && !(filter.isEmpty()) && !(value.isEmpty());
+
+        result = (useQueryParams) ?
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit));
 
         for (QueryDocumentSnapshot document : result) {
-            if (document.contains("matricula")) list.add(document.toObject(Estagiario.class));
-            else list.add(document.toObject(Usuario.class));
+            if (document.contains("matricula")) list.add(document.toObject(EstagiarioMinDTO.class));
+            else list.add(document.toObject(UsuarioMinDTO.class));
         }
 
         return list;
@@ -96,7 +106,10 @@ public class UserService implements UserDetailsService {
         return repository.delete(COLLECTION_NAME, id);
     }
 
-    public Boolean deleteAll(String limit) {
-        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
+    public Boolean deleteAll(String limit, String field, String filter, String value) {
+        boolean useQueryParams = (field != null) && (filter != null) && (value != null);
+        return (useQueryParams) ?
+                repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
+                repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
     }
 }
