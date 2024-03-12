@@ -4,6 +4,7 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToEstagiario;
@@ -16,10 +17,12 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 class UserRepositoryTest {
 
     private final UserRepository underTest;
@@ -48,12 +51,13 @@ class UserRepositoryTest {
     }
 
     @Nested
+    @Order(1)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class UsuarioTest {
         @Timeout(3) // Por segurança: caso o desenvolvedor esqueça de ativar o emulador para testes, o Timeout lançará a exceção e parará a execução demorada dos testes.
         @BeforeEach
         void setUp() {
-            seedDatabaseIfNecessary();
+            seedDatabaseIfNecessary(Usuario.class);
         }
 
         @Test
@@ -92,6 +96,7 @@ class UserRepositoryTest {
                     .thenCallRealMethod();
 
             underTest.update(id, data);
+            sleep(500); // Sem um intervalo de tempo, o findBy() pega o valor antigo, resultando em teste falhado.
             Usuario result = underTest.findById(id);
 
             assertEquals(result.getUnidadeInstitucional(), data.get("unidadeInstitucional"));
@@ -121,7 +126,7 @@ class UserRepositoryTest {
         @Test
         @Order(5)
         void deleteAll() {
-            seedDatabaseIfNecessary();
+            seedDatabaseIfNecessary(Usuario.class);
             clearDatabase(null);
             assertTrue(databaseEmpty);
         }
@@ -129,7 +134,7 @@ class UserRepositoryTest {
         @Test
         @Order(6)
         void deleteAllWithFilter() {
-            seedDatabaseIfNecessary(); // Após o teste deleteAll() executar, não haverá mais registros na base de dados. Logo, um seed é desejável para assegurar a eficácia deste teste.
+            seedDatabaseIfNecessary(Usuario.class); // Após o teste deleteAll() executar, não haverá mais registros na base de dados. Logo, um seed é desejável para assegurar a eficácia deste teste.
 
             var filter = FilterType.EQUAL;
             var queryFilter = new QueryFilter("role", "PROFESSOR", filter);
@@ -141,72 +146,69 @@ class UserRepositoryTest {
     }
 
     @Nested
+    @Order(2)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-    @Disabled
     class EstagiarioTest {
+        @Timeout(3)
+        @BeforeEach
+        void setUp() {
+            seedDatabaseIfNecessary(Estagiario.class);
+        }
+
         @ParameterizedTest
         @CsvFileSource(resources = "/estagiarios.csv")
         @Order(1)
-        void saveWithCustomId(@CsvToEstagiario Usuario usuario) {
-            String id = usuario.getEmail();
-
-            when(underTest.saveWithCustomId(any(String.class), any(Usuario.class)))
-                    .thenCallRealMethod();
-
-            Usuario o = underTest.saveWithCustomId(id, usuario);
-            assertNotNull(o);
-        }
-
-        @ParameterizedTest
-        @CsvFileSource(resources = "/estagiarios.csv")
-        @Order(2)
         void findById(@CsvToEstagiario Usuario usuario) {
             String id = usuario.getEmail();
 
-            when(underTest.findById(any(String.class)))
+            when(underTest.findById(id))
                     .thenCallRealMethod();
 
-            Usuario o = underTest.findById(id);
-            assertNotNull(o);
+            Usuario result = underTest.findById(id);
+            assertEquals(result, usuario);
         }
 
         @ParameterizedTest
-        @CsvFileSource(resources = "/estagiarios.csv")
-        @Order(3)
+        @CsvFileSource(resources = "/estagiarios.csv", numLinesToSkip = 3)
+        @Order(2)
         void update(@CsvToEstagiario Usuario usuario) {
             String id = usuario.getEmail();
-            var data = Map.of("unidadeInstitucional", (Object) "Guará");
+            var data = Map.of("semestre", (Object) "9");
 
             when(underTest.update(any(String.class), any()))
                     .thenCallRealMethod();
-
-            Boolean updated = underTest.update(id, data);
-            assertTrue(updated);
-        }
-
-        @ParameterizedTest
-        @CsvFileSource(resources = "/estagiarios.csv")
-        @Order(4)
-        @Disabled
-        void delete(@CsvToEstagiario Usuario usuario) {
-            String id = usuario.getEmail();
-
-            when(underTest.delete(any(String.class)))
+            when(underTest.findById(any(String.class)))
                     .thenCallRealMethod();
 
-            Boolean deleted = underTest.delete(id);
-            assertTrue(deleted);
+            underTest.update(id, data);
+            sleep(500); // Sem um intervalo de tempo, o findBy() pega o valor antigo, resultando em teste falhado.
+            Estagiario result = (Estagiario) underTest.findById(id);
+
+            assertEquals(result.getSemestre(), data.get("semestre"));
+            assertNotEquals(result, usuario);
+        }
+
+        @AfterEach
+        void tearDown() {
+            clearDatabase(null);
         }
     }
 
-    private void seedDatabaseIfNecessary() {
+    private void seedDatabaseIfNecessary(@Nullable Class<?> type) {
         if (databaseEmpty) {
-            var list = List.of(
-                    new Usuario("marcos.silva@projecao.br", "Marcos Silva", "028.923.381-02", "Taguatinga", "123456", true, "PROFESSOR"),
-                    new Usuario("rebeca.lopes@projecao.br", "Rebeca Lopes Silva", "392.234.119-93", "Taguatinga", "123456", true, "PROFESSOR"),
-                    new Usuario("isaque.costa@projecao.br", "Isaque Costa Carvalho", "773.224.145-03", "Taguatinga", "123456", true, "PROFESSOR"),
-                    new Usuario("leticia.alves@projecao.br", "Letícia Alves Martins", "723.125.889-73", "Taguatinga", "123456", true, "SECRETARIA")
-            );
+            List<Usuario> list;
+
+            list = (type == Estagiario.class) ?
+                    List.of(
+                            new Estagiario("202102100@projecao.edu.br", "Aurélio Lima Gonçalves", "829.281.342-93", "Taguatinga", "123456", true, "ESTAGIARIO", "202102100", "8", "marcos.silva@projecao.br"),
+                            new Estagiario("202102302@projecao.edu.br", "Ana Passos Lima", "440.332.095-93", "Taguatinga", "123456", true, "ESTAGIARIO", "202102302", "8", "marcos.silva@projecao.br"),
+                            new Estagiario("202102299@projecao.edu.br", "Marcos Moura Santos Ferreira", "029.119.234-04", "Taguatinga", "123456", true, "ESTAGIARIO", "202102299", "8", "marcos.silva@projecao.br"),
+                            new Estagiario("202101055@projecao.edu.br", "Emilly Letícia Cordeiro", "288.231.842-45", "Taguatinga", "123456", true, "ESTAGIARIO", "202101055", "8", "rebeca.lopes@projecao.br")) :
+                    List.of(
+                            new Usuario("marcos.silva@projecao.br", "Marcos Silva", "028.923.381-02", "Taguatinga", "123456", true, "PROFESSOR"),
+                            new Usuario("rebeca.lopes@projecao.br", "Rebeca Lopes Silva", "392.234.119-93", "Taguatinga", "123456", true, "PROFESSOR"),
+                            new Usuario("isaque.costa@projecao.br", "Isaque Costa Carvalho", "773.224.145-03", "Taguatinga", "123456", true, "PROFESSOR"),
+                            new Usuario("leticia.alves@projecao.br", "Letícia Alves Martins", "723.125.889-73", "Taguatinga", "123456", true, "SECRETARIA"));
 
             when(underTest.saveWithCustomId(anyString(), any())).thenCallRealMethod();
 
