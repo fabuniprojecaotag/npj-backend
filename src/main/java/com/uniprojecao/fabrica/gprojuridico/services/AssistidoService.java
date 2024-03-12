@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.google.cloud.firestore.DocumentReference;
@@ -37,19 +38,7 @@ public class AssistidoService {
     }
 
     public List<Object> findAll(String limit, String field, String filter, String value) {
-        List<QueryDocumentSnapshot> result;
-        List<Object> list = new ArrayList<>();
-        boolean useQueryParams = !(field.isEmpty()) && !(filter.isEmpty()) && !(value.isEmpty());
-
-        result = (useQueryParams) ?
-                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
-                repository.findAllMin(COLLECTION_NAME, Integer.parseInt(limit));
-
-        for (QueryDocumentSnapshot document : result) {
-            list.add(convertSnapshotToCorrespondingAssistidoModel(document, true));
-        }
-
-        return list;
+        return null;
     }
 
     public Object findById(String id) {
@@ -66,10 +55,13 @@ public class AssistidoService {
     }
 
     public Boolean deleteAll(String limit, String field, String filter, String value) {
-        boolean useQueryParams = (field != null) && (filter != null) && (value != null);
-        return (useQueryParams) ?
-                repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), field, FilterType.valueOf(filter), value) :
-                repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit));
+        boolean useQueryParams =
+                !(field.isEmpty()) &&
+                !(filter.isEmpty()) &&
+                !(value.isEmpty());
+
+        QueryFilter queryFilter = (useQueryParams) ? new QueryFilter(field, value, FilterType.valueOf(filter)) : null;
+        return repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), queryFilter);
     }
 }
 

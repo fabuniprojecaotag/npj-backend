@@ -5,6 +5,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -22,6 +23,8 @@ interface CrudRepository {
     List<QueryDocumentSnapshot> findAll(String collection, Integer limit);
 
     List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit, String field, FilterType filterType, String value);
+
+    List<QueryDocumentSnapshot> findAll(String collectionName, @Nonnull Integer limit, @Nullable QueryFilter queryFilter);
 
     DocumentSnapshot findLast(String collectionName);
 

@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Repository;
@@ -27,12 +28,11 @@ public class AssistidoRepository extends BaseRepository {
         }
     }
 
-    public List<QueryDocumentSnapshot> findAllMin(String collectionName, @Nullable Integer limit, @Nonnull String field,
-                                               @Nonnull FilterType filterType , @Nonnull String value) {
+    public List<QueryDocumentSnapshot> findAllMin(String collectionName, @Nullable Integer limit, @Nullable QueryFilter queryFilter) {
         if (limit == null) limit = 20;
 
         try {
-            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).where(filter(field, filterType, value))
+            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).where(filter(queryFilter))
                     .select("nome", "email", "cpf").limit(limit).get();
             return future.get().getDocuments();
         } catch (Exception e) {

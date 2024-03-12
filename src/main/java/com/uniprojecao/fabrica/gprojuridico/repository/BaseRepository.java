@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.services.utils.Utils;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -18,12 +19,11 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 
 @Repository
 @Primary
-public class BaseRepository implements CrudRepository {
+public class BaseRepository {
 
     @Autowired
-    Firestore firestore;
+    public Firestore firestore;
 
-    @Override
     public DocumentReference save(String collectionName, Map<String, Object> data) {
 
         try {
@@ -33,7 +33,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public DocumentReference save(String collectionName, Object data) {
         try {
             return firestore.collection(collectionName).add(data).get();
@@ -42,7 +41,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public WriteResult saveWithCustomId(String collectionName, String CustomId, Object data) {
 
         try {
@@ -52,7 +50,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit) {
         if (limit == null) limit = 20;
 
@@ -64,20 +61,16 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
-    public List<QueryDocumentSnapshot> findAll(String collectionName, @Nullable Integer limit, @Nonnull String field,
-                                               @Nonnull FilterType filterType , @Nonnull String value) {
-        if (limit == null) limit = 20;
+    public List<QueryDocumentSnapshot> findAll(String collectionName, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
 
         try {
-            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).where(filter(field, filterType, value)).limit(limit).get();
+            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).where(filter(queryFilter)).limit(limit).get();
             return future.get().getDocuments();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
     public DocumentSnapshot findLast(String collectionName) {
         try {
             ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).orderBy("instante", DESCENDING).limit(1).get();
@@ -88,7 +81,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public DocumentSnapshot findById(String collectionName, String id) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
@@ -100,7 +92,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public Boolean update(String collectionName, String id, Map<String, Object> data) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
@@ -113,7 +104,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public Boolean delete(String collectionName, String id) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
@@ -126,7 +116,6 @@ public class BaseRepository implements CrudRepository {
         }
     }
 
-    @Override
     public Boolean deleteAll(String collectionName, Integer limit) {
         List<QueryDocumentSnapshot> result = findAll(collectionName, limit);
         for (QueryDocumentSnapshot document : result) {
@@ -135,10 +124,8 @@ public class BaseRepository implements CrudRepository {
         return true;
     }
 
-    @Override
-    public Boolean deleteAll(String collectionName, Integer limit, @Nonnull String field,
-                             @Nonnull FilterType filterType , @Nonnull String value) {
-        List<QueryDocumentSnapshot> result = findAll(collectionName, limit, field, filterType, value);
+    public Boolean deleteAll(String collectionName, Integer limit, @Nullable QueryFilter queryFilter) {
+        List<QueryDocumentSnapshot> result = findAll(collectionName, limit, queryFilter);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();
         }

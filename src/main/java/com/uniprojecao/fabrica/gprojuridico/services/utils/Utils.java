@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 import com.google.cloud.firestore.DocumentSnapshot;
 import jakarta.annotation.Nullable;
@@ -50,7 +51,11 @@ public class Utils {
         }
     }
 
-    public static Filter filter(String field, FilterType filterType, String value) {
+    public static Filter filter(QueryFilter filter) {
+        var filterType = filter.filterType();
+        var field = filter.field();
+        var value = filter.value();
+
         return switch (filterType) {
             case EQUAL -> equalTo(field, value);
             case GREATER_THAN -> greaterThan(field, value);
@@ -59,5 +64,13 @@ public class Utils {
             case LESS_THAN_OR_EQUAL -> lessThanOrEqualTo(field, value);
             case NOT_EQUAL -> notEqualTo(field, value);
         };
+    }
+
+    public static void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
