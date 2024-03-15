@@ -97,7 +97,7 @@ public class UserService implements UserDetailsService {
                 !(value.isEmpty());
 
         QueryFilter queryFilter = (useQueryParams) ? new QueryFilter(field, value, FilterType.valueOf(filter)) : null;
-        repository.deleteAll(COLLECTION_NAME, Integer.parseInt(limit), queryFilter);
+        repository.deleteAll(Integer.parseInt(limit), queryFilter);
     }
 
     private static Usuario passDtoToEntity(UsuarioDTO dto) {
