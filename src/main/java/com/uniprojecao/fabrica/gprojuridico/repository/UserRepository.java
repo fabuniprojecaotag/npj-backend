@@ -1,18 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.EstagiarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.services.utils.Utils;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -23,7 +20,10 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 
 @Repository
-public class UserRepository extends BaseRepository {
+public class UserRepository {
+
+    @Autowired
+    public Firestore firestore;
 
     private static final String collectionName = "usuarios";
 
