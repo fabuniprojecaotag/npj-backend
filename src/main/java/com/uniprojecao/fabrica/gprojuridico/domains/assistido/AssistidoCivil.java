@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.assistido;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Filiacao;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,24 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AssistidoCivil {
-
-    private String nome;
-    private String rg;
-    private String cpf;
-    private String nacionalidade;
-    private String escolaridade;
-    private String estadoCivil;
-    private String profissao;
-    private String telefone;
-    private String email;
-    private Filiacao filiacao;
-    private String remuneracao;
-    private Endereco endereco;
-
-    // dados exclusivos da ficha civil
+public class AssistidoCivil extends Assistido {
+    @NotBlank
     private String naturalidade;
-    private String dataNascimento;
-    private Integer dependentes;
 
+    @NotBlank
+    private String dataNascimento;
+
+    @NotBlank
+    @PositiveOrZero
+    private Integer dependentes;
 }

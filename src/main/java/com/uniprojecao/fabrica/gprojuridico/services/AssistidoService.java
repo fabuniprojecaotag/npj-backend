@@ -1,16 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.*;
 
@@ -22,19 +22,15 @@ public class AssistidoService {
 
     private static final String COLLECTION_NAME = "assistidos";
 
-    public Map<String, Object> insert(Map<String, Object> data) {
-        try {
-            Map<String, Object> verifiedData = verifyDataToInsertAssistido(data);
-            DocumentReference result = repository.save(COLLECTION_NAME, verifiedData);
+    public Map<String, Object> insert(Assistido data) {
+        var id = data.getCpf();
 
-            String assistidoId = result.getId();
-            System.out.println("\nAssistido adicionado. ID: " + assistidoId);
-            verifiedData.put("id", assistidoId);
+        var result = repository.saveWithCustomId(id, data);
 
-            return verifiedData;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return Map.of(
+                "object", result,
+                "id", id
+        );
     }
 
     public List<Object> findAll(String limit, String field, String filter, String value) {

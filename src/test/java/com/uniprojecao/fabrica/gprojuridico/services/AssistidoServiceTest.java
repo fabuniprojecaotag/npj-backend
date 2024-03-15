@@ -1,7 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.data.FakeData;
-import com.google.auth.oauth2.GoogleCredentials;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

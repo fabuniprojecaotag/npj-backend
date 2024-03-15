@@ -1,10 +1,13 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +19,11 @@ public class AssistidoController {
     private AssistidoService service;
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody Map<String, Object> data) {
-        service.insert(data);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Object> insert(@RequestBody Assistido data) {
+        Map<String, Object> result = service.insert(data);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(result.get("id")).toUri();
+        return ResponseEntity.created(uri).body(result.get("object"));
     }
 
     @GetMapping
