@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class UserController {
     private UserService service;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid Usuario data) {
-        Map<String, Object> result = service.create(data);
+    public ResponseEntity<Object> create(@RequestBody @Valid UsuarioDTO data) {
+        Map<String, Object> result = service.insert(data);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(result.get("id")).toUri();
         return ResponseEntity.created(uri).body(result.get("object"));

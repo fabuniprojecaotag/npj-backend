@@ -1,14 +1,18 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.cloud.firestore.Filter;
-import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 import com.google.cloud.firestore.DocumentSnapshot;
 import jakarta.annotation.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.cloud.firestore.Filter.*;
 
@@ -72,5 +76,15 @@ public class Utils {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Boolean validateText(String regex, String text) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        return matcher.matches();
+    }
+
+    public static void encryptPassword(UsuarioDTO u) {
+        u.setSenha(BCrypt.withDefaults().hashToString(12, u.getSenha().toCharArray()));
     }
 }

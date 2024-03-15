@@ -69,9 +69,8 @@ public class UserRepository extends BaseRepository {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
-            Utils.verifySnapshotIfDocumentExists(snapshot);
-            if (snapshot.contains("matricula")) return snapshot.toObject(Estagiario.class);
-            else return snapshot.toObject(Usuario.class);
+            if (!snapshot.exists()) return null;
+            return (snapshot.contains("matricula")) ? snapshot.toObject(Estagiario.class) : snapshot.toObject(Usuario.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

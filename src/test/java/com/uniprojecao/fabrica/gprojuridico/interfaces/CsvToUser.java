@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.interfaces;
 
-import com.uniprojecao.fabrica.gprojuridico.UsuarioAggregator;
+import com.uniprojecao.fabrica.gprojuridico.aggregators.UsuarioAggregator;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 
 import java.lang.annotation.ElementType;

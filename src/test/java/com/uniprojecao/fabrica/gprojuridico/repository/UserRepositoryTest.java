@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuario;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -196,19 +197,7 @@ class UserRepositoryTest {
 
     private void seedDatabaseIfNecessary(@Nullable Class<?> type) {
         if (databaseEmpty) {
-            List<Usuario> list;
-
-            list = (type == Estagiario.class) ?
-                    List.of(
-                            new Estagiario("202102100@projecao.edu.br", "Aurélio Lima Gonçalves", "829.281.342-93", "Taguatinga", "123456", true, "ESTAGIARIO", "202102100", "8", "marcos.silva@projecao.br"),
-                            new Estagiario("202102302@projecao.edu.br", "Ana Passos Lima", "440.332.095-93", "Taguatinga", "123456", true, "ESTAGIARIO", "202102302", "8", "marcos.silva@projecao.br"),
-                            new Estagiario("202102299@projecao.edu.br", "Marcos Moura Santos Ferreira", "029.119.234-04", "Taguatinga", "123456", true, "ESTAGIARIO", "202102299", "8", "marcos.silva@projecao.br"),
-                            new Estagiario("202101055@projecao.edu.br", "Emilly Letícia Cordeiro", "288.231.842-45", "Taguatinga", "123456", true, "ESTAGIARIO", "202101055", "8", "rebeca.lopes@projecao.br")) :
-                    List.of(
-                            new Usuario("marcos.silva@projecao.br", "Marcos Silva", "028.923.381-02", "Taguatinga", "123456", true, "PROFESSOR"),
-                            new Usuario("rebeca.lopes@projecao.br", "Rebeca Lopes Silva", "392.234.119-93", "Taguatinga", "123456", true, "PROFESSOR"),
-                            new Usuario("isaque.costa@projecao.br", "Isaque Costa Carvalho", "773.224.145-03", "Taguatinga", "123456", true, "PROFESSOR"),
-                            new Usuario("leticia.alves@projecao.br", "Letícia Alves Martins", "723.125.889-73", "Taguatinga", "123456", true, "SECRETARIA"));
+            List<Usuario> list = (type == Estagiario.class) ? seedWithUsuario(Estagiario.class) : seedWithUsuario(null) ;
 
             when(underTest.saveWithCustomId(anyString(), any())).thenCallRealMethod();
 
