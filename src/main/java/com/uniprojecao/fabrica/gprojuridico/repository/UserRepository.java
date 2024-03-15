@@ -77,15 +77,13 @@ public class UserRepository {
     }
 
     public Boolean update(String id, Map<String, Object> data) {
-        DocumentReference document = firestore.collection(collectionName).document(id);
-        document.update(data);
+        firestore.collection(collectionName).document(id).update(data);
         return true;
     }
 
     public Boolean delete(String id) {
         try {
-            DocumentReference document = firestore.collection(collectionName).document(id);
-            document.delete();
+            firestore.collection(collectionName).document(id).delete();
             return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
