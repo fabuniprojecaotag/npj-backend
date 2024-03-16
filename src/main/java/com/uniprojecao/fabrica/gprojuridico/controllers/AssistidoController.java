@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +20,19 @@ public class AssistidoController {
     private AssistidoService service;
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody Assistido data) {
-        Map<String, Object> result = service.insert(data);
+    public ResponseEntity<AssistidoDTO> insert(@RequestBody AssistidoDTO data) {
+        var result = service.insert(data);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(result.get("id")).toUri();
-        return ResponseEntity.created(uri).body(result.get("object"));
+                .buildAndExpand(result.getCpf()).toUri();
+        return ResponseEntity.created(uri).body(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
+    public ResponseEntity<List<AssistidoMinDTO>> findAll(@RequestParam(defaultValue = "20") String limit,
                                                 @RequestParam(defaultValue = "") String field,
                                                 @RequestParam(defaultValue = "") String filter,
                                                 @RequestParam(defaultValue = "") String value) {
-        List<Object> list = service.findAll(limit, field, filter, value);
+        List<AssistidoMinDTO> list = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(list);
     }
 
@@ -45,13 +46,13 @@ public class AssistidoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable String id) {
-        Object object = service.findById(id);
-        return ResponseEntity.ok(object);
+    public ResponseEntity<AssistidoDTO> findById(@PathVariable String id) {
+        AssistidoDTO result = service.findById(id);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
         service.update(id, data);
         return ResponseEntity.ok().build();
     }

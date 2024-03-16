@@ -1,102 +1,93 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
-import com.google.cloud.firestore.DocumentSnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.getAllFieldNames;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoCivilDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoFullDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoTrabalhistaDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 
 public class AssistidoUtils {
-    public static Map<String, Object> verifyDataToInsertAssistido(Map<String, Object> data) {
-        Object field = data.get("tipo");
-        System.out.println("\nTipo de payload recebido para verificar: " + field);
+    public static Object snapshotToAssistido(DocumentSnapshot snapshot, Boolean returnMinDTO) {
 
-        if (Objects.equals(field, "AssistidoCivil")) {
-            Boolean naturalidade = data.containsKey("naturalidade");
-            Boolean dataNascimento = data.containsKey("dataNascimento");
-            Boolean dependentes = data.containsKey("dependentes");
-            if (naturalidade && dataNascimento && dependentes) {
-                return data;
-            } else {
-                throw new RuntimeException("O objeto passado não corresponde à nenhuma instância de Assistido.");
-            }
-        } else if (Objects.equals(field, "AssistidoTrabalhista")) {
-            Boolean ctps = data.containsKey("ctps");
-            Boolean pis = data.containsKey("pis");
-            Boolean empregadoAtualmente = data.containsKey("empregadoAtualmente");
-            if (ctps && pis && empregadoAtualmente) {
-                return data;
-            } else {
-                throw new RuntimeException("O objeto passado não corresponde à nenhuma instância de Assistido.");
-            }
+        if (returnMinDTO) return snapshot.toObject(AssistidoMinDTO.class);
+
+        Boolean dadosFCivil =
+                snapshot.contains("naturalidade") &&
+                        snapshot.contains("dataNascimento") &&
+                        snapshot.contains("dependentes");
+        Boolean dadosFTrabalhista =
+                snapshot.contains("ctps") &&
+                        snapshot.contains("pis") &&
+                        snapshot.contains("empregadoAtualmente");
+
+        if (dadosFCivil && dadosFTrabalhista) return snapshot.toObject(AssistidoFull.class);
+        else if (dadosFCivil) return snapshot.toObject(AssistidoCivil.class);
+        else if (dadosFTrabalhista) return snapshot.toObject(AssistidoTrabalhista.class);
+        else throw new RuntimeException("Error to convert snapshot into Assistido.");
+    }
+
+    public static AssistidoDTO convertAssistidoToDTO(Assistido result) {
+        if (result instanceof AssistidoFull assistidoFull) return new AssistidoFullDTO(assistidoFull);
+        else if (result instanceof AssistidoCivil assistidoCivil) return new AssistidoCivilDTO(assistidoCivil);
+        else if (result instanceof AssistidoTrabalhista assistidoTrabalhista) return new AssistidoTrabalhistaDTO(assistidoTrabalhista);
+        else throw new ResourceNotFoundException();
+    }
+
+    public static Assistido passDtoToEntity(AssistidoDTO dto) {
+        Assistido assistido = getAssistido(dto);
+
+        if (dto instanceof AssistidoCivilDTO assistidoCivilDTO) {
+            AssistidoCivil ac = (AssistidoCivil) assistido;
+            ac.setNaturalidade(assistidoCivilDTO.getNaturalidade());
+            ac.setDataNascimento(assistidoCivilDTO.getDataNascimento());
+            ac.setDependentes(assistidoCivilDTO.getDependentes());
+
+            return ac;
+
+        } else if (dto instanceof AssistidoTrabalhistaDTO assistidoTrabalhistaDTO) {
+            AssistidoTrabalhista at = (AssistidoTrabalhista) assistido;
+
+            at.setCtps(new AssistidoTrabalhista.Ctps(
+                    assistidoTrabalhistaDTO.getCtps().getNumero(),
+                    assistidoTrabalhistaDTO.getCtps().getSerie(),
+                    assistidoTrabalhistaDTO.getCtps().getUf()));
+            at.setPis(assistidoTrabalhistaDTO.getPis());
+            at.setEmpregadoAtualmente(assistidoTrabalhistaDTO.getEmpregadoAtualmente());
+
+            return at;
         }
-
         return null;
     }
 
-    public static Map<String, Object> verifyDataToUpdateAssistido(Map<String, Object> data) {
-        List<String> assistidoFields = getAllFieldNames(new ArrayList<>(), AssistidoFull.class);
+    private static Assistido getAssistido(AssistidoDTO dto) {
+        Assistido assistido = new AssistidoCivil();
 
-        for (String key : data.keySet()) {
-            if (!assistidoFields.contains(key)) {
-                throw new RuntimeException("O campo " + key + "de payload recebido não existe em Assistido");
-            }
-        }
-
-        return data;
-    }
-
-    public static Object verifySnapshotToFindAssistidoById(DocumentSnapshot snapshot) {
-        /*
-         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
-         * que não existe no Firestore é, de alguma forma, encontrado e retornado
-         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
-         */
-        if (snapshot.exists()) {
-            return convertSnapshotToCorrespondingAssistidoModel(snapshot, false);
-        } else {
-            throw new ResourceNotFoundException();
-        }
-    }
-
-    /**
-     * Converts the passed snapshot to the corresponding model through the
-     * relationship that the person assisted has with the service(s).
-     */
-    public static Object convertSnapshotToCorrespondingAssistidoModel(DocumentSnapshot snapshot, Boolean returnMinDTO) {
-
-        if (returnMinDTO) {
-            return snapshot.toObject(AssistidoMinDTO.class);
-        }
-
-        Boolean dadosFCivil = snapshot.contains("naturalidade") && snapshot.contains("dataNascimento") && snapshot.contains("dependentes");
-        Boolean dadosFTrabalhista = snapshot.contains("ctps") && snapshot.contains("pis") && snapshot.contains("empregadoAtualmente");
-
-        // primeiro, se o snapshot passado possui dados exclusivos de ambas as fichas (civil e trabalhista) para um assistido...
-        if (dadosFCivil && dadosFTrabalhista) {
-            // então o snapshot é uma instância de AssistidoFull.
-            return snapshot.toObject(AssistidoFull.class);
-        }
-        // ou se o snapshot passado possui dados exclusivos da ficha civil para um assistido...
-        else if (dadosFCivil) {
-            // então o snapshot é uma instância de AssistidoCivil.
-            return snapshot.toObject(AssistidoCivil.class);
-        }
-        // ou se o snapshot passado possui dados exclusivos da ficha trabalhista para um assistido...
-        else if (dadosFTrabalhista) {
-            // então o snapshot é uma instância de AssistidoTrabalhista.
-            return snapshot.toObject(AssistidoTrabalhista.class);
-        } else {
-            // senão, caso não haja compatatibilidade do snapshot com as três condicionais acima, lance então uma exceção.
-            throw new ResourceNotFoundException();
-        }
+        assistido.setNome(dto.getNome());
+        assistido.setRg(dto.getRg());
+        assistido.setCpf(dto.getCpf());
+        assistido.setNacionalidade(dto.getNacionalidade());
+        assistido.setEscolaridade(dto.getEscolaridade());
+        assistido.setEstadoCivil(dto.getEstadoCivil());
+        assistido.setProfissao(dto.getProfissao());
+        assistido.setTelefone(dto.getTelefone());
+        assistido.setEmail(dto.getEmail());
+        assistido.setFiliacao(new Assistido.Filiacao(
+                dto.getFiliacao().getMae(),
+                dto.getFiliacao().getPai()));
+        assistido.setRemuneracao(dto.getRemuneracao());
+        assistido.setEndereco(new Assistido.Endereco(
+                dto.getEndereco().getLogradouro(),
+                dto.getEndereco().getBairro(),
+                dto.getEndereco().getNumero(),
+                dto.getEndereco().getComplemento(),
+                dto.getEndereco().getCep(),
+                dto.getEndereco().getCidade()));
+        return assistido;
     }
 }

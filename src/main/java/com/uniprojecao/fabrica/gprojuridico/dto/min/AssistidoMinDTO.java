@@ -11,4 +11,13 @@ public class AssistidoMinDTO {
     private String nome;
     private String email;
     private String cpf;
+    private Quantidade quantidade;
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class Quantidade {
+        private Integer atendimentos;
+        private Integer processos;
+    }
 }

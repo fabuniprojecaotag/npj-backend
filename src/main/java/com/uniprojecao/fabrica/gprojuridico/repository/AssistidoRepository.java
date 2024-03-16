@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.convertSnapshotToCorrespondingAssistidoModel;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.snapshotToAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 
@@ -42,7 +42,7 @@ public class AssistidoRepository extends BaseRepository {
         try {
             var result = getDocSnapshots(limit, queryFilter);
             for (QueryDocumentSnapshot document : result) {
-                list.add((AssistidoMinDTO) convertSnapshotToCorrespondingAssistidoModel(document, true));
+                list.add((AssistidoMinDTO) snapshotToAssistido(document, true));
             }
             return list;
         } catch (Exception e) {
@@ -54,8 +54,8 @@ public class AssistidoRepository extends BaseRepository {
         ApiFuture<QuerySnapshot> future;
 
         future = (queryFilter != null) ?
-                firestore.collection(collectionName).where(filter(queryFilter)).select("nome", "email", "role", "status", "matricula", "semestre").limit(limit).get() :
-                firestore.collection(collectionName).select("nome", "email", "role", "status", "matricula", "semestre").limit(limit).get();
+                firestore.collection(collectionName).where(filter(queryFilter)).select("nome", "email", "cpf", "quantidade.atendimentos", "quantidade.processos").limit(limit).get() :
+                firestore.collection(collectionName).select("nome", "email", "cpf", "quantidade.atendimentos", "quantidade.processos").limit(limit).get();
 
         try {
             return future.get().getDocuments();
@@ -69,7 +69,7 @@ public class AssistidoRepository extends BaseRepository {
             DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
             if (!snapshot.exists()) return null;
-            return (Assistido) convertSnapshotToCorrespondingAssistidoModel(snapshot, false);
+            return (Assistido) snapshotToAssistido(snapshot, false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
