@@ -9,8 +9,10 @@ import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 import com.google.cloud.firestore.DocumentSnapshot;
 import jakarta.annotation.Nullable;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -96,5 +98,10 @@ public class Utils {
                         !(value.isEmpty());
 
         return (useQueryParams) ? new QueryFilter(field, value, FilterType.valueOf(filter)) : null;
+    }
+
+    public static URI createUri(String id) {
+        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(id).toUri();
     }
 }

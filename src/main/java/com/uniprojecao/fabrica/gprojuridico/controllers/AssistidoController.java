@@ -6,11 +6,11 @@ import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
+
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.createUri;
 
 @RestController
 @RequestMapping("/assistidos")
@@ -22,9 +22,8 @@ public class AssistidoController {
     @PostMapping
     public ResponseEntity<AssistidoDTO> insert(@RequestBody AssistidoDTO data) {
         var result = service.insert(data);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(result.getCpf()).toUri();
-        return ResponseEntity.created(uri).body(result);
+        var id = result.getCpf();
+        return ResponseEntity.created(createUri(id)).body(result);
     }
 
     @GetMapping
