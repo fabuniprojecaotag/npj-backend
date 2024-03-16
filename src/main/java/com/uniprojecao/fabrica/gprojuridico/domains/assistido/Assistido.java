@@ -34,7 +34,7 @@ public abstract class Assistido {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    static class Filiacao {
+    public static class Filiacao {
         private String mae;
         private String pai;
     }
@@ -42,7 +42,7 @@ public abstract class Assistido {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    static class Endereco {
+    public static class Endereco {
         private String logradouro;
         private String bairro;
         private String numero;
