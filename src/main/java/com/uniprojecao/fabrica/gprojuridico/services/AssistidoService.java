@@ -1,7 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
@@ -13,6 +11,8 @@ import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.convertAssistidoToDTO;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.passDtoToEntity;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
+import static java.lang.Integer.parseInt;
 
 @Service
 public class AssistidoService {
@@ -26,14 +26,7 @@ public class AssistidoService {
     }
 
     public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
-        boolean useQueryParams =
-                !(field.isEmpty()) &&
-                        !(filter.isEmpty()) &&
-                        !(value.isEmpty());
-
-        QueryFilter queryFilter = (useQueryParams) ? new QueryFilter(field, value, FilterType.valueOf(filter)) : null;
-
-        return repository.findAll(Integer.parseInt(limit), queryFilter);
+        return repository.findAll(parseInt(limit), initFilter(field, filter, value));
     }
 
     public AssistidoDTO findById(String id) {
@@ -50,12 +43,6 @@ public class AssistidoService {
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        boolean useQueryParams =
-                !(field.isEmpty()) &&
-                        !(filter.isEmpty()) &&
-                        !(value.isEmpty());
-
-        QueryFilter queryFilter = (useQueryParams) ? new QueryFilter(field, value, FilterType.valueOf(filter)) : null;
-        repository.deleteAll(Integer.parseInt(limit), queryFilter);
+        repository.deleteAll(parseInt(limit), initFilter(field, filter, value));
     }
 }
