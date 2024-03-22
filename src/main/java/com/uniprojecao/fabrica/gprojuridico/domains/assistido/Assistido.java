@@ -3,6 +3,9 @@ package com.uniprojecao.fabrica.gprojuridico.domains.assistido;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.DocumentId;
+
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,22 +40,5 @@ public abstract class Assistido {
     public static class Filiacao {
         private String mae;
         private String pai;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class Endereco {
-        private String logradouro;
-        private String bairro;
-        private String numero;
-        private String complemento;
-        private String cep;
-        private String cidade;
-
-        public Endereco(String logradouro, String number) {
-            this.logradouro = logradouro;
-            this.numero = number;
-        }
     }
 }

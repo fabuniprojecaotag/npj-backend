@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.usuario;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -32,4 +33,14 @@ public class UsuarioDTO {
 
     @NotBlank
     private String role;
+
+    public UsuarioDTO(Usuario u) {
+        email = u.getEmail();
+        nome = u.getNome();
+        cpf = u.getCpf();
+        unidadeInstitucional = u.getUnidadeInstitucional();
+        senha = u.getSenha();
+        status = u.getStatus();
+        role = u.getRole();
+    }
 }

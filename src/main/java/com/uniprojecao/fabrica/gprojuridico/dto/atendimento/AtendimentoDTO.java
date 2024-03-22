@@ -1,14 +1,12 @@
-package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
+package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.annotation.DocumentId;
-import com.google.cloud.firestore.annotation.ServerTimestamp;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,34 +19,32 @@ import java.util.Map;
 
 @NoArgsConstructor
 @Data
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = AtendimentoCivil.class, name = "Civil"),
-        @JsonSubTypes.Type(value = AtendimentoTrabalhista.class, name = "Trabalhista")
-})
-public abstract class Atendimento {
+public class AtendimentoDTO {
+    // TODO: Tornar regex 'opcional' ao adicionar quantificador de 0 ou 1.
+    // @Pattern(regexp = "^ATE\\d{5,}$") // exemplo[]: ["ATE00032", "ATE1234567"]
+    // @Nullable
     private String id;
 
     private String status; // Enum Status convertido em String
     private String area; // Enum Area convertido em String
 
-    @ServerTimestamp
-    @JsonIgnore
+    @Nullable
     private Timestamp instante;
 
+    @Nullable
     private String prazoEntregaDocumentos;
 
-    private List<EntradaHistorico> historico = new ArrayList<>();
+    private FichaDTO ficha;
+
+    private List<EntradaHistoricoDTO> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public Atendimento(String id, String status, String area, Timestamp instante, String prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
+    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante, @Nullable String prazo) {
         this.id = id;
         setStatus(status);
         setArea(area);
         this.instante = instante;
         this.prazoEntregaDocumentos = prazo;
-        setHistorico(historico);
-        setEnvolvidos(envolvidos);
     }
 
     public void setStatus(String status) {
@@ -59,7 +55,7 @@ public abstract class Atendimento {
         this.area = Area.valueOf(area).getValue();
     }
 
-    public void setHistorico(List<EntradaHistorico> entradas) {
+    public void setHistorico(List<EntradaHistoricoDTO> entradas) {
         this.historico.addAll(entradas);
     }
 
@@ -102,26 +98,19 @@ public abstract class Atendimento {
     }
 
     @NoArgsConstructor
+    @AllArgsConstructor
     @Data
-    public static class EntradaHistorico {
-        @DocumentId
+    public static class EntradaHistoricoDTO {
+        @Nullable
         private String id;
+
+        @NotBlank
         private String titulo;
         private String descricao;
+
+        @Nullable
         private Instant instante;
-        private Usuario criadoPor;
 
-        public EntradaHistorico(String id, String titulo, String descricao, @Nullable Instant instante, Usuario criadoPor) {
-            this.id = id;
-            this.titulo = titulo;
-            this.descricao = descricao;
-            setInstante(instante);
-            this.criadoPor = criadoPor;
-        }
-
-        public void setInstante(@Nullable Instant instante) {
-            if (instante == null) this.instante = Instant.now();
-            else this.instante = instante;
-        }
+        private UsuarioDTO criadoPor;
     }
 }

@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
@@ -81,7 +82,7 @@ public class AssistidoUtils {
                 dto.getFiliacao().getMae(),
                 dto.getFiliacao().getPai()));
         assistido.setRemuneracao(dto.getRemuneracao());
-        assistido.setEndereco(new Assistido.Endereco(
+        assistido.setEndereco(new Endereco(
                 dto.getEndereco().getLogradouro(),
                 dto.getEndereco().getBairro(),
                 dto.getEndereco().getNumero(),

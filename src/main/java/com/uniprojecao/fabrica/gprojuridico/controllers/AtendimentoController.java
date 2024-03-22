@@ -1,16 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AtendimentoService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
+
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.createUri;
 
 @RestController
 @RequestMapping("/atendimentos")
@@ -20,19 +19,18 @@ public class AtendimentoController {
     private AtendimentoService service;
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody Atendimento data) {
-        Map<String, Object> result = service.insert(data);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(result.get("id")).toUri();
-        return ResponseEntity.created(uri).body(result.get("object"));
+    public ResponseEntity<Object> insert(@RequestBody AtendimentoDTO data) {
+        var result = service.insert(data);
+        var id = result.getId();
+        return ResponseEntity.created(createUri(id)).body(data);
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
+    public ResponseEntity<List<?>> findAll(@RequestParam(defaultValue = "20") String limit,
                                                 @RequestParam(defaultValue = "") String field,
                                                 @RequestParam(defaultValue = "") String filter,
                                                 @RequestParam(defaultValue = "") String value) {
-        List<Object> list = service.findAll(limit, field, filter, value);
+        List<?> list = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(list);
     }
 
