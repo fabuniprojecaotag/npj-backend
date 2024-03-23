@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
@@ -62,6 +63,95 @@ public class AtendimentoUtils {
         String customId = "ATE00001";
         data.setId(customId);
         return customId;
+    }
+
+    public static Atendimento dtoToAtendimento(AtendimentoDTO dto) {
+        if (dto instanceof AtendimentoCivilDTO ac) {
+            return new AtendimentoCivil(
+                    dto.getId(),
+                    dto.getStatus(),
+                    dto.getArea(),
+                    dto.getInstante(),
+                    dto.getPrazoEntregaDocumentos(),
+                    dto.getHistorico()
+                            .stream()
+                            .map(e -> new Atendimento.EntradaHistorico(
+                                            e.getId(),
+                                            e.getTitulo(),
+                                            e.getDescricao(),
+                                            e.getInstante(),
+                                            new Usuario(
+                                                    e.getCriadoPor().getEmail(),
+                                                    e.getCriadoPor().getNome(),
+                                                    e.getCriadoPor().getCpf(),
+                                                    e.getCriadoPor().getUnidadeInstitucional(),
+                                                    e.getCriadoPor().getSenha(),
+                                                    e.getCriadoPor().getStatus(),
+                                                    e.getCriadoPor().getRole()
+                                            )
+                                    )
+                            ).toList(),
+                    dto.getEnvolvidos(),
+                    new FichaCivil(
+                            ac.getFicha().getAssinatura(),
+                            ac.getFicha().getDadosSensiveis(),
+                            ac.getFicha().getTestemunhas()
+                                    .stream()
+                                    .map(t -> new Ficha.Testemunha(
+                                            t.getNome(),
+                                            t.getQualificao(),
+                                            t.getEndereco()
+                                            )
+                                    ).toList(),
+                            ac.getFicha().getParteContraria(),
+                            ac.getFicha().getMedidaJudicial()
+                    )
+            );
+        } else if (dto instanceof AtendimentoTrabalhistaDTO at) {
+            return new AtendimentoTrabalhista(
+                    dto.getId(),
+                    dto.getStatus(),
+                    dto.getArea(),
+                    dto.getInstante(),
+                    dto.getPrazoEntregaDocumentos(),
+                    dto.getHistorico()
+                            .stream()
+                            .map(e -> new Atendimento.EntradaHistorico(
+                                            e.getId(),
+                                            e.getTitulo(),
+                                            e.getDescricao(),
+                                            e.getInstante(),
+                                            new Usuario(
+                                                    e.getCriadoPor().getEmail(),
+                                                    e.getCriadoPor().getNome(),
+                                                    e.getCriadoPor().getCpf(),
+                                                    e.getCriadoPor().getUnidadeInstitucional(),
+                                                    e.getCriadoPor().getSenha(),
+                                                    e.getCriadoPor().getStatus(),
+                                                    e.getCriadoPor().getRole()
+                                            )
+                                    )
+                            ).toList(),
+                    dto.getEnvolvidos(),
+                    new FichaTrabalhista(
+                            at.getFicha().getAssinatura(),
+                            at.getFicha().getDadosSensiveis(),
+                            at.getFicha().getTestemunhas()
+                                    .stream()
+                                    .map(t -> new Ficha.Testemunha(
+                                                    t.getNome(),
+                                                    t.getQualificao(),
+                                                    t.getEndereco()
+                                            )
+                                    ).toList(),
+                            at.getFicha().getReclamado(),
+                            at.getFicha().getRelacaoEmpregaticia(),
+                            at.getFicha().getDocumentosDepositadosNpj(),
+                            at.getFicha().getOutrasInformacoes()
+                    )
+            );
+        }
+        return null;
     }
 
     public static AtendimentoDTO atendimentoToDTO(Atendimento a) {

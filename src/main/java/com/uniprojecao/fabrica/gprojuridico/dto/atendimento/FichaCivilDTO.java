@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.ParteContraria;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

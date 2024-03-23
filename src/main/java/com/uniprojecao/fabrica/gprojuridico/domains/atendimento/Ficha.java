@@ -22,9 +22,10 @@ public abstract class Ficha {
     private Boolean dadosSensiveis;
     private List<Testemunha> testemunhas = new ArrayList<>();
 
-    public Ficha(String assinatura, Boolean dadosSensiveis) {
+    public Ficha(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas) {
         this.assinatura = assinatura;
         this.dadosSensiveis = dadosSensiveis;
+        setTestemunhas(testemunhas);
     }
 
     public void setTestemunhas(List<Testemunha> testemunhas) {

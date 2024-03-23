@@ -43,13 +43,14 @@ public class BaseRepository {
         }
     }
 
-    public List<Object> findAll(String collectionName, @Nullable String[] fields, Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         List<Object> list = new ArrayList<>();
 
         try {
             var result = getDocSnapshots(collectionName, fields, limit, queryFilter);
             for (QueryDocumentSnapshot document : result) {
-                list.add(document.toObject(type));
+                if (type != null) list.add(document.toObject(type));
+                else list.add(document);
             }
             return list;
         } catch (Exception e) {

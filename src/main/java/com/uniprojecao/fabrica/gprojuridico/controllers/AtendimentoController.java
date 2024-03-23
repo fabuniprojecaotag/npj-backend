@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AtendimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +20,18 @@ public class AtendimentoController {
     private AtendimentoService service;
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody AtendimentoDTO data) {
+    public ResponseEntity<AtendimentoDTO> insert(@RequestBody AtendimentoDTO data) {
         var result = service.insert(data);
         var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(data);
     }
 
     @GetMapping
-    public ResponseEntity<List<?>> findAll(@RequestParam(defaultValue = "20") String limit,
-                                                @RequestParam(defaultValue = "") String field,
-                                                @RequestParam(defaultValue = "") String filter,
-                                                @RequestParam(defaultValue = "") String value) {
-        List<?> list = service.findAll(limit, field, filter, value);
+    public ResponseEntity<List<AtendimentoMinDTO>> findAll(@RequestParam(defaultValue = "20") String limit,
+                                                           @RequestParam(defaultValue = "") String field,
+                                                           @RequestParam(defaultValue = "") String filter,
+                                                           @RequestParam(defaultValue = "") String value) {
+        List<AtendimentoMinDTO> list = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(list);
     }
 
@@ -44,9 +45,9 @@ public class AtendimentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable String id) {
-        Object object = service.findById(id);
-        return ResponseEntity.ok(object);
+    public ResponseEntity<AtendimentoDTO> findById(@PathVariable String id) {
+        var result = service.findById(id);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")

@@ -4,14 +4,14 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.atendimentoToDTO;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.setAndReturnId;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.*;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
@@ -27,7 +27,7 @@ public class AtendimentoService {
         DocumentSnapshot doc = repository.findLast(COLLECTION_NAME);
         String id = (String) doc.get("id");
         String customId = doc.exists() ? setAndReturnId(data, id) : setAndReturnId(data, null);
-        repository.save(COLLECTION_NAME, customId, data);
+        repository.save(customId, dtoToAtendimento(data));
 
         data.setId(customId);
         return data;

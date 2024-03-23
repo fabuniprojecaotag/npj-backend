@@ -1,12 +1,20 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 
-import lombok.AllArgsConstructor;
+import com.google.cloud.Timestamp;
+import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Map;
+
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class AtendimentoTrabalhista extends Atendimento {
     private FichaTrabalhista ficha;
+
+    public AtendimentoTrabalhista(String id, String status, String area, Timestamp instante, String prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos, FichaTrabalhista ficha) {
+        super(id, status, area, instante, prazo, historico, envolvidos);
+        this.ficha = ficha;
+    }
 }
