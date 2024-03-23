@@ -1,18 +1,18 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToUsuario;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import static com.uniprojecao.fabrica.gprojuridico.Utils.clearDatabase;
-import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,14 +32,7 @@ class UsuarioRepositoryTest {
     @Timeout(7)
     @BeforeAll
     static void beforeAll() {
-        FirestoreOptions options = FirestoreOptions
-                .getDefaultInstance()
-                .toBuilder()
-                .setHost("localhost:8090")
-                .setCredentials(NoCredentials.getInstance())
-                .setProjectId("gprojuridico-dev")
-                .build();
-        firestore = options.getService();
+        firestore = getFirestoreOptions();
 
         BaseRepository.firestore = firestore;
         databaseEmpty = seedDatabase(databaseEmpty);

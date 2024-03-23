@@ -1,9 +1,13 @@
 package com.uniprojecao.fabrica.gprojuridico;
 
+import com.google.cloud.NoCredentials;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.mockito.MockedStatic;
 
@@ -15,6 +19,18 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class Utils {
+    @Nonnull
+    public static Firestore getFirestoreOptions() {
+        return FirestoreOptions
+                .getDefaultInstance()
+                .toBuilder()
+                .setHost("localhost:8090")
+                .setCredentials(NoCredentials.getInstance())
+                .setProjectId("gprojuridico-dev")
+                .build()
+                .getService();
+    }
+
     // save() method is tested with seedDatabase() method
     public static boolean seedDatabase(boolean databaseEmpty) {
         if (databaseEmpty) {
