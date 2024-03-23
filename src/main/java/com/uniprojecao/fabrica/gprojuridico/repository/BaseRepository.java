@@ -68,12 +68,13 @@ public class BaseRepository {
         }
     }
 
-    public Object findById(String collectionName, Class<?> type, String id) {
+    public Object findById(String collectionName, @Nullable Class<?> type, String id) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
             if (!snapshot.exists()) return null;
-            return snapshot.toObject(type);
+            if (type != null) return snapshot.toObject(type);
+            return snapshot;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

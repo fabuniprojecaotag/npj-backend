@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.convertAssistidoToDTO;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.passDtoToEntity;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.AssistidoToDTO;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.dtoToAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
@@ -21,8 +21,8 @@ public class AssistidoService {
     AssistidoRepository repository;
 
     public AssistidoDTO insert(AssistidoDTO data) {
-        var result = repository.saveWithCustomId(data.getCpf(), passDtoToEntity(data));
-        return convertAssistidoToDTO(result);
+        repository.save(data.getCpf(), dtoToAssistido(data));
+        return data;
     }
 
     public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
@@ -31,7 +31,7 @@ public class AssistidoService {
 
     public AssistidoDTO findById(String id) {
         var result = repository.findById(id);
-        return convertAssistidoToDTO(result);
+        return AssistidoToDTO(result);
     }
 
     public void update(String id, Map<String, Object> data) {

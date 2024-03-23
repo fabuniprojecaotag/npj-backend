@@ -33,14 +33,14 @@ public class AssistidoUtils {
         else throw new RuntimeException("Error to convert snapshot into Assistido.");
     }
 
-    public static AssistidoDTO convertAssistidoToDTO(Assistido result) {
+    public static AssistidoDTO AssistidoToDTO(Assistido result) {
         if (result instanceof AssistidoFull assistidoFull) return new AssistidoFullDTO(assistidoFull);
         else if (result instanceof AssistidoCivil assistidoCivil) return new AssistidoCivilDTO(assistidoCivil);
         else if (result instanceof AssistidoTrabalhista assistidoTrabalhista) return new AssistidoTrabalhistaDTO(assistidoTrabalhista);
         else throw new ResourceNotFoundException();
     }
 
-    public static Assistido passDtoToEntity(AssistidoDTO dto) {
+    public static Assistido dtoToAssistido(AssistidoDTO dto) {
         Assistido assistido = getAssistido(dto);
 
         if (dto instanceof AssistidoCivilDTO assistidoCivilDTO) {
