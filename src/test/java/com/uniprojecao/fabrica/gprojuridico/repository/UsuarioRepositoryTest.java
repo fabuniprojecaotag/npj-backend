@@ -29,7 +29,7 @@ class UsuarioRepositoryTest {
         underTest = mock(UsuarioRepository.class);
     }
 
-    @Timeout(4)
+    @Timeout(7)
     @BeforeAll
     static void beforeAll() {
         FirestoreOptions options = FirestoreOptions

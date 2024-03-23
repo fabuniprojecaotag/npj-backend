@@ -9,19 +9,13 @@ import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.snapshotToUsuario;
 
 @Repository
-public class UsuarioRepository {
+public class UsuarioRepository extends BaseRepository {
 
     private final String COLLECTION_NAME = "usuarios";
-
-    public Usuario save(String customId, Usuario usuario) {
-        BaseRepository.save(COLLECTION_NAME, customId, usuario);
-        return usuario;
-    }
 
     public List<UsuarioMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = {"nome", "email", "role", "status", "matricula", "semestre"};
@@ -34,17 +28,5 @@ public class UsuarioRepository {
     public Usuario findById(String id) {
         var snapshot = (DocumentSnapshot) BaseRepository.findById(COLLECTION_NAME, null, id);
         return (Usuario) snapshotToUsuario(snapshot, false);
-    }
-
-    public void update(String id, Map<String, Object> data) {
-        BaseRepository.update(COLLECTION_NAME, id, data);
-    }
-
-    public void delete(String id) {
-        BaseRepository.delete(COLLECTION_NAME, id);
-    }
-
-    public void deleteAll(int limit, @Nullable QueryFilter queryFilter) {
-        BaseRepository.deleteAll(COLLECTION_NAME, null, limit, queryFilter);
     }
 }

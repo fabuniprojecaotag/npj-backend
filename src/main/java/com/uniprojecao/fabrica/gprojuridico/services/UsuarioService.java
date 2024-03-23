@@ -24,6 +24,7 @@ import static java.lang.Integer.parseInt;
 public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository repository;
+    private final String COLLECTION_NAME = "usuarios";
 
     public UsuarioDTO insert(UsuarioDTO dto) {
         var id = dto.getEmail();
@@ -31,7 +32,7 @@ public class UsuarioService implements UserDetailsService {
         verifyIfExistsUserInDatabase(dto, id);
         encryptPassword(dto);
 
-        repository.save(id, dtoToUsuario(dto));
+        repository.save(COLLECTION_NAME, id, dtoToUsuario(dto));
         return dto;
     }
 
@@ -56,14 +57,14 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public void update(String id, Map<String, Object> data) {
-        repository.update(id, data);
+        repository.update(COLLECTION_NAME, id, data);
     }
 
     public void delete(String id) {
-        repository.delete(id);
+        repository.delete(COLLECTION_NAME, id);
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        repository.deleteAll(parseInt(limit), initFilter(field, filter, value));
+        repository.deleteAll(COLLECTION_NAME, null, parseInt(limit), initFilter(field, filter, value));
     }
 }

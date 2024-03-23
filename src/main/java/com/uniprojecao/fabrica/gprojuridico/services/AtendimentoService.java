@@ -4,7 +4,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +19,13 @@ public class AtendimentoService {
 
     @Autowired
     AtendimentoRepository repository;
+    private final String COLLECTION_NAME = "atendimentos";
 
     public AtendimentoDTO insert(AtendimentoDTO data) {
         DocumentSnapshot doc = repository.findLast();
         String id = (String) doc.get("id");
         String customId = doc.exists() ? setAndReturnId(data, id) : setAndReturnId(data, null);
-        repository.save(customId, dtoToAtendimento(data));
+        repository.save(COLLECTION_NAME, customId, dtoToAtendimento(data));
 
         data.setId(customId);
         return data;
@@ -41,14 +41,14 @@ public class AtendimentoService {
     }
 
     public void update(String id, Map<String, Object> data) {
-        repository.update(id, data);
+        repository.update(COLLECTION_NAME, id, data);
     }
 
     public void delete(String id) {
-        repository.delete(id);
+        repository.delete(COLLECTION_NAME, id);
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        repository.deleteAll(parseInt(limit), initFilter(field, filter, value));
+        repository.deleteAll(COLLECTION_NAME, null, parseInt(limit), initFilter(field, filter, value));
     }
 }

@@ -25,19 +25,17 @@ public class BaseRepository {
     @Autowired
     public static Firestore firestore; // TODO: Conferir se o modificador de acesso deste atributo fica público ou não.
 
-    static Object save(String collectionName, Class<?> type, Object data) {
+    public void save(String collectionName, Object data) {
         try {
-            DocumentReference result = firestore.collection(collectionName).add(data).get();
-            DocumentSnapshot snapshot = result.get().get();
-            return snapshot.toObject(type);
+            firestore.collection(collectionName).add(data).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    static WriteResult save(String collectionName, String CustomId, Object data) {
+    public void save(String collectionName, String CustomId, Object data) {
         try {
-            return firestore.collection(collectionName).document(CustomId).set(data).get();
+            firestore.collection(collectionName).document(CustomId).set(data).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -80,17 +78,17 @@ public class BaseRepository {
         }
     }
 
-    static Boolean update(String collectionName, String id, Map<String, Object> data) {
+    public Boolean update(String collectionName, String id, Map<String, Object> data) {
         firestore.collection(collectionName).document(id).update(data);
         return true;
     }
 
-    static Boolean delete(String collectionName, String id) {
+    public Boolean delete(String collectionName, String id) {
         firestore.collection(collectionName).document(id).delete();
         return true;
     }
 
-    static Boolean deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
+    public Boolean deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
         var result = getDocSnapshots(collectionName, list, limit, queryFilter);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();

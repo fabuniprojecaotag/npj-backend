@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,11 @@ public class ProcessoService {
 
     @Autowired
     ProcessoRepository repository;
+    private final String COLLECTION_NAME = "processos";
 
-    public Processo insert(ProcessoDTO data) {
-        return repository.save(dtoToProcesso(data));
+    public ProcessoDTO insert(ProcessoDTO dto) {
+        repository.save(COLLECTION_NAME , dtoToProcesso(dto));
+        return dto;
     }
 
     public List<ProcessoDTO> findAll(String limit, String field, String filter, String value) {
@@ -36,14 +37,14 @@ public class ProcessoService {
     }
 
     public void update(String id, Map<String, Object> data) {
-        repository.update(id, data);
+        repository.update(COLLECTION_NAME, id, data);
     }
 
     public void delete(String id) {
-        repository.delete(id);
+        repository.delete(COLLECTION_NAME, id);
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        repository.deleteAll(parseInt(limit), initFilter(field, filter, value));
+        repository.deleteAll(COLLECTION_NAME, null, parseInt(limit), initFilter(field, filter, value));
     }
 }

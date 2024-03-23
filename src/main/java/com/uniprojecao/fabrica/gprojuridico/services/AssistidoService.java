@@ -19,9 +19,10 @@ public class AssistidoService {
 
     @Autowired
     AssistidoRepository repository;
+    private final String COLLECTION_NAME = "assistidos";
 
     public AssistidoDTO insert(AssistidoDTO data) {
-        repository.save(data.getCpf(), dtoToAssistido(data));
+        repository.save(COLLECTION_NAME, data.getCpf(), dtoToAssistido(data));
         return data;
     }
 
@@ -35,14 +36,14 @@ public class AssistidoService {
     }
 
     public void update(String id, Map<String, Object> data) {
-        repository.update(id, data);
+        repository.update(COLLECTION_NAME, id, data);
     }
 
     public void delete(String id) {
-        repository.delete(id);
+        repository.delete(COLLECTION_NAME, id);
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        repository.deleteAll(parseInt(limit), initFilter(field, filter, value));
+        repository.deleteAll(COLLECTION_NAME, null, parseInt(limit), initFilter(field, filter, value));
     }
 }

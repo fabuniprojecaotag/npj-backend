@@ -21,10 +21,10 @@ public class Utils {
             var underTest = (mock(UsuarioRepository.class));
             List<Usuario> list = seedWithUsuario();
 
-            when(underTest.save(anyString(), any())).thenCallRealMethod();
+            doCallRealMethod().when(underTest).save(anyString(), anyString(), any());
 
             for (var item : list) {
-                underTest.save(item.getEmail(), item);
+                underTest.save("usuarios", item.getEmail(), item);
             }
 
             return false;
@@ -38,13 +38,13 @@ public class Utils {
         int limit = 20;
 
         try (MockedStatic<BaseRepository> baseRepository = mockStatic(BaseRepository.class)) {
-            baseRepository.when(() -> underTest.deleteAll(limit, queryFilter)).thenCallRealMethod();
+            baseRepository.when(() -> underTest.deleteAll("usuarios", null, limit, queryFilter)).thenCallRealMethod();
         }
 
-        doCallRealMethod().when(underTest).deleteAll(limit, queryFilter);
+        doCallRealMethod().when(underTest).deleteAll("usuarios", null, limit, queryFilter);
         when(underTest.findAll(limit, queryFilter)).thenCallRealMethod();
 
-        underTest.deleteAll(limit, queryFilter);
+        underTest.deleteAll("usuarios", null, limit, queryFilter);
         var list = underTest.findAll(limit, queryFilter);
 
         return list.isEmpty();

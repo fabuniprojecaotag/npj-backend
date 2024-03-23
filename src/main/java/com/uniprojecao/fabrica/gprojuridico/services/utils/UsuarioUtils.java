@@ -4,6 +4,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.SupervisorMin;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.EstagiarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.SupervisorMinDTO;
@@ -60,13 +61,11 @@ public class UsuarioUtils {
     public enum UserUniqueField { EMAIL }
 
     public static Object snapshotToUsuario(DocumentSnapshot snapshot, Boolean returnMinDTO) {
-
-        if (returnMinDTO) return snapshot.toObject(UsuarioMinDTO.class);
-
         boolean dadosEstagiario = snapshot.contains("matricula");
 
-        if (dadosEstagiario) return snapshot.toObject(Estagiario.class);
-        else return snapshot.toObject(Usuario.class);
+        if (returnMinDTO) return (dadosEstagiario) ? snapshot.toObject(EstagiarioMinDTO.class) : snapshot.toObject(UsuarioMinDTO.class);
+
+        return (dadosEstagiario) ? snapshot.toObject(Estagiario.class) : snapshot.toObject(Usuario.class);
     }
 
     public static UsuarioDTO usuarioToDto(Usuario u) {
