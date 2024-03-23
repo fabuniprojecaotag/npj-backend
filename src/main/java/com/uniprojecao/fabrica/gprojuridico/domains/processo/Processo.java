@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.processo;
 
+import com.google.cloud.firestore.annotation.DocumentId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Processo {
-    private Integer numero;
+    @DocumentId
+    private String numero;
     private String nome;
     private String dataDistribuicao;
     private String vara;

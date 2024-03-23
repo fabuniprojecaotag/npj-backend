@@ -27,7 +27,7 @@ public class AtendimentoService {
         DocumentSnapshot doc = repository.findLast(COLLECTION_NAME);
         String id = (String) doc.get("id");
         String customId = doc.exists() ? setAndReturnId(data, id) : setAndReturnId(data, null);
-        repository.saveWithCustomId(COLLECTION_NAME, customId, data);
+        repository.save(COLLECTION_NAME, customId, data);
 
         data.setId(customId);
         return data;
