@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services.security;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.services.UserService;
+import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
-    UserService userService;
+    UsuarioService usuarioService;
     @Autowired
     TokenService tokenService;
 
@@ -28,7 +28,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 String loginEmail = tokenService.validateToken(token);
-                Usuario usuario = (Usuario) userService.loadUserByUsername(loginEmail);
+                Usuario usuario = (Usuario) usuarioService.loadUserByUsername(loginEmail);
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

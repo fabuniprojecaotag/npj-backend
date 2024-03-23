@@ -1,37 +1,37 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
+import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
-import com.uniprojecao.fabrica.gprojuridico.services.UserService;
+import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.createUri;
+
 @RestController
 @RequestMapping("/usuários")
-public class UserController {
+public class UsuarioController {
     @Autowired
-    private UserService service;
+    private UsuarioService service;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid UsuarioDTO data) {
-        Map<String, Object> result = service.insert(data);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(result.get("id")).toUri();
-        return ResponseEntity.created(uri).body(result.get("object"));
+    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioDTO data) {
+        var result = service.insert(data);
+        var id = result.getEmail();
+        return ResponseEntity.created(createUri(id)).body(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> findAll(@RequestParam(defaultValue = "20") String limit,
-                                                @RequestParam(defaultValue = "") String field,
-                                                @RequestParam(defaultValue = "") String filter,
-                                                @RequestParam(defaultValue = "") String value) {
-        List<Object> usuarios = service.findAll(limit, field, filter, value);
+    public ResponseEntity<List<UsuarioMinDTO>> findAll(@RequestParam(defaultValue = "20") String limit,
+                                                       @RequestParam(defaultValue = "") String field,
+                                                       @RequestParam(defaultValue = "") String filter,
+                                                       @RequestParam(defaultValue = "") String value) {
+        var usuarios = service.findAll(limit, field, filter, value);
         return ResponseEntity.ok(usuarios);
     }
 
@@ -45,20 +45,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable String id) {
-        Object usuario = service.loadUserByUsername(id);
+    public ResponseEntity<UsuarioDTO> findById(@PathVariable String id) {
+        var usuario = service.findById(id);
         return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Object> getMe() {
-        Object usuario = service.authenticated();
+    public ResponseEntity<UsuarioDTO> getMe() {
+        var usuario = service.authenticated();
         return ResponseEntity.ok(usuario);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
         service.update(id, data);
         return ResponseEntity.ok().build();
     }
