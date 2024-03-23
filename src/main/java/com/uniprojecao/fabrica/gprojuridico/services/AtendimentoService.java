@@ -21,10 +21,8 @@ public class AtendimentoService {
     @Autowired
     AtendimentoRepository repository;
 
-    private static final String COLLECTION_NAME = "atendimentos";
-
     public AtendimentoDTO insert(AtendimentoDTO data) {
-        DocumentSnapshot doc = repository.findLast(COLLECTION_NAME);
+        DocumentSnapshot doc = repository.findLast();
         String id = (String) doc.get("id");
         String customId = doc.exists() ? setAndReturnId(data, id) : setAndReturnId(data, null);
         repository.save(customId, dtoToAtendimento(data));

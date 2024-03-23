@@ -26,16 +26,16 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UsuarioServiceTest {
 
     @Mock
-    private UserService underTest;
+    private UsuarioService underTest;
 
     @Nested
     class Validation {
         @Test
         void validateEncryptedUserPassword() {
-            var list = seedWithUsuarioDTO(null);
+            var list = seedWithUsuarioDTO();
             int changedPassword = 0;
 
             for (var dto : list) {
@@ -81,7 +81,7 @@ class UserServiceTest {
     class Exception {
         @Test
         void throwExceptionWhenBothDTOEmailAndCpfAreEqual() {
-            var list = seedWithUsuarioDTO(null);
+            var list = seedWithUsuarioDTO();
             var dto = list.get(0);
             var usuario = passDtoToEntity(dto);
 
@@ -95,7 +95,7 @@ class UserServiceTest {
 
         @Test
         void throwExceptionWhenDTOEmailIsEqual() {
-            var list = seedWithUsuarioDTO(null);
+            var list = seedWithUsuarioDTO();
             var dto = list.get(0);
             var usuario = passDtoToEntity(dto);
             dto.setCpf("999.999.999-99");

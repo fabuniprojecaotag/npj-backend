@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @AggregateWith(UsuarioAggregator.class)
-public @interface CsvToUser {
+public @interface CsvToUsuario {
 }

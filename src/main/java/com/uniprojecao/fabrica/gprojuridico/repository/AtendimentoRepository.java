@@ -16,40 +16,44 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.snapshotToAtendimento;
 
 @Repository
-public class AtendimentoRepository extends BaseRepository {
+public class AtendimentoRepository {
 
     @Autowired
     public Firestore firestore;
 
-    private static final String collectionName = "atendimentos";
-    private static final Class<Atendimento> type = Atendimento.class;
+    private final String COLLECTION_NAME = "atendimentos";
 
-    public Atendimento save(String customId, Atendimento data) {
-        super.save(collectionName, customId, data);
-        return data;
+    public Atendimento save(String customId, Atendimento atendimento) {
+        BaseRepository.save(COLLECTION_NAME, customId, atendimento);
+        return atendimento;
     }
 
     public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
-        String[] list = {"id", "area", "status", "envolvidos.assistido.nome"};
-        return super.findAll(collectionName, list, null, limit, queryFilter)
+        String[] columnList = {"id", "area", "status", "envolvidos.assistido.nome"};
+        return BaseRepository.findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true))
                 .toList();
     }
 
+    public DocumentSnapshot findLast() {
+        return BaseRepository.findLast(COLLECTION_NAME);
+    }
+
     public Atendimento findById(String id) {
-        return (Atendimento) super.findById(collectionName, type, id);
+        var snapshot = (DocumentSnapshot) BaseRepository.findById(COLLECTION_NAME, null, id);
+        return (Atendimento) snapshotToAtendimento(snapshot, false);
     }
 
     public void update(String id, Map<String, Object> data) {
-        super.update(collectionName, id, data);
+        BaseRepository.update(COLLECTION_NAME, id, data);
     }
 
     public void delete(String id) {
-        super.delete(collectionName, id);
+        BaseRepository.delete(COLLECTION_NAME, id);
     }
 
     public void deleteAll(int limit, @Nullable QueryFilter queryFilter) {
-        super.deleteAll(collectionName, null, limit, queryFilter);
+        BaseRepository.deleteAll(COLLECTION_NAME, null, limit, queryFilter);
     }
 }

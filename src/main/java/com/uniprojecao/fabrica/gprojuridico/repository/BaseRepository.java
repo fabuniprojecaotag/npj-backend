@@ -23,9 +23,9 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 public class BaseRepository {
 
     @Autowired
-    public Firestore firestore;
+    public static Firestore firestore; // TODO: Conferir se o modificador de acesso deste atributo fica público ou não.
 
-    public Object save(String collectionName, Class<?> type, Object data) {
+    static Object save(String collectionName, Class<?> type, Object data) {
         try {
             DocumentReference result = firestore.collection(collectionName).add(data).get();
             DocumentSnapshot snapshot = result.get().get();
@@ -35,7 +35,7 @@ public class BaseRepository {
         }
     }
 
-    public WriteResult save(String collectionName, String CustomId, Object data) {
+    static WriteResult save(String collectionName, String CustomId, Object data) {
         try {
             return firestore.collection(collectionName).document(CustomId).set(data).get();
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class BaseRepository {
         }
     }
 
-    public List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    static List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         List<Object> list = new ArrayList<>();
 
         try {
@@ -58,7 +58,7 @@ public class BaseRepository {
         }
     }
 
-    public DocumentSnapshot findLast(String collectionName) {
+    static DocumentSnapshot findLast(String collectionName) {
         try {
             ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).orderBy("instante", DESCENDING).limit(1).get();
             var list = future.get().getDocuments();
@@ -68,7 +68,7 @@ public class BaseRepository {
         }
     }
 
-    public Object findById(String collectionName, @Nullable Class<?> type, String id) {
+    static Object findById(String collectionName, @Nullable Class<?> type, String id) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
@@ -80,17 +80,17 @@ public class BaseRepository {
         }
     }
 
-    public Boolean update(String collectionName, String id, Map<String, Object> data) {
+    static Boolean update(String collectionName, String id, Map<String, Object> data) {
         firestore.collection(collectionName).document(id).update(data);
         return true;
     }
 
-    public Boolean delete(String collectionName, String id) {
+    static Boolean delete(String collectionName, String id) {
         firestore.collection(collectionName).document(id).delete();
         return true;
     }
 
-    public Boolean deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
+    static Boolean deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
         var result = getDocSnapshots(collectionName, list, limit, queryFilter);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();
@@ -99,7 +99,9 @@ public class BaseRepository {
         return true;
     }
 
-    private List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+        if (list == null) list = new String[]{"id"};
+
         ApiFuture<QuerySnapshot> future;
 
         future = (queryFilter != null) ?

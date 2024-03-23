@@ -7,35 +7,35 @@ import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class ProcessoRepository extends BaseRepository {
+public class ProcessoRepository {
 
-    private static final String collectionName = "processos";
-    private static final Class<Processo> type = Processo.class;
+    private static final String COLLECTION_NAME = "processos";
+    private static final Class<Processo> TYPE = Processo.class;
 
-    public Processo save(Processo data) {
-        return (Processo) super.save(collectionName, type, data);
+    public Processo save(Processo processo) {
+        return (Processo) BaseRepository.save(COLLECTION_NAME, TYPE, processo);
     }
 
     public List<Processo> findAll(int limit, @Nullable QueryFilter queryFilter) {
-        return super.findAll(collectionName, null, type, limit, queryFilter)
+        return BaseRepository.findAll(COLLECTION_NAME, null, TYPE, limit, queryFilter)
                 .stream()
                 .map(o -> (Processo) o)
                 .toList();
     }
 
     public Processo findById(String id) {
-        return (Processo) super.findById(collectionName, type, id);
+        return (Processo) BaseRepository.findById(COLLECTION_NAME, TYPE, id);
     }
 
     public void update(String id, Map<String, Object> data) {
-        super.update(collectionName, id, data);
+        BaseRepository.update(COLLECTION_NAME, id, data);
     }
 
     public void delete(String id) {
-        super.delete(collectionName, id);
+        BaseRepository.delete(COLLECTION_NAME, id);
     }
 
     public void deleteAll(int limit, @Nullable QueryFilter queryFilter) {
-        super.deleteAll(collectionName, null, limit, queryFilter);
+        BaseRepository.deleteAll(COLLECTION_NAME, null, limit, queryFilter);
     }
 }
