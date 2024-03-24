@@ -45,11 +45,11 @@ public class AssistidoTrabalhistaDTO extends AssistidoDTO {
     @AllArgsConstructor
     @Data
     public static class Ctps {
-        @Positive
-        private Integer numero;
+        @NotBlank
+        private String numero;
 
-        @Positive
-        private Integer serie;
+        @NotBlank
+        private String serie;
 
         @NotBlank
         @Size(min = 2, max = 2)

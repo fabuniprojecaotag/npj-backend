@@ -1,8 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.assistido;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -56,11 +58,11 @@ public class AssistidoFullDTO extends AssistidoDTO {
     @AllArgsConstructor
     @Data
     public static class Ctps {
-        @Positive
-        private Integer numero;
+        @NotBlank
+        private String numero;
 
-        @Positive
-        private Integer serie;
+        @NotBlank
+        private String serie;
 
         @NotBlank
         @Size(min = 2, max = 2)

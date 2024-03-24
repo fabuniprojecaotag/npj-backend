@@ -128,10 +128,15 @@ public abstract class AssistidoDTO {
     @Getter
     enum EstadoCivil {
         SOLTEIRO("Solteiro"),
+        SOLTEIRA("Solteira"),
         CASADO("Casado"),
+        CASADA("Casada"),
         SEPARADO("Separado"),
+        SEPARADA("Separada"),
         DIVORCIADO("Divorciado"),
-        VIUVO("Viúvo");
+        DIVORCIADA("Divorciada"),
+        VIUVO("Viúvo"),
+        VIUVA("Viúva");
 
         private final String value;
 

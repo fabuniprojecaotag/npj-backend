@@ -3,16 +3,15 @@ package com.uniprojecao.fabrica.gprojuridico;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.mockito.MockedStatic;
 
-import java.util.List;
-
+import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuario;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,37 +31,70 @@ public class Utils {
     }
 
     // save() method is tested with seedDatabase() method
-    public static boolean seedDatabase(boolean databaseEmpty) {
+    public static boolean seedDatabase(boolean databaseEmpty, String clazz) {
         if (databaseEmpty) {
-            var underTest = (mock(UsuarioRepository.class));
-            List<Usuario> list = seedWithUsuario();
+            switch (clazz) {
+                case "Usuario":
+                    var uRepository = (mock(UsuarioRepository.class));
+                    var usuarios = seedWithUsuario();
 
-            doCallRealMethod().when(underTest).save(anyString(), anyString(), any());
+                    doCallRealMethod().when(uRepository).save(anyString(), anyString(), any());
 
-            for (var item : list) {
-                underTest.save("usuarios", item.getEmail(), item);
+                    for (var usuario : usuarios) {
+                        uRepository.save("usuarios", usuario.getEmail(), usuario);
+                    }
+                case "Assistido":
+                    var aRepository = (mock(AssistidoRepository.class));
+                    var assistidos = seedWithAssistido();
+
+                    doCallRealMethod().when(aRepository).save(anyString(), anyString(), any());
+
+                    for (var assistido : assistidos) {
+                        aRepository.save("assistidos", assistido.getCpf(), assistido);
+                    }
             }
-
             return false;
         }
         return true;
     }
 
     // deleteAll() method is tested with clearDatabase() method
-    public static boolean clearDatabase(@Nullable QueryFilter queryFilter) {
-        var underTest = (mock(UsuarioRepository.class));
+    public static boolean clearDatabase(@Nullable QueryFilter queryFilter, String clazz) {
         int limit = 20;
+        String collectionName;
 
-        try (MockedStatic<BaseRepository> baseRepository = mockStatic(BaseRepository.class)) {
-            baseRepository.when(() -> underTest.deleteAll("usuarios", null, limit, queryFilter)).thenCallRealMethod();
+        switch (clazz) {
+            case "Usuario":
+                var uRepository = (mock(UsuarioRepository.class));
+                collectionName = "usuarios";
+
+                try (MockedStatic<BaseRepository> baseRepository = mockStatic(BaseRepository.class)) {
+                    baseRepository.when(() -> uRepository.deleteAll(collectionName, null, limit, queryFilter)).thenCallRealMethod();
+                }
+
+                doCallRealMethod().when(uRepository).deleteAll(collectionName, null, limit, queryFilter);
+                when(uRepository.findAll(limit, queryFilter)).thenCallRealMethod();
+
+                uRepository.deleteAll(collectionName, null, limit, queryFilter);
+                var usuarios = uRepository.findAll(limit, queryFilter);
+
+                return usuarios.isEmpty();
+            case "Assistido":
+                var aRepository = (mock(AssistidoRepository.class));
+                collectionName = "assistidos";
+
+                try (MockedStatic<BaseRepository> baseRepository = mockStatic(BaseRepository.class)) {
+                    baseRepository.when(() -> aRepository.deleteAll(collectionName, null, limit, queryFilter)).thenCallRealMethod();
+                }
+
+                doCallRealMethod().when(aRepository).deleteAll(collectionName, null, limit, queryFilter);
+                when(aRepository.findAll(limit, queryFilter)).thenCallRealMethod();
+
+                aRepository.deleteAll(collectionName, null, limit, queryFilter);
+                var assistidos = aRepository.findAll(limit, queryFilter);
+
+                return assistidos.isEmpty();
         }
-
-        doCallRealMethod().when(underTest).deleteAll("usuarios", null, limit, queryFilter);
-        when(underTest.findAll(limit, queryFilter)).thenCallRealMethod();
-
-        underTest.deleteAll("usuarios", null, limit, queryFilter);
-        var list = underTest.findAll(limit, queryFilter);
-
-        return list.isEmpty();
+        return false;
     }
 }
