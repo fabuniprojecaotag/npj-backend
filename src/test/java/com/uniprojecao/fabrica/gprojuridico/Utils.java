@@ -6,12 +6,14 @@ import com.google.cloud.firestore.FirestoreOptions;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.mockito.MockedStatic;
 
 import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithAssistido;
+import static com.uniprojecao.fabrica.gprojuridico.data.ProcessoData.seedWithProcesso;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuario;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,6 +53,15 @@ public class Utils {
 
                     for (var assistido : assistidos) {
                         aRepository.save("assistidos", assistido.getCpf(), assistido);
+                    }
+                case "Processo":
+                    var pRepository = (mock(ProcessoRepository.class));
+                    var processos = seedWithProcesso();
+
+                    doCallRealMethod().when(pRepository).save(anyString(), anyString(), any());
+
+                    for (var processo : processos) {
+                        pRepository.save("processos", processo.getNumero(), processo);
                     }
             }
             return false;
@@ -94,6 +105,21 @@ public class Utils {
                 var assistidos = aRepository.findAll(limit, queryFilter);
 
                 return assistidos.isEmpty();
+            case "Processo":
+                var pRepository = (mock(ProcessoRepository.class));
+                collectionName = "processos";
+
+                try (MockedStatic<BaseRepository> baseRepository = mockStatic(BaseRepository.class)) {
+                    baseRepository.when(() -> pRepository.deleteAll(collectionName, null, limit, queryFilter)).thenCallRealMethod();
+                }
+
+                doCallRealMethod().when(pRepository).deleteAll(collectionName, null, limit, queryFilter);
+                when(pRepository.findAll(limit, queryFilter)).thenCallRealMethod();
+
+                pRepository.deleteAll(collectionName, null, limit, queryFilter);
+                var processos = pRepository.findAll(limit, queryFilter);
+
+                return processos.isEmpty();
         }
         return false;
     }

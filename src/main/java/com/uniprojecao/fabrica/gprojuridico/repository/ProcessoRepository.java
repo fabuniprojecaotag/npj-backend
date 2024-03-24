@@ -12,7 +12,8 @@ public class ProcessoRepository extends BaseRepository {
     private static final Class<Processo> TYPE = Processo.class;
 
     public List<Processo> findAll(int limit, @Nullable QueryFilter queryFilter) {
-        return BaseRepository.findAll(COLLECTION_NAME, null, TYPE, limit, queryFilter)
+        String[] columnList = new String[]{"numero", "nome", "dataDistribuicao", "vara", "forum", "atendimentoId"};
+        return BaseRepository.findAll(COLLECTION_NAME, columnList, TYPE, limit, queryFilter)
                 .stream()
                 .map(o -> (Processo) o)
                 .toList();
