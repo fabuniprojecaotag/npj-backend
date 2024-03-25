@@ -5,14 +5,14 @@ import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAtendimento;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestoreOptions;
-import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -63,8 +63,8 @@ class AtendimentoRepositoryTest {
         assertEquals(result, atendimento);
     }
 
-//    @AfterAll
-//    static void afterAll() {
-//        clearDatabase(null, "Atendimento");
-//    }
+    @AfterAll
+    static void afterAll() {
+        clearDatabase(null, "Atendimento");
+    }
 }

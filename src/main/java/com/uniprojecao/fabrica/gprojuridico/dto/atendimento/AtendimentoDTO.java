@@ -31,20 +31,16 @@ public class AtendimentoDTO {
     @Nullable
     private Timestamp instante;
 
-    @Nullable
-    private Timestamp prazoEntregaDocumentos;
-
     private FichaDTO ficha;
 
     private List<EntradaHistoricoDTO> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante, @Nullable Timestamp prazo) {
+    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante) {
         this.id = id;
         setStatus(status);
         setArea(area);
         this.instante = instante;
-        this.prazoEntregaDocumentos = prazo;
     }
 
     public void setStatus(String status) {

@@ -1,15 +1,11 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,31 +68,22 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
         * */
         int accessorSize = accessor.size();
 
-        // Para o atributo "prazoEntregaDocumentos"
-        Timestamp formattedDate;
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            formattedDate = Timestamp.of(df.parse(accessor.getString(3)));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
         // Para o atributo "historico"
         var usuario = new Atendimento.EntradaHistorico.UsuarioMin(
+                accessor.getString(4),
                 accessor.getString(5),
-                accessor.getString(6),
-                accessor.getString(7));
-        var entrada = new Atendimento.EntradaHistorico(null, accessor.getString(4), null, null, usuario);
+                accessor.getString(6));
+        var entrada = new Atendimento.EntradaHistorico(null, accessor.getString(3), null, null, usuario);
         List<Atendimento.EntradaHistorico> historico = new ArrayList<>();
         historico.add(entrada);
 
         // Para o atributo "envolvidos"
-        var estagiario = new EnvolvidoDTO(accessor.getString(8), accessor.getString(9));
-        var professor = new EnvolvidoDTO(accessor.getString(10), accessor.getString(11));
-        var secretaria = new EnvolvidoDTO(accessor.getString(12), accessor.getString(13));
+        var estagiario = new EnvolvidoDTO(accessor.getString(7), accessor.getString(8));
+        var professor = new EnvolvidoDTO(accessor.getString(9), accessor.getString(10));
+        var secretaria = new EnvolvidoDTO(accessor.getString(11), accessor.getString(12));
         Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(Map.of("estagiario", estagiario, "professor", professor, "secretaria", secretaria));
 
-        if (accessorSize == 21) { // Os atributos instante e medida judicial não entram, logo fica 23 - 2
+        if (accessorSize == 20) {
 
 
             var ac = new AtendimentoCivil();
@@ -104,19 +91,18 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             ac.setStatus(accessor.getString(1));
             ac.setArea(accessor.getString(2));
             // instante ignorado
-            ac.setPrazoEntregaDocumentos(formattedDate);
             ac.setHistorico(historico);
             ac.setEnvolvidos(envolvidos);
 
             // Para o atributo "ficha"
             var parteContraria = new ParteContraria(
+                    accessor.getString(13),
                     accessor.getString(14),
                     accessor.getString(15),
                     accessor.getString(16),
                     accessor.getString(17),
                     accessor.getString(18),
-                    accessor.getString(19),
-                    accessor.getString(20)
+                    accessor.getString(19)
             );
             var ficha = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null); // campos da herança ignorados.
 

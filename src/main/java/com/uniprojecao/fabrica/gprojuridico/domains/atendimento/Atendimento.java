@@ -38,17 +38,14 @@ public abstract class Atendimento {
     @JsonIgnore
     private Timestamp instante;
 
-    private Timestamp prazoEntregaDocumentos;
-
     private List<EntradaHistorico> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public Atendimento(String id, String status, String area, Timestamp instante, Timestamp prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
+    public Atendimento(String id, String status, String area, Timestamp instante, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
         this.id = id;
         setStatus(status);
         setArea(area);
         this.instante = instante;
-        this.prazoEntregaDocumentos = prazo;
         setHistorico(historico);
         setEnvolvidos(envolvidos);
     }

@@ -17,15 +17,6 @@ import java.util.Map;
 
 public class AtendimentoData {
     public static List<Atendimento> seedWithAtendimento() {
-        // Para o atributo "prazoEntregaDocumentos"
-        Timestamp formattedDate;
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            formattedDate = Timestamp.of(df.parse("20/04/2024"));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
         // Para o atributo "historico"
         var usuario = new Atendimento.EntradaHistorico.UsuarioMin("leticia.alves@projecao.br", "Letícia Alves Martins", "PROFESSOR");
         var entrada = new Atendimento.EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
@@ -43,7 +34,7 @@ public class AtendimentoData {
         var fichaCivil = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null);
 
         return List.of(
-                new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, formattedDate, historico, envolvidos, fichaCivil)
+                new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, historico, envolvidos, fichaCivil)
         );
     }
 }

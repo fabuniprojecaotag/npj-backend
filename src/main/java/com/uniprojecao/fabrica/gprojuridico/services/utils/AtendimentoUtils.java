@@ -70,7 +70,6 @@ public class AtendimentoUtils {
                     dto.getStatus(),
                     dto.getArea(),
                     dto.getInstante(),
-                    dto.getPrazoEntregaDocumentos(),
                     dto.getHistorico()
                             .stream()
                             .map(e -> new Atendimento.EntradaHistorico(
@@ -107,7 +106,6 @@ public class AtendimentoUtils {
                     dto.getStatus(),
                     dto.getArea(),
                     dto.getInstante(),
-                    dto.getPrazoEntregaDocumentos(),
                     dto.getHistorico()
                             .stream()
                             .map(e -> new Atendimento.EntradaHistorico(
@@ -158,7 +156,6 @@ public class AtendimentoUtils {
         dto.setStatus(a.getStatus());
         dto.setArea(a.getArea());
         dto.setInstante(a.getInstante());
-        dto.setPrazoEntregaDocumentos(a.getPrazoEntregaDocumentos());
         dto.setHistorico(historicoDTO);
         dto.setEnvolvidos(a.getEnvolvidos());
 
