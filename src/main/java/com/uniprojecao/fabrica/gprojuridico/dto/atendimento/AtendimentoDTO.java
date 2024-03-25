@@ -44,11 +44,11 @@ public class AtendimentoDTO {
     }
 
     public void setStatus(String status) {
-        this.status = Status.valueOf(status).getValue();
+        this.status = Status.valueOf(status.replace(" ", "_").toUpperCase()).getValue(); // Ex. "Processo ativo" → "PROCESSO_ATIVO" → "Processo ativo". É necessária esta transformação para o armazenamento customizado de constantes.
     }
 
     public void setArea(String area) {
-        this.area = Area.valueOf(area).getValue();
+        this.area = Area.valueOf(area.toUpperCase()).getValue(); // Ex. "Trabalhista" → "TRABALHISTA" → "Trabalhista". É necessária esta transformação para o armazenamento customizado de constantes.
     }
 
     public void setHistorico(List<EntradaHistoricoDTO> entradas) {
