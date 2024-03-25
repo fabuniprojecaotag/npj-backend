@@ -19,15 +19,15 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
     ) {
         /* É tido que:
         *
-        * A classe abstrata Atendimento possui 7 atributos e 18 campos, sendo:
-        *   - 4 String
+        * A classe abstrata Atendimento possui 6 atributos e 17 campos, sendo:
+        *   - 3 String
         *   - 1 Timestamp
         *   - 1 List<EntradaHistorico>, a qual EntradaHistorico possui 5 atributos e 11 campos, sendo:
         *       - 3 String
         *       - 1 Instant
-        *       - 1 UsuarioMin (4 atributos/campos, sendo 3 String e 1 Boolean)
+        *       - 1 UsuarioMin (3 atributos/campos, sendo todos do tipo String)
         *
-        *       Logo, é tido que este atributo envolve 8 campos * n EntradaHi..., sendo "n" um número natural positivo.
+        *       Logo, é tido que este atributo envolve 7 campos * n EntradaHi..., sendo "n" um número natural positivo.
         *
         *   - 1 Map<String, Envolvido>, a qual Envolvido possui 2 atributos/campos, sendo:
         *       - 2 String
@@ -36,24 +36,24 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
         *
         * Total, assumindo que "n" e "k" valem 1:
         *
-        *   4 + 1 + (n * (3 + 1 + (4))) + (k * (2)) = 5 + 8 + 2 = 15 campos
+        *   3 + 1 + (n * (3 + 1 + (4))) + (k * (2)) = 4 + 8 + 2 = 14 campos
         *
         * -------------------------------------------------------------------------------
         *
-        * A classe AssistidoCivil possui 8 atributos e 26 campos, sendo:
+        * A classe AssistidoCivil possui 7 atributos e 25 campos, sendo:
         *   - 1 FichaCivil, a qual esta abrange:
         *       - 1 ParteContraria (7 atributos/campos, sendo todos String)
         *       - 1 String
         *
         *   Logo, é tido que este atributo envolve 8 campos.
         *
-        * Total: 15 campos (da herança) + 8 (da própria classe) = 23 campos
+        * Total: 14 campos (da herança) + 8 (da própria classe) = 22 campos
         *
         * OBS: os campos da herança da classe Ficha não foram considerados nessa conta.
         *
         * -------------------------------------------------------------------------------
         *
-        * A classe AssistidoTrabalhista possui 8 atributos e 64 campos, sendo:
+        * A classe AssistidoTrabalhista possui 7 atributos e 63 campos, sendo:
         *   - 1 FichaTrabalhista, a qual esta abrange:
         *       - 1 Reclamado (4 atributos/campos, sendo 4 String)
         *       - 1 RelacaoEmpregaticia (30 atributos/campos, sendo 15 String, 4 Integer e 11 Boolean)
@@ -62,7 +62,7 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
         *
         *   Logo, é tido que este atributo envolve 46 campos.
         *
-        * Total: 15 campos (da herança) + 46 (da própria class) = 64 campos
+        * Total: 14 campos (da herança) + 46 (da própria class) = 63 campos
         *
         * OBS: os campos da herança da classe Ficha não foram considerados nessa conta.
         * */
@@ -84,8 +84,6 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
         Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(Map.of("estagiario", estagiario, "professor", professor, "secretaria", secretaria));
 
         if (accessorSize == 20) {
-
-
             var ac = new AtendimentoCivil();
             ac.setId(accessor.getString(0));
             ac.setStatus(accessor.getString(1));
@@ -105,13 +103,25 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
                     accessor.getString(19)
             );
             var ficha = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null); // campos da herança ignorados.
-
             ac.setFicha(ficha);
 
             return ac;
-        } else if (accessorSize == 64) {
+        } else if (accessorSize == 13) {
             var at = new AtendimentoTrabalhista();
+            at.setId(accessor.getString(0));
+            at.setStatus(accessor.getString(1));
+            at.setArea(accessor.getString(2));
+            // instante ignorado
+            at.setHistorico(historico);
+            at.setEnvolvidos(envolvidos);
 
+            // Para o atributo "ficha"
+            var reclamado = new Reclamado();
+            var relacaoEmpregaticia = new RelacaoEmpregaticia();
+            var docDepositadosNpj= new DocumentosDepositadosNpj();
+
+            var ficha = new FichaTrabalhista(null, false, new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
+            at.setFicha(ficha);
 
             return at;
         }

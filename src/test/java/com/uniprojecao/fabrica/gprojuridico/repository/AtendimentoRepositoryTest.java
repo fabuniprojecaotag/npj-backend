@@ -46,7 +46,7 @@ class AtendimentoRepositoryTest {
         when(underTest.findAll(20, queryFilter)).thenCallRealMethod();
 
         var list1 = underTest.findAll(20, null);
-        assertEquals(1, list1.size());
+        assertEquals(2, list1.size());
 
         var list2 = underTest.findAll(20, queryFilter);
         assertEquals(1, list2.size());

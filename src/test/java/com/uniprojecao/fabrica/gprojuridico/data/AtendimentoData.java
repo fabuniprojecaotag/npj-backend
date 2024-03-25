@@ -1,15 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
-import com.google.cloud.Timestamp;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.FichaCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.ParteContraria;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +22,19 @@ public class AtendimentoData {
         var secretaria = new EnvolvidoDTO("leticia.alves@projecao.br", "Letícia Alves Martins");
         Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(Map.of("estagiario", estagiario, "professor", professor, "secretaria", secretaria));
 
-        // Para o atributo "ficha"
+        // Para o atributo "ficha" (Ficha Civil)
         var parteContraria = new ParteContraria("Alberto Gomes Pereira", "Padeiro", "4.223.124-5", "948.234.153-23", "alberto.gomes@example.com", "QSA Conjunto A casa 12", "(61) 98392-2934");
         var fichaCivil = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null);
 
+        // Para o atributo "ficha" (Ficha Trabalhista)
+        var reclamado = new Reclamado();
+        var relacaoEmpregaticia = new RelacaoEmpregaticia();
+        var docDepositadosNpj= new DocumentosDepositadosNpj();
+        var fichaTrabalhista = new FichaTrabalhista(null, false, new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
+
         return List.of(
-                new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, historico, envolvidos, fichaCivil)
+                new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, historico, envolvidos, fichaCivil),
+                new AtendimentoTrabalhista("ATE00071", "Aguardando documentos", "Trabalhista", null, historico, envolvidos, fichaTrabalhista)
         );
     }
 }
