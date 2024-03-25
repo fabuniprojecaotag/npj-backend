@@ -6,14 +6,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.ServerTimestamp;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
-import jakarta.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = AtendimentoTrabalhista.class, name = "Trabalhista")
 })
 public abstract class Atendimento {
+    @DocumentId
     private String id;
 
     private String status; // Enum Status convertido em String
@@ -36,12 +38,12 @@ public abstract class Atendimento {
     @JsonIgnore
     private Timestamp instante;
 
-    private String prazoEntregaDocumentos;
+    private Timestamp prazoEntregaDocumentos;
 
     private List<EntradaHistorico> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public Atendimento(String id, String status, String area, Timestamp instante, String prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
+    public Atendimento(String id, String status, String area, Timestamp instante, Timestamp prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
         this.id = id;
         setStatus(status);
         setArea(area);
@@ -52,11 +54,11 @@ public abstract class Atendimento {
     }
 
     public void setStatus(String status) {
-        this.status = Status.valueOf(status).getValue();
+        this.status = Status.valueOf(status.replace(" ", "_").toUpperCase()).getValue(); // Ex. "Processo ativo" → "PROCESSO_ATIVO" → "Processo ativo". É necessária esta transformação para o armazenamento customizado de constantes.
     }
 
     public void setArea(String area) {
-        this.area = Area.valueOf(area).getValue();
+        this.area = Area.valueOf(area.toUpperCase()).getValue(); // Ex. "Trabalhista" → "TRABALHISTA" → "Trabalhista". É necessária esta transformação para o armazenamento customizado de constantes.
     }
 
     public void setHistorico(List<EntradaHistorico> entradas) {
@@ -108,10 +110,12 @@ public abstract class Atendimento {
         private String id;
         private String titulo;
         private String descricao;
-        private Instant instante;
-        private Usuario criadoPor;
 
-        public EntradaHistorico(String id, String titulo, String descricao, @Nullable Instant instante, Usuario criadoPor) {
+        @JsonIgnore
+        private String instante;
+        private UsuarioMin criadoPor;
+
+        public EntradaHistorico(String id, String titulo, String descricao, String instante, UsuarioMin criadoPor) {
             this.id = id;
             this.titulo = titulo;
             this.descricao = descricao;
@@ -119,9 +123,21 @@ public abstract class Atendimento {
             this.criadoPor = criadoPor;
         }
 
-        public void setInstante(@Nullable Instant instante) {
-            if (instante == null) this.instante = Instant.now();
-            else this.instante = instante;
+        public void setInstante(String instante) {
+            if (instante == null) {
+                var instant = Instant.now().with(ChronoField.NANO_OF_SECOND, 0).atZone(ZoneId.of("-3"));
+                instante = instant.toString();
+            }
+            this.instante = instante;
+        }
+
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Data
+        public static class UsuarioMin {
+            private String email;
+            private String nome;
+            private String role;
         }
     }
 }

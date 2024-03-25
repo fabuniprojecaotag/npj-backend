@@ -4,15 +4,13 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
-import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.*;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.mockito.MockedStatic;
 
 import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithAssistido;
+import static com.uniprojecao.fabrica.gprojuridico.data.AtendimentoData.seedWithAtendimento;
 import static com.uniprojecao.fabrica.gprojuridico.data.ProcessoData.seedWithProcesso;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuario;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,6 +60,15 @@ public class Utils {
 
                     for (var processo : processos) {
                         pRepository.save("processos", processo.getNumero(), processo);
+                    }
+                case "Atendimento":
+                    var atRepository = (mock(AtendimentoRepository.class));
+                    var atendimentos = seedWithAtendimento();
+
+                    doCallRealMethod().when(atRepository).save(anyString(), anyString(), any());
+
+                    for (var atendimento : atendimentos) {
+                        atRepository.save("atendimentos", atendimento.getId(), atendimento);
                     }
             }
             return false;
@@ -120,6 +127,21 @@ public class Utils {
                 var processos = pRepository.findAll(limit, queryFilter);
 
                 return processos.isEmpty();
+            case "Atendimento":
+                var atRepository = (mock(AtendimentoRepository.class));
+                collectionName = "atendimentos";
+
+                try (MockedStatic<BaseRepository> baseRepository = mockStatic(BaseRepository.class)) {
+                    baseRepository.when(() -> atRepository.deleteAll(collectionName, null, limit, queryFilter)).thenCallRealMethod();
+                }
+
+                doCallRealMethod().when(atRepository).deleteAll(collectionName, null, limit, queryFilter);
+                when(atRepository.findAll(limit, queryFilter)).thenCallRealMethod();
+
+                atRepository.deleteAll(collectionName, null, limit, queryFilter);
+                var atendimentos = atRepository.findAll(limit, queryFilter);
+
+                return atendimentos.isEmpty();
         }
         return false;
     }

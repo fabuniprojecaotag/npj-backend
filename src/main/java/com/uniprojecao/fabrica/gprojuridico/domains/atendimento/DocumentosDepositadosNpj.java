@@ -8,17 +8,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DocumentosDepositadosNpj {
-
-    private boolean procuracao;
-    private boolean declaracaoPobreza;
-    private boolean ctps;
-    private boolean identidade;
-    private boolean cpf;
-    private boolean pis;
-    private boolean contrachequeUltimos3Meses;
-    private boolean extratoAnaliticoContaFgts;
-    private boolean trct;
-    private boolean comprovanteRecAntecip13;
-    private boolean acordoColetivoTrabalho;
+    private Boolean procuracao;
+    private Boolean declaracaoPobreza;
+    private Boolean ctps;
+    private Boolean identidade;
+    private Boolean cpf;
+    private Boolean pis;
+    private Boolean contrachequeUltimos3Meses;
+    private Boolean extratoAnaliticoContaFgts;
+    private Boolean trct;
+    private Boolean comprovanteRecAntecip13;
+    private Boolean acordoColetivoTrabalho;
     private String outrosDocumentos;
 }

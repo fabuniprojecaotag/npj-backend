@@ -14,7 +14,7 @@ import java.util.Map;
 public class AtendimentoCivil extends Atendimento {
     private FichaCivil ficha;
 
-    public AtendimentoCivil(String id, String status, String area, Timestamp instante, String prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos, FichaCivil ficha) {
+    public AtendimentoCivil(String id, String status, String area, Timestamp instante, Timestamp prazo, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos, FichaCivil ficha) {
         super(id, status, area, instante, prazo, historico, envolvidos);
         this.ficha = ficha;
     }

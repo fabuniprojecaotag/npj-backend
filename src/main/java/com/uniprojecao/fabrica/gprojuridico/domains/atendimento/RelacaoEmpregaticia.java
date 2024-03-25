@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RelacaoEmpregaticia {
-
     private String dataAdmissao;
     private String dataSaida;
     private String funcaoExercida;

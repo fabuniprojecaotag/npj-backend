@@ -1,9 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
 import com.google.cloud.Timestamp;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -12,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,14 +32,14 @@ public class AtendimentoDTO {
     private Timestamp instante;
 
     @Nullable
-    private String prazoEntregaDocumentos;
+    private Timestamp prazoEntregaDocumentos;
 
     private FichaDTO ficha;
 
     private List<EntradaHistoricoDTO> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante, @Nullable String prazo) {
+    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante, @Nullable Timestamp prazo) {
         this.id = id;
         setStatus(status);
         setArea(area);
@@ -109,8 +109,25 @@ public class AtendimentoDTO {
         private String descricao;
 
         @Nullable
-        private Instant instante;
+        private String instante;
 
-        private UsuarioDTO criadoPor;
+        private UsuarioMinDTO criadoPor;
+
+        public void setInstante(String instante) {
+            if (instante == null) {
+                var instant = Instant.now().with(ChronoField.NANO_OF_SECOND, 0).atZone(ZoneId.of("-3"));
+                instante = instant.toString();
+            }
+            this.instante = instante;
+        }
+
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Data
+        public static class UsuarioMinDTO {
+            private String email;
+            private String nome;
+            private String role;
+        }
     }
 }

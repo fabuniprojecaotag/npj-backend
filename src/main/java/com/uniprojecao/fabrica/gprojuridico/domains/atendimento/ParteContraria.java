@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParteContraria {
-
     private String nome;
     private String qualificacao;
     private String rg;

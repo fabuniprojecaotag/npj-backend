@@ -1,11 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import jakarta.annotation.Nullable;
 
 import java.text.DateFormat;
@@ -80,13 +78,9 @@ public class AtendimentoUtils {
                                             e.getTitulo(),
                                             e.getDescricao(),
                                             e.getInstante(),
-                                            new Usuario(
+                                            new Atendimento.EntradaHistorico.UsuarioMin(
                                                     e.getCriadoPor().getEmail(),
                                                     e.getCriadoPor().getNome(),
-                                                    e.getCriadoPor().getCpf(),
-                                                    e.getCriadoPor().getUnidadeInstitucional(),
-                                                    e.getCriadoPor().getSenha(),
-                                                    e.getCriadoPor().getStatus(),
                                                     e.getCriadoPor().getRole()
                                             )
                                     )
@@ -121,13 +115,9 @@ public class AtendimentoUtils {
                                             e.getTitulo(),
                                             e.getDescricao(),
                                             e.getInstante(),
-                                            new Usuario(
+                                            new Atendimento.EntradaHistorico.UsuarioMin(
                                                     e.getCriadoPor().getEmail(),
                                                     e.getCriadoPor().getNome(),
-                                                    e.getCriadoPor().getCpf(),
-                                                    e.getCriadoPor().getUnidadeInstitucional(),
-                                                    e.getCriadoPor().getSenha(),
-                                                    e.getCriadoPor().getStatus(),
                                                     e.getCriadoPor().getRole()
                                             )
                                     )
@@ -157,7 +147,11 @@ public class AtendimentoUtils {
     public static AtendimentoDTO atendimentoToDTO(Atendimento a) {
         var dto = new AtendimentoDTO();
         var historicoDTO = a.getHistorico().stream().map(
-                e -> new AtendimentoDTO.EntradaHistoricoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getInstante(), new UsuarioDTO(e.getCriadoPor()))
+                e -> new AtendimentoDTO.EntradaHistoricoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getInstante(),
+                        new AtendimentoDTO.EntradaHistoricoDTO.UsuarioMinDTO(
+                                e.getCriadoPor().getEmail(),
+                                e.getCriadoPor().getNome(),
+                                e.getCriadoPor().getRole()))
         ).toList();
 
         dto.setId(a.getId());
