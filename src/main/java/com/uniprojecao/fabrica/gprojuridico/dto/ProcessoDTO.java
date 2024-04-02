@@ -1,5 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +10,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class ProcessoDTO {
+    @NotBlank
     private String numero;
+    @NotBlank
     private String nome;
-    private String data;
+    @NotBlank
+    private String dataDistribuicao;
+    @NotBlank
     private String vara;
+    @NotBlank
     private String forum;
-    private String atendimento;
+
+    @Pattern(regexp = "^ATE\\d{5,}$") // exemplo[]: ["ATE00032", "ATE1234567"]
+    private String atendimentoId;
 }

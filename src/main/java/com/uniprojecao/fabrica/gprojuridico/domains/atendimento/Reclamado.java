@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reclamado {
-
     private String nome;
     private String tipoPessoa;
     private String numCadastro;

@@ -1,42 +1,36 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.snapshotToAtendimento;
 
 @Repository
 public class AtendimentoRepository extends BaseRepository {
 
-    public List<QueryDocumentSnapshot> findAllMin(String collectionName, @Nullable Integer limit) {
-        if (limit == null) limit = 20;
+    private final String COLLECTION_NAME = "atendimentos";
 
-        try {
-            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName)
-                    .select("id", "area", "status", "envolvidos").limit(limit).get();
-            return future.get().getDocuments();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+        String[] columnList = {"id", "area", "status", "envolvidos.assistido.nome"};
+        return BaseRepository.findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+                .stream()
+                .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true))
+                .toList();
     }
 
-    public List<QueryDocumentSnapshot> findAllMin(String collectionName, @Nullable Integer limit, @Nonnull String field,
-                                                  @Nonnull FilterType filterType , @Nonnull String value) {
-        if (limit == null) limit = 20;
+    public DocumentSnapshot findLast() {
+        return BaseRepository.findLast(COLLECTION_NAME);
+    }
 
-        try {
-            ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).where(filter(field, filterType, value))
-                    .select("id", "tipo", "status", "envolvidos.assistido.nome").limit(limit).get();
-            return future.get().getDocuments();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public Atendimento findById(String id) {
+        var snapshot = (DocumentSnapshot) BaseRepository.findById(COLLECTION_NAME, null, id);
+        return (Atendimento) snapshotToAtendimento(snapshot, false);
     }
 }

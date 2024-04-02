@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.cloud.firestore.annotation.Exclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class Usuario implements UserDetails {
 
     @Override
     @JsonIgnore
+    @Exclude
     public Collection<? extends GrantedAuthority> getAuthorities() {
         var coordenadorRole = new SimpleGrantedAuthority("ROLE_COORDENADOR");
         var secretariaRole = new SimpleGrantedAuthority("ROLE_SECRETARIA");
@@ -51,36 +53,42 @@ public class Usuario implements UserDetails {
 
     @Override
     @JsonIgnore
+    @Exclude
     public String getPassword() {
         return senha;
     }
 
     @Override
     @JsonIgnore
+    @Exclude
     public String getUsername() {
         return nome;
     }
 
     @Override
     @JsonIgnore
+    @Exclude
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
     @JsonIgnore
+    @Exclude
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
     @JsonIgnore
+    @Exclude
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
     @JsonIgnore
+    @Exclude
     public boolean isEnabled() {
         return true;
     }

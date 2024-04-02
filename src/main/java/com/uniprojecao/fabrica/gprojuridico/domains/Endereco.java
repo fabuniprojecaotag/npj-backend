@@ -1,14 +1,13 @@
-package com.uniprojecao.fabrica.gprojuridico.domains.assistido;
+package com.uniprojecao.fabrica.gprojuridico.domains;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Endereco {
-
     private String logradouro;
     private String bairro;
     private String numero;

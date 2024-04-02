@@ -3,18 +3,17 @@ package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class FichaCivil extends Ficha {
-
-    private String medidaJudicial;
     private ParteContraria parteContraria;
+    private String medidaJudicial;
 
-    public FichaCivil(String assinatura, Boolean dadosSensiveis, String medidaJudicial, ArrayList<Testemunha> testemunhas, ParteContraria parteContraria) {
+    public FichaCivil(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas, ParteContraria parteContraria, String medidaJudicial) {
         super(assinatura, dadosSensiveis, testemunhas);
-        this.medidaJudicial = medidaJudicial;
         this.parteContraria = parteContraria;
+        this.medidaJudicial = medidaJudicial;
     }
 }

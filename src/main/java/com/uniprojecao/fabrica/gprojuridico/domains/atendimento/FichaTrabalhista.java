@@ -3,30 +3,21 @@ package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class FichaTrabalhista extends Ficha {
-
-    private String outrasInformacoes;
     private Reclamado reclamado;
     private RelacaoEmpregaticia relacaoEmpregaticia;
     private DocumentosDepositadosNpj documentosDepositadosNpj;
+    private String outrasInformacoes;
 
-    public FichaTrabalhista(
-            String assinatura,
-            Boolean dadosSensiveis,
-            String medidaJudicial,
-            ArrayList<Testemunha> testemunhas,
-            Reclamado reclamado,
-            RelacaoEmpregaticia relacaoEmpregaticia,
-            DocumentosDepositadosNpj documentosDepositadosNpj
-    ) {
+    public FichaTrabalhista(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas, Reclamado reclamado, RelacaoEmpregaticia relacaoEmpregaticia, DocumentosDepositadosNpj documentosDepositadosNpj, String outrasInformacoes) {
         super(assinatura, dadosSensiveis, testemunhas);
-        this.outrasInformacoes = medidaJudicial;
         this.reclamado = reclamado;
         this.relacaoEmpregaticia = relacaoEmpregaticia;
         this.documentosDepositadosNpj = documentosDepositadosNpj;
+        this.outrasInformacoes = outrasInformacoes;
     }
 }

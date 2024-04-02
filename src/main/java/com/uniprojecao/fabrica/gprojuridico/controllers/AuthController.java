@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.dto.AuthenticationDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.LoginResponseDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.auth.AuthenticationDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.auth.LoginResponseDTO;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.security.TokenService;
 import jakarta.validation.Valid;
