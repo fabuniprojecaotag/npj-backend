@@ -74,7 +74,7 @@ public class UsuarioService implements UserDetailsService {
     public UsuarioDTO authenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) authentication.getPrincipal();
-        String id = usuario.getEmail();
+        String id = usuario.getId();
         return findById(id);
     }
 
