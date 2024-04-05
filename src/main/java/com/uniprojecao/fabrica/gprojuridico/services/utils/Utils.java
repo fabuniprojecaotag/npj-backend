@@ -20,6 +20,8 @@ import static com.google.cloud.firestore.Filter.*;
 
 public class Utils {
     public static Map<String, Object> convertUsingReflection(Object object, Boolean useSuperClass) {
+        if (object instanceof Map<?,?>) return (Map<String, Object>) object;
+
         Map<String, Object> map = new HashMap<>();
         Class<?> t = object.getClass();
         List<Field> fields = new ArrayList<>();

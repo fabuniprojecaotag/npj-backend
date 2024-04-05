@@ -18,7 +18,7 @@ public class AtendimentoRepository extends BaseRepository {
     private final String COLLECTION_NAME = "atendimentos";
 
     public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
-        String[] columnList = {"area", "status", "envolvidos.assistido.nome"};
+        String[] columnList = {"area", "status", "envolvidos.assistido"};
         return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true))
