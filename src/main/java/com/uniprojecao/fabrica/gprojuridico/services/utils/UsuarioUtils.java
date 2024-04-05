@@ -13,8 +13,27 @@ import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 public class UsuarioUtils {
 
     public static Usuario dtoToUsuario(UsuarioDTO dto) {
+        if (dto instanceof EstagiarioDTO e) {
+            var estagiario = new Estagiario();
+            var supervisorMinDTO = e.getSupervisor();
+
+            estagiario.setId(dto.getId());
+            estagiario.setEmail(dto.getEmail());
+            estagiario.setNome(dto.getNome());
+            estagiario.setCpf(dto.getCpf());
+            estagiario.setUnidadeInstitucional(dto.getUnidadeInstitucional());
+            estagiario.setSenha(dto.getSenha());
+            estagiario.setStatus(dto.getStatus());
+            estagiario.setRole(dto.getRole());
+            estagiario.setMatricula(e.getMatricula());
+            estagiario.setSemestre(e.getMatricula());
+            estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
+
+            return estagiario;
+        }
         Usuario usuario = new Usuario();
 
+        usuario.setId(dto.getId());
         usuario.setEmail(dto.getEmail());
         usuario.setNome(dto.getNome());
         usuario.setCpf(dto.getCpf());
@@ -22,17 +41,6 @@ public class UsuarioUtils {
         usuario.setSenha(dto.getSenha());
         usuario.setStatus(dto.getStatus());
         usuario.setRole(dto.getRole());
-
-        if (dto instanceof EstagiarioDTO estagiarioDTO) {
-            var estagiario = (Estagiario) usuario;
-            var supervisorMinDTO = estagiarioDTO.getSupervisor();
-
-            estagiario.setMatricula(estagiarioDTO.getMatricula());
-            estagiario.setSemestre(estagiarioDTO.getMatricula());
-            estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
-
-            return estagiario;
-        }
 
         return usuario;
     }
@@ -50,19 +58,17 @@ public class UsuarioUtils {
     }
 
     public static UsuarioDTO usuarioToDto(Usuario u) {
-        var dto = new UsuarioDTO();
-
-        dto.setEmail(u.getEmail());
-        dto.setNome(u.getNome());
-        dto.setCpf(u.getCpf());
-        dto.setUnidadeInstitucional(u.getUnidadeInstitucional());
-        dto.setSenha(u.getSenha());
-        dto.setStatus(u.getStatus());
-        dto.setRole(u.getRole());
-
         if (u instanceof Estagiario e) {
-            var eDto = (EstagiarioDTO) dto;
+            var eDto = new EstagiarioDTO();
 
+            eDto.setId(u.getId());
+            eDto.setEmail(u.getEmail());
+            eDto.setNome(u.getNome());
+            eDto.setCpf(u.getCpf());
+            eDto.setUnidadeInstitucional(u.getUnidadeInstitucional());
+            eDto.setSenha(u.getSenha());
+            eDto.setStatus(u.getStatus());
+            eDto.setRole(u.getRole());
             eDto.setMatricula(e.getMatricula());
             eDto.setSemestre(e.getSemestre());
             eDto.setSupervisor(new SupervisorMinDTO(
@@ -72,6 +78,16 @@ public class UsuarioUtils {
 
             return eDto;
         }
+        var dto = new UsuarioDTO();
+
+        dto.setId(u.getId());
+        dto.setEmail(u.getEmail());
+        dto.setNome(u.getNome());
+        dto.setCpf(u.getCpf());
+        dto.setUnidadeInstitucional(u.getUnidadeInstitucional());
+        dto.setSenha(u.getSenha());
+        dto.setStatus(u.getStatus());
+        dto.setRole(u.getRole());
 
         return dto;
     }
