@@ -19,7 +19,7 @@ public class TokenService {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         return JWT.create()
                 .withIssuer("NPJ-Api")
-                .withSubject(usuario.getEmail())
+                .withSubject(usuario.getId())
                 .withExpiresAt(genExpirationDate())
                 .sign(algorithm);
 

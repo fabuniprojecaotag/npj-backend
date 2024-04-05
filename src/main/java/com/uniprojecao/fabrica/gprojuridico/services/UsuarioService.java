@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
@@ -30,7 +31,8 @@ public class UsuarioService implements UserDetailsService {
     private final String COLLECTION_NAME = "usuarios";
 
     public UsuarioDTO insert(UsuarioDTO dto) {
-        var id = dto.getEmail();
+        var id = (!(dto instanceof EstagiarioDTO e)) ? dto.getEmail().replaceAll("@projecao.br", "") : e.getMatricula();
+        dto.setId(id);
 
         verifyIfExistsUserInDatabase(dto, id);
         encryptPassword(dto);
