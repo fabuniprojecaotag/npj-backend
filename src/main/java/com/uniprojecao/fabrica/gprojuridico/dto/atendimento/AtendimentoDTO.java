@@ -1,5 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import jakarta.annotation.Nullable;
@@ -19,7 +21,12 @@ import java.util.Map;
 
 @NoArgsConstructor
 @Data
-public class AtendimentoDTO {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AtendimentoCivilDTO.class, name = "Civil"),
+        @JsonSubTypes.Type(value = AtendimentoTrabalhistaDTO.class, name = "Trabalhista")
+})
+public abstract class AtendimentoDTO {
     // TODO: Tornar regex 'opcional' ao adicionar quantificador de 0 ou 1.
     // @Pattern(regexp = "^ATE\\d{5,}$") // exemplo[]: ["ATE00032", "ATE1234567"]
     // @Nullable

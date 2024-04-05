@@ -23,7 +23,7 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 public class BaseRepository {
 
     @Autowired
-    public static Firestore firestore; // TODO: Conferir se o modificador de acesso deste atributo fica público ou não.
+    public Firestore firestore;
 
     public void save(String collectionName, Object data) {
         try {
@@ -41,7 +41,7 @@ public class BaseRepository {
         }
     }
 
-    static List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         List<Object> list = new ArrayList<>();
 
         try {
@@ -56,17 +56,17 @@ public class BaseRepository {
         }
     }
 
-    static DocumentSnapshot findLast(String collectionName) {
+    DocumentSnapshot findLast(String collectionName) {
         try {
             ApiFuture<QuerySnapshot> future = firestore.collection(collectionName).orderBy("instante", DESCENDING).limit(1).get();
             var list = future.get().getDocuments();
-            return list.get(0);
+            return (!list.isEmpty()) ? list.get(0) : null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    static Object findById(String collectionName, @Nullable Class<?> type, String id) {
+    Object findById(String collectionName, @Nullable Class<?> type, String id) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
@@ -97,7 +97,7 @@ public class BaseRepository {
         return true;
     }
 
-    static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         if (list == null) list = new String[]{"id"};
 
         ApiFuture<QuerySnapshot> future;

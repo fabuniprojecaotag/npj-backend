@@ -21,7 +21,7 @@ public class ProcessoService {
     private final String COLLECTION_NAME = "processos";
 
     public ProcessoDTO insert(ProcessoDTO dto) {
-        repository.save(COLLECTION_NAME , dtoToProcesso(dto));
+        repository.save(COLLECTION_NAME, dto.getNumero(), dtoToProcesso(dto));
         return dto;
     }
 

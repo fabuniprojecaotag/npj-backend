@@ -3,24 +3,23 @@ package com.uniprojecao.fabrica.gprojuridico.services.utils;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
-import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
-import com.google.cloud.firestore.DocumentSnapshot;
-import jakarta.annotation.Nullable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.cloud.firestore.Filter.*;
 
 public class Utils {
-    public static Map<String, Object> convertUsingReflection(Object object, @Nullable Boolean useSuperClass) throws IllegalAccessException {
+    public static Map<String, Object> convertUsingReflection(Object object, Boolean useSuperClass) {
         Map<String, Object> map = new HashMap<>();
         Class<?> t = object.getClass();
         List<Field> fields = new ArrayList<>();
@@ -34,28 +33,14 @@ public class Utils {
 
         for (Field field: fields) {
             field.setAccessible(true);
-            map.put(field.getName(), field.get(object));
+            try {
+                map.put(field.getName(), field.get(object));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return map;
-    }
-
-    public static List<String> getAllFieldNames(List<String> fields, Class<?> type) {
-        for (Field field: type.getDeclaredFields()) {
-            fields.add(field.getName());
-        }
-        return fields;
-    }
-
-    public static void verifySnapshotIfDocumentExists(DocumentSnapshot snapshot) {
-        /*
-         * Existe um erro no método .get() do DocumentSnapshot, pois um documento
-         * que não existe no Firestore é, de alguma forma, encontrado e retornado
-         * com campos null. Por isso, faz-se necessário essa condicional abaixo.
-         */
-        if (!snapshot.exists()) {
-            throw new ResourceNotFoundException();
-        }
     }
 
     public static Filter filter(QueryFilter filter) {

@@ -23,8 +23,14 @@ public class AtendimentoService {
 
     public AtendimentoDTO insert(AtendimentoDTO data) {
         DocumentSnapshot doc = repository.findLast();
-        String id = (String) doc.get("id");
-        String customId = doc.exists() ? setAndReturnId(data, id) : setAndReturnId(data, null);
+        String customId;
+        if (doc != null) {
+            String id = doc.getId();
+            customId = setAndReturnId(data, id);
+        } else {
+            customId = setAndReturnId(data, null);
+        }
+
         repository.save(COLLECTION_NAME, customId, dtoToAtendimento(data));
 
         data.setId(customId);

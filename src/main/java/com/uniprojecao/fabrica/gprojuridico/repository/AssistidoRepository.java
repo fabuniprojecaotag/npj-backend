@@ -19,14 +19,14 @@ public class AssistidoRepository extends BaseRepository {
 
     public List<AssistidoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = {"nome", "email", "cpf", "quantidade.atendimentos", "quantidade.processos"};
-        return BaseRepository.findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+        return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AssistidoMinDTO) snapshotToAssistido((DocumentSnapshot) o, true))
                 .toList();
     }
 
     public Assistido findById(String id) {
-        var snapshot = (DocumentSnapshot) BaseRepository.findById(COLLECTION_NAME, null, id);
+        var snapshot = (DocumentSnapshot) findById(COLLECTION_NAME, null, id);
         return (Assistido) snapshotToAssistido(snapshot, false);
     }
 }

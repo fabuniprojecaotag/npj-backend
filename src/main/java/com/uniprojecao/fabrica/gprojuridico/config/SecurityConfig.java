@@ -46,13 +46,13 @@ public class SecurityConfig {
 
                         .requestMatchers(POST, "/login").permitAll()
 
-                        .requestMatchers(POST, "/usuários").hasRole(secretariaRole)
+                        .requestMatchers(POST, "/usuarios").hasRole(secretariaRole)
                         .requestMatchers(POST, "/processos").hasRole(professorRole)
 
-                        .requestMatchers(PUT, "/usuários/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(secretariaRole)
+                        .requestMatchers(PUT, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(secretariaRole)
 
-                        .requestMatchers(DELETE, "/usuários", "/assistidos", "/atendimentos", "/processos").hasRole(coordenadorRole)
-                        .requestMatchers(DELETE, "/usuários/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "/usuarios", "/assistidos", "/atendimentos", "/processos").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(coordenadorRole)
 
                         .anyRequest().authenticated()
                 )

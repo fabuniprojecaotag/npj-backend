@@ -2,9 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.dto.assistido;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -18,9 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AssistidoCivil.class, name = "Civil"),
-        @JsonSubTypes.Type(value = AssistidoTrabalhista.class, name = "Trabalhista"),
-        @JsonSubTypes.Type(value = AssistidoFull.class, name = "Full"),
+        @JsonSubTypes.Type(value = AssistidoCivilDTO.class, name = "Civil"),
+        @JsonSubTypes.Type(value = AssistidoTrabalhistaDTO.class, name = "Trabalhista"),
+        @JsonSubTypes.Type(value = AssistidoFullDTO.class, name = "Full"),
 })
 public abstract class AssistidoDTO {
     @NotBlank
@@ -58,8 +55,8 @@ public abstract class AssistidoDTO {
         this.rg = rg;
         this.cpf = cpf;
         this.nacionalidade = nacionalidade;
-        this.escolaridade = Escolaridade.valueOf(escolaridade).getValue();
-        this.estadoCivil = EstadoCivil.valueOf(estadoCivil).getValue();
+        setEscolaridade(escolaridade);
+        setEstadoCivil(estadoCivil);
         this.profissao = profissao;
         this.telefone = telefone;
         this.email = email;
@@ -69,11 +66,17 @@ public abstract class AssistidoDTO {
     }
 
     public void setEscolaridade(String escolaridade) {
-        this.escolaridade = Escolaridade.valueOf(escolaridade).getValue();
+        this.escolaridade = Escolaridade.valueOf(escolaridade
+                .replace(" ", "_")
+                .replace("é", "e")
+                .replace("ó", "o")
+                .replace("ç", "c")
+                .replace("ã", "a")
+                .toUpperCase()).getValue();
     }
 
     public void setEstadoCivil(String estadoCivil) {
-        this.estadoCivil = EstadoCivil.valueOf(estadoCivil).getValue();
+        this.estadoCivil = EstadoCivil.valueOf(estadoCivil.toUpperCase()).getValue();
     }
 
     @NoArgsConstructor

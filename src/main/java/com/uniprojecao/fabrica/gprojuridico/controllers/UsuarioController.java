@@ -14,7 +14,7 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.createUri;
 
 @RestController
-@RequestMapping("/usuários")
+@RequestMapping("/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioService service;

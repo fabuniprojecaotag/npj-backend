@@ -4,7 +4,8 @@ import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
+import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.*;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.encryptPassword;
@@ -20,10 +22,11 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilt
 import static java.lang.Integer.parseInt;
 
 @Service
-@RequiredArgsConstructor
 public class UsuarioService implements UserDetailsService {
 
-    private final UsuarioRepository repository;
+    @Autowired
+    private UsuarioRepository repository;
+
     private final String COLLECTION_NAME = "usuarios";
 
     public UsuarioDTO insert(UsuarioDTO dto) {
@@ -41,7 +44,24 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public UsuarioDTO findById(String id) {
-        return usuarioToDto(repository.findById(id));
+        var usuario = repository.findById(id);
+        return (usuario != null) ? usuarioToDto(usuario) : null;
+    }
+
+    private void verifyIfExistsUserInDatabase(UsuarioDTO dto, String id) {
+        var foundedUser = findById(id);
+        if (foundedUser != null) {
+            String userEmail = foundedUser.getEmail();
+            String userCpf = foundedUser.getCpf();
+            Boolean equalEmails = Objects.equals(userEmail, id);
+            Boolean equalCpfs = Objects.equals(userCpf, dto.getCpf());
+
+            if (equalEmails && equalCpfs) {
+                throw new UserAlreadyCreatedException(userEmail, userCpf);
+            } else {
+                throw new UserAlreadyCreatedException(UserUniqueField.EMAIL, userEmail);
+            }
+        }
     }
 
     @Override

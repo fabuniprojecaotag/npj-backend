@@ -1,55 +1,49 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.google.cloud.firestore.Firestore;
+import com.uniprojecao.fabrica.gprojuridico.Utils;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAtendimento;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import static com.uniprojecao.fabrica.gprojuridico.Utils.*;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.Clazz;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Sem esta annotation, o atributo "count" não é incrementado sequencialmente.
 class AtendimentoRepositoryTest {
 
-    private final BaseRepository baseRepository;
-    private final AtendimentoRepository underTest;
-    private static Firestore firestore;
-    private static Boolean databaseEmpty = true;
+    private final AtendimentoRepository underTest = new AtendimentoRepository();
+    private final Utils utils = new Utils();
+    private Integer count = 0;
+
 
     public AtendimentoRepositoryTest() {
-        baseRepository = mock(BaseRepository.class);
-        underTest = mock(AtendimentoRepository.class);
+        underTest.firestore = getFirestore();
     }
 
-    @Timeout(7)
-    @BeforeAll
-    static void beforeAll() {
-        firestore = getFirestoreOptions();
-
-        BaseRepository.firestore = firestore;
-        databaseEmpty = seedDatabase(databaseEmpty, "Atendimento");
+    @BeforeEach
+    void setUp() {
+        utils.seedDatabase(count, Clazz.ATENDIMENTO);
     }
 
     @Test
     void findAll() {
         QueryFilter queryFilter = new QueryFilter("area", "Civil", FilterType.EQUAL);
 
-        when(underTest.findAll(20, null)).thenCallRealMethod();
-        when(underTest.findAll(20, queryFilter)).thenCallRealMethod();
-
         var list1 = underTest.findAll(20, null);
         assertEquals(2, list1.size());
 
         var list2 = underTest.findAll(20, queryFilter);
         assertEquals(1, list2.size());
+
+        count++;
     }
 
     @ParameterizedTest
@@ -57,14 +51,14 @@ class AtendimentoRepositoryTest {
     void findById(@CsvToAtendimento Atendimento atendimento) {
         String id = atendimento.getId();
 
-        when(underTest.findById(id)).thenCallRealMethod();
-
         Atendimento result = underTest.findById(id);
         assertEquals(result, atendimento);
+
+        count++;
     }
 
-    @AfterAll
-    static void afterAll() {
-        clearDatabase(null, "Atendimento");
+    @AfterEach
+    void tearDown() {
+        if (count == 3) utils.clearDatabase(null, Clazz.ATENDIMENTO);
     }
 }

@@ -19,14 +19,14 @@ public class UsuarioRepository extends BaseRepository {
 
     public List<UsuarioMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = {"nome", "email", "role", "status", "matricula", "semestre"};
-        return BaseRepository.findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+        return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (UsuarioMinDTO) snapshotToUsuario((DocumentSnapshot) o, true))
                 .toList();
     }
 
     public Usuario findById(String id) {
-        var snapshot = (DocumentSnapshot) BaseRepository.findById(COLLECTION_NAME, null, id);
+        var snapshot = (DocumentSnapshot) findById(COLLECTION_NAME, null, id);
         return (Usuario) snapshotToUsuario(snapshot, false);
     }
 }

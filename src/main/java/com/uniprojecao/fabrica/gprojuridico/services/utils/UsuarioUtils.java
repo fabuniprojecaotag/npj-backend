@@ -9,13 +9,9 @@ import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.SupervisorMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
-import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
-import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
-import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
-
-import java.util.Objects;
 
 public class UsuarioUtils {
+
     public static Usuario dtoToUsuario(UsuarioDTO dto) {
         Usuario usuario = new Usuario();
 
@@ -41,26 +37,11 @@ public class UsuarioUtils {
         return usuario;
     }
 
-    public static void verifyIfExistsUserInDatabase(UsuarioDTO dto, String id) {
-        var user = new UsuarioService(new UsuarioRepository());
-        var foundedUser = user.findById(id);
-        if (foundedUser != null) {
-            String userEmail = foundedUser.getEmail();
-            String userCpf = foundedUser.getCpf();
-            Boolean equalEmails = Objects.equals(userEmail, id);
-            Boolean equalCpfs = Objects.equals(userCpf, dto.getCpf());
-
-            if (equalEmails && equalCpfs) {
-                throw new UserAlreadyCreatedException(userEmail, userCpf);
-            } else {
-                throw new UserAlreadyCreatedException(UserUniqueField.EMAIL, userEmail);
-            }
-        }
-    }
-
     public enum UserUniqueField { EMAIL }
 
     public static Object snapshotToUsuario(DocumentSnapshot snapshot, Boolean returnMinDTO) {
+        if (snapshot == null) return null;
+
         boolean dadosEstagiario = snapshot.contains("matricula");
 
         if (returnMinDTO) return (dadosEstagiario) ? snapshot.toObject(EstagiarioMinDTO.class) : snapshot.toObject(UsuarioMinDTO.class);
