@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -78,23 +79,20 @@ public class BaseRepository {
         }
     }
 
-    public Boolean update(String collectionName, String id, Map<String, Object> data) {
-        firestore.collection(collectionName).document(id).update(data);
-        return true;
+    public void update(String collectionName, String id, Map<String, Object> data) {
+        firestore.collection(collectionName).document(id).update(convertMap(data));
     }
 
-    public Boolean delete(String collectionName, String id) {
+    public void delete(String collectionName, String id) {
         firestore.collection(collectionName).document(id).delete();
-        return true;
     }
 
-    public Boolean deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
+    public void deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
         var result = getDocSnapshots(collectionName, list, limit, queryFilter);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();
             sleep(200); // Eventualmente será necessário considerar usar programação reativa no sistema, pois a deleção assíncrona deve garantir a deleção em massa por completo.
         }
-        return true;
     }
 
     List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
@@ -110,6 +108,26 @@ public class BaseRepository {
             return future.get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static Map<String, Object> convertMap(Map<String, Object> inputMap) {
+        Map<String, Object> outputMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
+            processEntry(entry.getKey(), entry.getValue(), outputMap, "");
+        }
+        return outputMap;
+    }
+
+    private static void processEntry(String key, Object value, Map<String, Object> outputMap, String parentKey) {
+        // Se o valor é um Map, deve-se percorrer o método recursivamente para concatenar as chaves aninhadas
+        if (value instanceof Map) {
+            Map<String, Object> subMap = (Map<String, Object>) value;
+            for (Map.Entry<String, Object> entry : subMap.entrySet()) {
+                processEntry(entry.getKey(), entry.getValue(), outputMap, parentKey + key + ".");
+            }
+        } else {
+            outputMap.put(parentKey + key, value); // Ex. de entrada percorrida recursivamente a ser adicionada: {"ficha.parteContraria.nome", "Mauro Silva"}
         }
     }
 }
