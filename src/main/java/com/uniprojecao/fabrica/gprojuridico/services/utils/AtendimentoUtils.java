@@ -34,6 +34,8 @@ public class AtendimentoUtils {
             return dto;
         }
 
+        if (snapshot == null) return null;
+
         String area = snapshot.getString("area");
         if (Objects.equals(area, "Trabalhista")) {
             return snapshot.toObject(AtendimentoTrabalhista.class);
@@ -70,7 +72,7 @@ public class AtendimentoUtils {
 
     public static Atendimento dtoToAtendimento(AtendimentoDTO dto) {
         var o = convertUsingReflection(dto, false);
-        
+
         if (dto.getArea() == "Trabalhista") {
             var ficha = (FichaTrabalhistaDTO) o.get("ficha");
             return new AtendimentoTrabalhista(
