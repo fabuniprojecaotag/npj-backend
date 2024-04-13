@@ -52,7 +52,17 @@ public class UsuarioUtils {
 
         boolean dadosEstagiario = snapshot.contains("matricula");
 
-        if (returnMinDTO) return (dadosEstagiario) ? snapshot.toObject(EstagiarioMinDTO.class) : snapshot.toObject(UsuarioMinDTO.class);
+        if (returnMinDTO) {
+            if (dadosEstagiario) {
+                var object = snapshot.toObject(EstagiarioMinDTO.class);
+                object.setId(snapshot.getId());
+                return object;
+            } else {
+                var object = snapshot.toObject(UsuarioMinDTO.class);
+                object.setId(snapshot.getId());
+                return object;
+            }
+        }
 
         return (dadosEstagiario) ? snapshot.toObject(Estagiario.class) : snapshot.toObject(Usuario.class);
     }
