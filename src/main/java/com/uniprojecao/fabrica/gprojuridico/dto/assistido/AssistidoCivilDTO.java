@@ -3,9 +3,10 @@ package com.uniprojecao.fabrica.gprojuridico.dto.assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @NoArgsConstructor
 @Data
@@ -33,7 +34,11 @@ public class AssistidoCivilDTO extends AssistidoDTO {
                 a.getEmail(),
                 new Filiacao(a.getFiliacao().getMae(), a.getFiliacao().getPai()),
                 a.getRemuneracao(),
-                new Endereco(a.getEndereco().getLogradouro(), a.getEndereco().getBairro(), a.getEndereco().getNumero(), a.getEndereco().getComplemento(), a.getEndereco().getCep(), a.getEndereco().getCidade()));
+                Map.of(
+                        "residencial", a.getEndereco().get("residencial"),
+                        "comercial", a.getEndereco().get("comercial")
+                )
+        );
         naturalidade = a.getNaturalidade();
         dataNascimento = a.getDataNascimento();
         dependentes = a.getDependentes();

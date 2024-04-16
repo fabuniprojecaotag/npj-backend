@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.dto.assistido;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @NoArgsConstructor
 @Data
@@ -48,9 +51,9 @@ public abstract class AssistidoDTO {
 
     @Pattern(regexp = "^(R\\$)\\s\\d+(\\.\\d{1,3})*$") // exemplo[]: ["R$ 9000", "R$ 90.000", "R$ 90.000.000"]
     private String remuneracao;
-    private Endereco endereco;
+    private Map<String, Endereco> endereco;
 
-    public AssistidoDTO(String nome, String rg, String cpf, String nacionalidade, String escolaridade, String estadoCivil, String profissao, String telefone, String email, Filiacao filiacao, String remuneracao, Endereco endereco) {
+    public AssistidoDTO(String nome, String rg, String cpf, String nacionalidade, String escolaridade, String estadoCivil, String profissao, String telefone, String email, Filiacao filiacao, String remuneracao, Map<String, Endereco> endereco) {
         this.nome = nome;
         this.rg = rg;
         this.cpf = cpf;
@@ -90,26 +93,6 @@ public abstract class AssistidoDTO {
         @NotBlank
         @Size(min = 3, max = 60)
         private String pai;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class Endereco {
-        @NotBlank
-        private String logradouro;
-        private String bairro;
-        private String numero;
-        private String complemento;
-
-        @Pattern(regexp = "^\\d{5}-\\d{3}$") // exemplo: 01001-000
-        private String cep;
-        private String cidade;
-
-        public Endereco(String logradouro, String number) {
-            this.logradouro = logradouro;
-            this.numero = number;
-        }
     }
 
     @Getter

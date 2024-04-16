@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
@@ -12,6 +11,8 @@ import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoFullDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoTrabalhistaDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
+
+import java.util.Map;
 
 public class AssistidoUtils {
     public static Object snapshotToAssistido(DocumentSnapshot snapshot, Boolean returnMinDTO) {
@@ -82,13 +83,12 @@ public class AssistidoUtils {
                 dto.getFiliacao().getMae(),
                 dto.getFiliacao().getPai()));
         assistido.setRemuneracao(dto.getRemuneracao());
-        assistido.setEndereco(new Endereco(
-                dto.getEndereco().getLogradouro(),
-                dto.getEndereco().getBairro(),
-                dto.getEndereco().getNumero(),
-                dto.getEndereco().getComplemento(),
-                dto.getEndereco().getCep(),
-                dto.getEndereco().getCidade()));
+        assistido.setEndereco(
+                Map.of(
+                        "residencial", dto.getEndereco().get("residencial"),
+                        "comercial", dto.getEndereco().get("comercial")
+                )
+        );
         return assistido;
     }
 }
