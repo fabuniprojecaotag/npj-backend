@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AtendimentoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class AtendimentoController {
     private AtendimentoService service;
 
     @PostMapping
-    public ResponseEntity<AtendimentoDTO> insert(@RequestBody AtendimentoDTO data) {
+    public ResponseEntity<AtendimentoDTO> insert(@RequestBody @Valid AtendimentoDTO data) {
         var result = service.insert(data);
         var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(data);

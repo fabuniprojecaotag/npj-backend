@@ -26,7 +26,7 @@ public class UsuarioUtils {
             estagiario.setStatus(dto.getStatus());
             estagiario.setRole(dto.getRole());
             estagiario.setMatricula(e.getMatricula());
-            estagiario.setSemestre(e.getMatricula());
+            estagiario.setSemestre(e.getSemestre());
             estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
 
             return estagiario;

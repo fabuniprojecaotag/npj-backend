@@ -26,7 +26,7 @@ public class UsuarioDTO {
     private String email;
 
     @NotBlank
-    @Size(min = 3)
+    @Size(min = 3, max = 60)
     private String nome;
 
     @Pattern(regexp = "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$")
@@ -34,7 +34,7 @@ public class UsuarioDTO {
 
     private String unidadeInstitucional;
 
-    @Size(min = 6, max = 12)
+    @Size(min = 6, max = 20)
     private String senha;
 
     @AssertTrue
