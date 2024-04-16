@@ -18,7 +18,7 @@ public class AssistidoRepository extends BaseRepository {
     private static final String COLLECTION_NAME = "assistidos";
 
     public List<AssistidoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
-        String[] columnList = {"nome", "email", "cpf", "quantidade.atendimentos", "quantidade.processos"};
+        String[] columnList = {"nome", "email", "quantidade.atendimentos", "quantidade.processos"};
         return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AssistidoMinDTO) snapshotToAssistido((DocumentSnapshot) o, true))
