@@ -17,7 +17,6 @@ public class AssistidoCivilDTO extends AssistidoDTO {
     @NotBlank
     private String dataNascimento;
 
-    @NotBlank
     @PositiveOrZero
     private Integer dependentes;
 

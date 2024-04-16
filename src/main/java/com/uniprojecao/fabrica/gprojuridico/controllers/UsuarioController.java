@@ -20,7 +20,7 @@ public class UsuarioController {
     private UsuarioService service;
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid UsuarioDTO data) {
+    public ResponseEntity<UsuarioDTO> insert(@RequestBody @Valid UsuarioDTO data) {
         var result = service.insert(data);
         var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(result);

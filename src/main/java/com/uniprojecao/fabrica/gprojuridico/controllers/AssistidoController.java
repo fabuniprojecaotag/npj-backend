@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class AssistidoController {
     private AssistidoService service;
 
     @PostMapping
-    public ResponseEntity<AssistidoDTO> insert(@RequestBody AssistidoDTO data) {
+    public ResponseEntity<AssistidoDTO> insert(@RequestBody @Valid AssistidoDTO data) {
         var result = service.insert(data);
         var id = result.getCpf();
         return ResponseEntity.created(createUri(id)).body(result);
