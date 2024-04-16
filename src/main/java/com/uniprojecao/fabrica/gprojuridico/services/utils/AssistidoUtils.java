@@ -17,7 +17,11 @@ import java.util.Map;
 public class AssistidoUtils {
     public static Object snapshotToAssistido(DocumentSnapshot snapshot, Boolean returnMinDTO) {
 
-        if (returnMinDTO) return snapshot.toObject(AssistidoMinDTO.class);
+        if (returnMinDTO) {
+            var object = snapshot.toObject(AssistidoMinDTO.class);
+            object.setCpf(snapshot.getId());
+            return object;
+        }
 
         Boolean dadosFCivil =
                 snapshot.contains("naturalidade") &&
