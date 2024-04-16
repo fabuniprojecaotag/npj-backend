@@ -3,11 +3,12 @@ package com.uniprojecao.fabrica.gprojuridico.dto.assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,7 +36,11 @@ public class AssistidoTrabalhistaDTO extends AssistidoDTO {
                 a.getEmail(),
                 new Filiacao(a.getFiliacao().getMae(), a.getFiliacao().getPai()),
                 a.getRemuneracao(),
-                new Endereco(a.getEndereco().getLogradouro(), a.getEndereco().getBairro(), a.getEndereco().getNumero(), a.getEndereco().getComplemento(), a.getEndereco().getCep(), a.getEndereco().getCidade()));
+                Map.of(
+                        "residencial", a.getEndereco().get("residencial"),
+                        "comercial", a.getEndereco().get("comercial")
+                )
+        );
         ctps = new Ctps(a.getCtps().getNumero(), a.getCtps().getSerie(), a.getCtps().getUf());
         pis = a.getPis();
         empregadoAtualmente = a.getEmpregadoAtualmente();
