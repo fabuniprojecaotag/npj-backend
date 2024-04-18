@@ -79,7 +79,9 @@ public abstract class AssistidoDTO {
     }
 
     public void setEstadoCivil(String estadoCivil) {
-        this.estadoCivil = EstadoCivil.valueOf(estadoCivil.toUpperCase()).getValue();
+        this.estadoCivil = EstadoCivil.valueOf(estadoCivil
+                .replace("ú", "u")
+                .toUpperCase()).getValue();
     }
 
     @NoArgsConstructor
