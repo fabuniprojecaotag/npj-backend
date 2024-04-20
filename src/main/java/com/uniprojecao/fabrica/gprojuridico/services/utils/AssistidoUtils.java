@@ -46,9 +46,8 @@ public class AssistidoUtils {
     }
 
     public static Assistido dtoToAssistido(AssistidoDTO dto) {
-        Assistido assistido = getAssistido(dto);
-
         if (dto instanceof AssistidoCivilDTO assistidoCivilDTO) {
+            Assistido assistido = getAssistido(dto, "Civil");
             AssistidoCivil ac = (AssistidoCivil) assistido;
             ac.setNaturalidade(assistidoCivilDTO.getNaturalidade());
             ac.setDataNascimento(assistidoCivilDTO.getDataNascimento());
@@ -57,6 +56,7 @@ public class AssistidoUtils {
             return ac;
 
         } else if (dto instanceof AssistidoTrabalhistaDTO assistidoTrabalhistaDTO) {
+            Assistido assistido = getAssistido(dto, "Trabalhista");
             AssistidoTrabalhista at = (AssistidoTrabalhista) assistido;
 
             at.setCtps(new AssistidoTrabalhista.Ctps(
@@ -71,8 +71,8 @@ public class AssistidoUtils {
         return null;
     }
 
-    private static Assistido getAssistido(AssistidoDTO dto) {
-        Assistido assistido = new AssistidoCivil();
+    private static Assistido getAssistido(AssistidoDTO dto, String tipo) {
+        Assistido assistido = (tipo == "Trabalhista") ? new AssistidoTrabalhista() : new AssistidoCivil();
 
         assistido.setNome(dto.getNome());
         assistido.setRg(dto.getRg());
