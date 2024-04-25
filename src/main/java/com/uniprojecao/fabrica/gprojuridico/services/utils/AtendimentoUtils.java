@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.services.utils;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
+import com.uniprojecao.fabrica.gprojuridico.dto.EnderecoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
@@ -27,7 +28,7 @@ public class AtendimentoUtils {
             var dto = snapshot.toObject(AtendimentoMinDTO.class);
             dto.setId(snapshot.getId());
             var assistido = convertUsingReflection(snapshot.get("envolvidos.assistido"), false);
-            dto.setAssistido(new EnvolvidoDTO((String) assistido.get("id"), (String) assistido.get("nome"), (Endereco) assistido.get("endereco"))); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
+            dto.setAssistido(new EnvolvidoDTO((String) assistido.get("id"), (String) assistido.get("nome"))); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
             Date date = snapshot.getCreateTime().toDate();
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -104,7 +105,14 @@ public class AtendimentoUtils {
                                     .map(t -> new Ficha.Testemunha(
                                                     t.getNome(),
                                                     t.getQualificao(),
-                                                    t.getEndereco()
+                                                    new Endereco(
+                                                            t.getEndereco().getLogradouro(),
+                                                            t.getEndereco().getBairro(),
+                                                            t.getEndereco().getBairro(),
+                                                            t.getEndereco().getCep(),
+                                                            t.getEndereco().getNumero(),
+                                                            t.getEndereco().getCidade()
+                                                    )
                                             )
                                     ).toList(),
                             ficha.getReclamado(),
@@ -143,7 +151,14 @@ public class AtendimentoUtils {
                                     .map(t -> new Ficha.Testemunha(
                                                     t.getNome(),
                                                     t.getQualificao(),
-                                                    t.getEndereco()
+                                                    new Endereco(
+                                                            t.getEndereco().getLogradouro(),
+                                                            t.getEndereco().getBairro(),
+                                                            t.getEndereco().getComplemento(),
+                                                            t.getEndereco().getCep(),
+                                                            t.getEndereco().getNumero(),
+                                                            t.getEndereco().getCidade()
+                                                    )
                                             )
                                     ).toList(),
                             ficha.getParteContraria(),
@@ -174,7 +189,14 @@ public class AtendimentoUtils {
             at.setEnvolvidos(a.getEnvolvidos());
             var testemunhasDTO = f.getTestemunhas()
                     .stream()
-                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), t.getEndereco()))
+                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), new EnderecoDTO(
+                            t.getEndereco().getLogradouro(),
+                            t.getEndereco().getBairro(),
+                            t.getEndereco().getComplemento(),
+                            t.getEndereco().getCep(),
+                            t.getEndereco().getNumero(),
+                            t.getEndereco().getCidade()
+                    )))
                     .toList();
             at.setFicha(new FichaTrabalhistaDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getReclamado(), f.getRelacaoEmpregaticia(), f.getDocumentosDepositadosNpj(), f.getOutrasInformacoes()));
 
@@ -198,8 +220,15 @@ public class AtendimentoUtils {
 
             var testemunhasDTO = f.getTestemunhas()
                     .stream()
-                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), t.getEndereco()))
-                    .toList();
+                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), new EnderecoDTO(
+                            t.getEndereco().getLogradouro(),
+                            t.getEndereco().getBairro(),
+                            t.getEndereco().getComplemento(),
+                            t.getEndereco().getCep(),
+                            t.getEndereco().getNumero(),
+                            t.getEndereco().getCidade()
+                    )))
+                            .toList();
             ac.setFicha(new FichaCivilDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getParteContraria(), f.getMedidaJudicial()));
 
             return ac;

@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.dto.EnderecoDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +40,6 @@ public abstract class FichaDTO {
         @NotBlank
         private String nome;
         private String qualificao;
-        private Endereco endereco; // TODO: Adicionar tipo EnderecoDTO
+        private EnderecoDTO endereco; // TODO: Adicionar tipo EnderecoDTO
     }
 }
