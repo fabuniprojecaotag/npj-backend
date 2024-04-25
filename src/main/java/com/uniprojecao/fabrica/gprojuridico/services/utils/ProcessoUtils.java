@@ -11,7 +11,8 @@ public class ProcessoUtils {
                 dto.getDataDistribuicao(),
                 dto.getVara(),
                 dto.getForum(),
-                dto.getAtendimentoId()
+                dto.getAtendimentoId(),
+                dto.getStatus()
         );
     }
 
@@ -22,7 +23,8 @@ public class ProcessoUtils {
                 entity.getDataDistribuicao(),
                 entity.getVara(),
                 entity.getForum(),
-                entity.getAtendimentoId()
+                entity.getAtendimentoId(),
+                entity.getStatus()
         );
     }
 }

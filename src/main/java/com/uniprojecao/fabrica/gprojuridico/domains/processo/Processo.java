@@ -16,4 +16,5 @@ public class Processo {
     private String vara;
     private String forum;
     private String atendimentoId;
+    private String status;
 }

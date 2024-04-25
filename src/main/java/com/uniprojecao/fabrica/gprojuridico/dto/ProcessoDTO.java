@@ -23,4 +23,6 @@ public class ProcessoDTO {
 
     @Pattern(regexp = "^ATE\\d{5,}$") // exemplo[]: ["ATE00032", "ATE1234567"]
     private String atendimentoId;
+    @NotBlank
+    private String status;
 }

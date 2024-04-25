@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.*;
@@ -26,7 +27,7 @@ public class AtendimentoUtils {
             var dto = snapshot.toObject(AtendimentoMinDTO.class);
             dto.setId(snapshot.getId());
             var assistido = convertUsingReflection(snapshot.get("envolvidos.assistido"), false);
-            dto.setAssistido(new EnvolvidoDTO((String) assistido.get("id"), (String) assistido.get("nome"))); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
+            dto.setAssistido(new EnvolvidoDTO((String) assistido.get("id"), (String) assistido.get("nome"), (Endereco) assistido.get("endereco"))); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
             Date date = snapshot.getCreateTime().toDate();
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
