@@ -41,7 +41,7 @@ public abstract class Ficha {
     @AllArgsConstructor
     public static class Testemunha {
         private String nome;
-        private String qualificao;
+        private String qualificacao;
         private Endereco endereco;
     }
 }

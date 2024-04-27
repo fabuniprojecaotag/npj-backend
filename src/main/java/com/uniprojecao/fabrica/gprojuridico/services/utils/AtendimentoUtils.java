@@ -104,7 +104,7 @@ public class AtendimentoUtils {
                                     .stream()
                                     .map(t -> new Ficha.Testemunha(
                                                     t.getNome(),
-                                                    t.getQualificao(),
+                                                    t.getQualificacao(),
                                                     new Endereco(
                                                             t.getEndereco().getLogradouro(),
                                                             t.getEndereco().getBairro(),
@@ -150,7 +150,7 @@ public class AtendimentoUtils {
                                     .stream()
                                     .map(t -> new Ficha.Testemunha(
                                                     t.getNome(),
-                                                    t.getQualificao(),
+                                                    t.getQualificacao(),
                                                     new Endereco(
                                                             t.getEndereco().getLogradouro(),
                                                             t.getEndereco().getBairro(),
@@ -189,7 +189,7 @@ public class AtendimentoUtils {
             at.setEnvolvidos(a.getEnvolvidos());
             var testemunhasDTO = f.getTestemunhas()
                     .stream()
-                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), new EnderecoDTO(
+                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificacao(), new EnderecoDTO(
                             t.getEndereco().getLogradouro(),
                             t.getEndereco().getBairro(),
                             t.getEndereco().getNumero(),
@@ -220,7 +220,7 @@ public class AtendimentoUtils {
 
             var testemunhasDTO = f.getTestemunhas()
                     .stream()
-                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), new EnderecoDTO(
+                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificacao(), new EnderecoDTO(
                             t.getEndereco().getLogradouro(),
                             t.getEndereco().getBairro(),
                             t.getEndereco().getNumero(),

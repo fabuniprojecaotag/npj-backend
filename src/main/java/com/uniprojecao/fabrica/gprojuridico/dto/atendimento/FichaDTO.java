@@ -39,7 +39,7 @@ public abstract class FichaDTO {
     public static class TestemunhaDTO {
         @NotBlank
         private String nome;
-        private String qualificao;
+        private String qualificacao;
         private EnderecoDTO endereco; // TODO: Adicionar tipo EnderecoDTO
     }
 }
