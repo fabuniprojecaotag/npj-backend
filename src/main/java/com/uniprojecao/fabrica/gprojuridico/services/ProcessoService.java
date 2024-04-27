@@ -32,8 +32,8 @@ public class ProcessoService {
                 .toList();
     }
 
-    public ProcessoDTO findById(String id) {
-        return processoToDto(repository.findById(id));
+    public ProcessoDTO findByNumero(String numero) {
+        return processoToDto(repository.findByNumero(numero));
     }
 
     public void update(String id, Map<String, Object> data) {

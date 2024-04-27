@@ -17,7 +17,8 @@ public class ProcessoAggregator implements ArgumentsAggregator {
                 accessor.getString(2),
                 accessor.getString(3),
                 accessor.getString(4),
-                accessor.getString(5)
+                accessor.getString(5),
+                accessor.getString(6)
         );
     }
 }

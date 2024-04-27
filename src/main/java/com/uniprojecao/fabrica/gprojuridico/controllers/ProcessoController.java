@@ -44,9 +44,9 @@ public class ProcessoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProcessoDTO> findById(@PathVariable String id) {
-        var result = service.findById(id);
+    @GetMapping("/{numero}")
+    public ResponseEntity<ProcessoDTO> findById(@PathVariable String numero) {
+        var result = service.findByNumero(numero);
         return ResponseEntity.ok(result);
     }
 

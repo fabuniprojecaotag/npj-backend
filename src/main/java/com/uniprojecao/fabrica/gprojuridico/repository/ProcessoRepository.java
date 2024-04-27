@@ -14,14 +14,14 @@ public class ProcessoRepository extends BaseRepository {
     private static final Class<Processo> TYPE = Processo.class;
 
     public List<Processo> findAll(int limit, @Nullable QueryFilter queryFilter) {
-        String[] columnList = new String[]{"numero", "nome", "dataDistribuicao", "vara", "forum", "atendimentoId"};
+        String[] columnList = new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
         return findAll(COLLECTION_NAME, columnList, TYPE, limit, queryFilter)
                 .stream()
                 .map(o -> (Processo) o)
                 .toList();
     }
 
-    public Processo findById(String id) {
-        return (Processo) findById(COLLECTION_NAME, TYPE, id);
+    public Processo findByNumero(String numero) {
+        return (Processo) findById(COLLECTION_NAME, TYPE, numero);
     }
 }

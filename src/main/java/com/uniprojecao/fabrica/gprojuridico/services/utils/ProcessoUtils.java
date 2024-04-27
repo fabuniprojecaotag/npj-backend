@@ -7,11 +7,11 @@ public class ProcessoUtils {
     public static Processo dtoToProcesso(ProcessoDTO dto) {
         return new Processo(
                 dto.getNumero(),
+                dto.getAtendimentoId(),
                 dto.getNome(),
                 dto.getDataDistribuicao(),
                 dto.getVara(),
                 dto.getForum(),
-                dto.getAtendimentoId(),
                 dto.getStatus()
         );
     }
@@ -19,11 +19,11 @@ public class ProcessoUtils {
     public static ProcessoDTO processoToDto(Processo entity) {
         return new ProcessoDTO(
                 entity.getNumero(),
+                entity.getAtendimentoId(),
                 entity.getNome(),
                 entity.getDataDistribuicao(),
                 entity.getVara(),
                 entity.getForum(),
-                entity.getAtendimentoId(),
                 entity.getStatus()
         );
     }

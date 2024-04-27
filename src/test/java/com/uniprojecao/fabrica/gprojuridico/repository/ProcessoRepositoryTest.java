@@ -50,7 +50,7 @@ class ProcessoRepositoryTest {
     void findById(@CsvToProcesso Processo processo) {
         String id = processo.getNumero();
 
-        Processo result = underTest.findById(id);
+        Processo result = underTest.findByNumero(id);
         assertEquals(result, processo);
 
         count++;
