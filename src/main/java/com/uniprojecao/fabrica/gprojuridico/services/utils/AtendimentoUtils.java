@@ -192,9 +192,9 @@ public class AtendimentoUtils {
                     .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), new EnderecoDTO(
                             t.getEndereco().getLogradouro(),
                             t.getEndereco().getBairro(),
+                            t.getEndereco().getNumero(),
                             t.getEndereco().getComplemento(),
                             t.getEndereco().getCep(),
-                            t.getEndereco().getNumero(),
                             t.getEndereco().getCidade()
                     )))
                     .toList();
@@ -223,9 +223,9 @@ public class AtendimentoUtils {
                     .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), new EnderecoDTO(
                             t.getEndereco().getLogradouro(),
                             t.getEndereco().getBairro(),
+                            t.getEndereco().getNumero(),
                             t.getEndereco().getComplemento(),
                             t.getEndereco().getCep(),
-                            t.getEndereco().getNumero(),
                             t.getEndereco().getCidade()
                     )))
                             .toList();
