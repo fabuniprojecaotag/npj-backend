@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
