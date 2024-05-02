@@ -9,9 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,18 +17,21 @@ import java.util.regex.Pattern;
 import static com.google.cloud.firestore.Filter.*;
 
 public class Utils {
-    public static Map<String, Object> convertUsingReflection(Object object, Boolean useSuperClass) {
-        if (object instanceof Map<?,?>) return (Map<String, Object>) object;
+    public static <T> Map<String, Object> convertUsingReflection(T object, Boolean useSuperClass) {
+        if (object instanceof Map<?, ?>) {
+            @SuppressWarnings("unchecked") // Suppress warning as it's safe due to the instanceof check
+            Map<String, Object> castedMap = (Map<String, Object>) object;
+            return castedMap;
+        }
 
         Map<String, Object> map = new HashMap<>();
         Class<?> t = object.getClass();
-        List<Field> fields = new ArrayList<>();
+        Field[] fields;
 
         if (useSuperClass) {
-            fields.addAll(List.of(t.getSuperclass().getDeclaredFields()));
-            fields.addAll(List.of(t.getDeclaredFields()));
+            fields = getAllFields(t);
         } else {
-            fields.addAll(List.of(t.getDeclaredFields()));
+            fields = t.getDeclaredFields();
         }
 
         for (Field field: fields) {
@@ -43,6 +44,20 @@ public class Utils {
         }
 
         return map;
+    }
+
+    // Helper method to get all fields, including those from superclasses
+    private static Field[] getAllFields(Class<?> clazz) {
+        Map<String, Field> fieldsMap = new HashMap<>();
+        while (clazz != null && clazz != Object.class) {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (!fieldsMap.containsKey(field.getName())) {
+                    fieldsMap.put(field.getName(), field);
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return fieldsMap.values().toArray(new Field[0]);
     }
 
     public static Filter filter(QueryFilter filter) {
