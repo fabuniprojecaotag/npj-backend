@@ -7,7 +7,6 @@ import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
 import com.uniprojecao.fabrica.gprojuridico.services.utils.Utils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,11 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuarioDTO;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.encryptPassword;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.validateText;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mockStatic;
@@ -48,32 +44,6 @@ class UsuarioServiceTest {
             }
 
             assertEquals(4, changedPassword);
-        }
-
-        @Test
-        @Disabled("validateReceivedUserEmail() está desativado, pois foi aplicado o @Pattern no atributo email de usuário para receber regex.")
-        void validateReceivedUserEmail() {
-            var emailRegex = "^[0-9]{9}@projecao\\.edu\\.br|[a-z]{3,}\\.[a-z]{3,}@projecao\\.br$";
-            var list = List.of(
-                    "202102300@projecao.edu.br", // true
-                    "100020003@projecao.edu.br", // true
-                    "1234567@projecao.edu.br",
-                    "202010100@projecao.br",
-                    "marcos.santana@projecao.br", // true
-                    "marcos.santana@projecao.brs",
-                    "marcos.santana@projecao.edu.br"
-            );
-            int validatedEmails = 0;
-
-            for (var email : list) {
-                try (MockedStatic<Utils> utilities = mockStatic(Utils.class)) {
-                    utilities.when(() -> validateText(emailRegex, email)).thenCallRealMethod();
-                }
-                Boolean result = validateText(emailRegex, email);
-                if (result) validatedEmails++;
-            }
-
-            assertEquals(3, validatedEmails);
         }
     }
 
