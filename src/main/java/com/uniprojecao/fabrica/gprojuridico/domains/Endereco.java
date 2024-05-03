@@ -14,9 +14,4 @@ public class Endereco {
     private String complemento;
     private String cep;
     private String cidade;
-
-    public Endereco(String logradouro, String number) {
-        this.logradouro = logradouro;
-        this.numero = number;
-    }
 }
