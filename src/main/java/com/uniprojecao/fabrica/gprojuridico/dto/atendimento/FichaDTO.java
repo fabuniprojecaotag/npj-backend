@@ -29,10 +29,6 @@ public abstract class FichaDTO {
         this.testemunhas.addAll(testemunhas);
     }
 
-    public void removeTestemunha(TestemunhaDTO testemunha) {
-        testemunhas.remove(testemunha);
-    }
-
     @NoArgsConstructor
     @AllArgsConstructor
     @Data

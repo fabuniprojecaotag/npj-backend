@@ -32,10 +32,6 @@ public abstract class Ficha {
         this.testemunhas.addAll(testemunhas);
     }
 
-    public void removeTestemunha(Testemunha testemunha) {
-        testemunhas.remove(testemunha);
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

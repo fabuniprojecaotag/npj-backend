@@ -108,9 +108,9 @@ public class AtendimentoUtils {
                                                     new Endereco(
                                                             t.getEndereco().getLogradouro(),
                                                             t.getEndereco().getBairro(),
-                                                            t.getEndereco().getBairro(),
-                                                            t.getEndereco().getCep(),
                                                             t.getEndereco().getNumero(),
+                                                            t.getEndereco().getComplemento(),
+                                                            t.getEndereco().getCep(),
                                                             t.getEndereco().getCidade()
                                                     )
                                             )
@@ -154,9 +154,9 @@ public class AtendimentoUtils {
                                                     new Endereco(
                                                             t.getEndereco().getLogradouro(),
                                                             t.getEndereco().getBairro(),
+                                                            t.getEndereco().getNumero(),
                                                             t.getEndereco().getComplemento(),
                                                             t.getEndereco().getCep(),
-                                                            t.getEndereco().getNumero(),
                                                             t.getEndereco().getCidade()
                                                     )
                                             )

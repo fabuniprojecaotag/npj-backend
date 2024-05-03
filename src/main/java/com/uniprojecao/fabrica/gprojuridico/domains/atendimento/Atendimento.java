@@ -66,10 +66,6 @@ public abstract class Atendimento {
         this.envolvidos.putAll(envolvidos);
     }
 
-    public void removeEnvolvido(String envolvido) {
-        this.envolvidos.remove(envolvido);
-    }
-
     @Getter
     enum Status {
         REPROVADO("Reprovado"),
