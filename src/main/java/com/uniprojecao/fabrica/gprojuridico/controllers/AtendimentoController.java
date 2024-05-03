@@ -24,7 +24,7 @@ public class AtendimentoController {
     public ResponseEntity<AtendimentoDTO> insert(@RequestBody @Valid AtendimentoDTO data) {
         var result = service.insert(data);
         var id = result.getId();
-        return ResponseEntity.created(createUri(id)).body(data);
+        return ResponseEntity.created(createUri(id)).body(result);
     }
 
     @GetMapping
