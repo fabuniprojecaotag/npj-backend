@@ -18,8 +18,8 @@ public class EstagiarioDTO extends UsuarioDTO {
     private SupervisorMinDTO supervisor;
 
     // Este construtor é necessário por conta dos testes unitários.
-    public EstagiarioDTO(String email, String nome, String cpf, String u, String senha, Boolean status, String role, String matricula, String semestre, SupervisorMinDTO supervisor) {
-        super(email, nome, cpf, u, senha, status, role);
+    public EstagiarioDTO(String id, String email, String nome, String cpf, String u, String senha, Boolean status, String role, String matricula, String semestre, SupervisorMinDTO supervisor) {
+        super(id, email, nome, cpf, u, senha, status, role);
         this.matricula = matricula;
         this.semestre = semestre;
         this.supervisor = supervisor;

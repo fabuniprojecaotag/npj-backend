@@ -23,8 +23,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = Estagiario.class, name = "Estagiario"),
 })
 public class Usuario implements UserDetails {
-
     @DocumentId
+    private String id;
     private String email;
     private String nome;
     private String cpf;

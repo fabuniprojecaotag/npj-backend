@@ -1,5 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import jakarta.annotation.Nullable;
@@ -9,9 +11,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +18,12 @@ import java.util.Map;
 
 @NoArgsConstructor
 @Data
-public class AtendimentoDTO {
-    // TODO: Tornar regex 'opcional' ao adicionar quantificador de 0 ou 1.
-    // @Pattern(regexp = "^ATE\\d{5,}$") // exemplo[]: ["ATE00032", "ATE1234567"]
-    // @Nullable
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AtendimentoCivilDTO.class, name = "Civil"),
+        @JsonSubTypes.Type(value = AtendimentoTrabalhistaDTO.class, name = "Trabalhista")
+})
+public abstract class AtendimentoDTO {
     private String id;
 
     private String status; // Enum Status convertido em String
@@ -57,10 +58,6 @@ public class AtendimentoDTO {
 
     public void setEnvolvidos(Map<String, EnvolvidoDTO> envolvidos) {
         this.envolvidos.putAll(envolvidos);
-    }
-
-    public void removeEnvolvido(String envolvido) {
-        this.envolvidos.remove(envolvido);
     }
 
     @Getter
@@ -108,14 +105,6 @@ public class AtendimentoDTO {
         private String instante;
 
         private UsuarioMinDTO criadoPor;
-
-        public void setInstante(String instante) {
-            if (instante == null) {
-                var instant = Instant.now().with(ChronoField.NANO_OF_SECOND, 0).atZone(ZoneId.of("-3"));
-                instante = instant.toString();
-            }
-            this.instante = instante;
-        }
 
         @NoArgsConstructor
         @AllArgsConstructor

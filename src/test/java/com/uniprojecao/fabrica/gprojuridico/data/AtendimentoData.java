@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 
@@ -23,7 +24,8 @@ public class AtendimentoData {
         Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(Map.of("estagiario", estagiario, "professor", professor, "secretaria", secretaria));
 
         // Para o atributo "ficha" (Ficha Civil)
-        var parteContraria = new ParteContraria("Alberto Gomes Pereira", "Padeiro", "4.223.124-5", "948.234.153-23", "alberto.gomes@example.com", "QSA Conjunto A casa 12", "(61) 98392-2934");
+        var enderecoParteContraria = new Endereco("Rua das Flores", "São Paulo", "123", "Apartamento 101", "01234-567", "São Paulo");
+        var parteContraria = new ParteContraria("Alberto Gomes Pereira", "Padeiro", "4.223.124-5", "948.234.153-23", "alberto.gomes@example.com", enderecoParteContraria, "(61) 98392-2934");
         var fichaCivil = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null);
 
         // Para o atributo "ficha" (Ficha Trabalhista)

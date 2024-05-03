@@ -2,7 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 
 import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

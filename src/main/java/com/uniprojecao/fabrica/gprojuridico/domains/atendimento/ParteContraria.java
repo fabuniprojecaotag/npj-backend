@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,6 @@ public class ParteContraria {
     private String rg;
     private String cpf;
     private String email;
-    private String endereco;
+    private Endereco endereco;
     private String telefone;
 }

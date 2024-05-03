@@ -12,6 +12,7 @@ public class AssistidoMinDTO {
     private String email;
     private String cpf;
     private Quantidade quantidade;
+    private String telefone;
 
     @NoArgsConstructor
     @AllArgsConstructor

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = Estagiario.class, name = "Estagiario"),
 })
 public class UsuarioMinDTO {
+    private String id;
     private String email;
     private String nome;
     private Boolean status;

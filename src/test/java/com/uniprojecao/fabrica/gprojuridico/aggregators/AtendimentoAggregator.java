@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -99,7 +100,14 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
                     accessor.getString(15),
                     accessor.getString(16),
                     accessor.getString(17),
-                    accessor.getString(18),
+                    new Endereco(
+                            accessor.getString(18),
+                            accessor.getString(19),
+                            accessor.getString(20),
+                            accessor.getString(21),
+                            accessor.getString(22),
+                            accessor.getString(23)
+                    ),
                     accessor.getString(19)
             );
             var ficha = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null); // campos da herança ignorados.

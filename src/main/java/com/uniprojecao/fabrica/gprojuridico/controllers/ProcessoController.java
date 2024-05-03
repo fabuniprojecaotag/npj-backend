@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.ProcessoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class ProcessoController {
     private ProcessoService service;
 
     @PostMapping
-    public ResponseEntity<ProcessoDTO> insert(@RequestBody ProcessoDTO data) {
+    public ResponseEntity<ProcessoDTO> insert(@RequestBody @Valid ProcessoDTO data) {
         var result = service.insert(data);
         var id = result.getNumero();
         return ResponseEntity.created(createUri(id)).body(result);
@@ -44,9 +44,9 @@ public class ProcessoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProcessoDTO> findById(@PathVariable String id) {
-        var result = service.findById(id);
+    @GetMapping("/{numero}")
+    public ResponseEntity<ProcessoDTO> findById(@PathVariable String numero) {
+        var result = service.findByNumero(numero);
         return ResponseEntity.ok(result);
     }
 

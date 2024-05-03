@@ -1,7 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
+import com.uniprojecao.fabrica.gprojuridico.dto.EnderecoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import jakarta.annotation.Nullable;
@@ -13,6 +16,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.convertUsingReflection;
+
 public class AtendimentoUtils {
     /**
      * Converts the passed snapshot to the corresponding DTO through the
@@ -21,13 +26,17 @@ public class AtendimentoUtils {
     public static Object snapshotToAtendimento(DocumentSnapshot snapshot, Boolean returnMinDTO) {
         if (returnMinDTO) {
             var dto = snapshot.toObject(AtendimentoMinDTO.class);
-            dto.setAssistido((String) snapshot.get("envolvidos.assistido.nome")); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
+            dto.setId(snapshot.getId());
+            var assistido = convertUsingReflection(snapshot.get("envolvidos.assistido"), false);
+            dto.setAssistido(new EnvolvidoDTO((String) assistido.get("id"), (String) assistido.get("nome"))); // don't use toString() because if the snapshot doesn't contain this field, NullException is thrown
             Date date = snapshot.getCreateTime().toDate();
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             dto.setDataCriacao(df.format(date));
             return dto;
         }
+
+        if (snapshot == null) return null;
 
         String area = snapshot.getString("area");
         if (Objects.equals(area, "Trabalhista")) {
@@ -64,43 +73,10 @@ public class AtendimentoUtils {
     }
 
     public static Atendimento dtoToAtendimento(AtendimentoDTO dto) {
-        if (dto instanceof AtendimentoCivilDTO ac) {
-            return new AtendimentoCivil(
-                    dto.getId(),
-                    dto.getStatus(),
-                    dto.getArea(),
-                    dto.getInstante(),
-                    dto.getHistorico()
-                            .stream()
-                            .map(e -> new Atendimento.EntradaHistorico(
-                                            e.getId(),
-                                            e.getTitulo(),
-                                            e.getDescricao(),
-                                            e.getInstante(),
-                                            new Atendimento.EntradaHistorico.UsuarioMin(
-                                                    e.getCriadoPor().getEmail(),
-                                                    e.getCriadoPor().getNome(),
-                                                    e.getCriadoPor().getRole()
-                                            )
-                                    )
-                            ).toList(),
-                    dto.getEnvolvidos(),
-                    new FichaCivil(
-                            ac.getFicha().getAssinatura(),
-                            ac.getFicha().getDadosSensiveis(),
-                            ac.getFicha().getTestemunhas()
-                                    .stream()
-                                    .map(t -> new Ficha.Testemunha(
-                                            t.getNome(),
-                                            t.getQualificao(),
-                                            t.getEndereco()
-                                            )
-                                    ).toList(),
-                            ac.getFicha().getParteContraria(),
-                            ac.getFicha().getMedidaJudicial()
-                    )
-            );
-        } else if (dto instanceof AtendimentoTrabalhistaDTO at) {
+        var o = convertUsingReflection(dto, false);
+
+        if (dto.getArea() == "Trabalhista") {
+            var ficha = (FichaTrabalhistaDTO) o.get("ficha");
             return new AtendimentoTrabalhista(
                     dto.getId(),
                     dto.getStatus(),
@@ -122,71 +98,140 @@ public class AtendimentoUtils {
                             ).toList(),
                     dto.getEnvolvidos(),
                     new FichaTrabalhista(
-                            at.getFicha().getAssinatura(),
-                            at.getFicha().getDadosSensiveis(),
-                            at.getFicha().getTestemunhas()
+                            dto.getFicha().getAssinatura(),
+                            dto.getFicha().getDadosSensiveis(),
+                            dto.getFicha().getTestemunhas()
                                     .stream()
                                     .map(t -> new Ficha.Testemunha(
                                                     t.getNome(),
-                                                    t.getQualificao(),
-                                                    t.getEndereco()
+                                                    t.getQualificacao(),
+                                                    new Endereco(
+                                                            t.getEndereco().getLogradouro(),
+                                                            t.getEndereco().getBairro(),
+                                                            t.getEndereco().getNumero(),
+                                                            t.getEndereco().getComplemento(),
+                                                            t.getEndereco().getCep(),
+                                                            t.getEndereco().getCidade()
+                                                    )
                                             )
                                     ).toList(),
-                            at.getFicha().getReclamado(),
-                            at.getFicha().getRelacaoEmpregaticia(),
-                            at.getFicha().getDocumentosDepositadosNpj(),
-                            at.getFicha().getOutrasInformacoes()
+                            ficha.getReclamado(),
+                            ficha.getRelacaoEmpregaticia(),
+                            ficha.getDocumentosDepositadosNpj(),
+                            ficha.getOutrasInformacoes()
+                    )
+            );
+        } else {
+            var ficha = (FichaCivilDTO) o.get("ficha");
+            return new AtendimentoCivil(
+                    dto.getId(),
+                    dto.getStatus(),
+                    dto.getArea(),
+                    dto.getInstante(),
+                    dto.getHistorico()
+                            .stream()
+                            .map(e -> new Atendimento.EntradaHistorico(
+                                            e.getId(),
+                                            e.getTitulo(),
+                                            e.getDescricao(),
+                                            e.getInstante(),
+                                            new Atendimento.EntradaHistorico.UsuarioMin(
+                                                    e.getCriadoPor().getEmail(),
+                                                    e.getCriadoPor().getNome(),
+                                                    e.getCriadoPor().getRole()
+                                            )
+                                    )
+                            ).toList(),
+                    dto.getEnvolvidos(),
+                    new FichaCivil(
+                            dto.getFicha().getAssinatura(),
+                            dto.getFicha().getDadosSensiveis(),
+                            dto.getFicha().getTestemunhas()
+                                    .stream()
+                                    .map(t -> new Ficha.Testemunha(
+                                                    t.getNome(),
+                                                    t.getQualificacao(),
+                                                    new Endereco(
+                                                            t.getEndereco().getLogradouro(),
+                                                            t.getEndereco().getBairro(),
+                                                            t.getEndereco().getNumero(),
+                                                            t.getEndereco().getComplemento(),
+                                                            t.getEndereco().getCep(),
+                                                            t.getEndereco().getCidade()
+                                                    )
+                                            )
+                                    ).toList(),
+                            ficha.getParteContraria(),
+                            ficha.getMedidaJudicial()
                     )
             );
         }
-        return null;
     }
 
     public static AtendimentoDTO atendimentoToDTO(Atendimento a) {
-        var dto = new AtendimentoDTO();
-        var historicoDTO = a.getHistorico().stream().map(
-                e -> new AtendimentoDTO.EntradaHistoricoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getInstante(),
-                        new AtendimentoDTO.EntradaHistoricoDTO.UsuarioMinDTO(
-                                e.getCriadoPor().getEmail(),
-                                e.getCriadoPor().getNome(),
-                                e.getCriadoPor().getRole()))
-        ).toList();
+        var o = convertUsingReflection(a, false);
 
-        dto.setId(a.getId());
-        dto.setStatus(a.getStatus());
-        dto.setArea(a.getArea());
-        dto.setInstante(a.getInstante());
-        dto.setHistorico(historicoDTO);
-        dto.setEnvolvidos(a.getEnvolvidos());
+        if (a.getArea() == "Trabalhista") {
+            var at = new AtendimentoTrabalhistaDTO();
+            var f = (FichaTrabalhista) o.get("ficha");
+            var historicoDTO = a.getHistorico().stream().map(
+                    e -> new AtendimentoDTO.EntradaHistoricoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getInstante(),
+                            new AtendimentoDTO.EntradaHistoricoDTO.UsuarioMinDTO(
+                                    e.getCriadoPor().getEmail(),
+                                    e.getCriadoPor().getNome(),
+                                    e.getCriadoPor().getRole()))
+            ).toList();
+            at.setId(a.getId());
+            at.setStatus(a.getStatus());
+            at.setArea(a.getArea());
+            at.setInstante(a.getInstante());
+            at.setHistorico(historicoDTO);
+            at.setEnvolvidos(a.getEnvolvidos());
+            var testemunhasDTO = f.getTestemunhas()
+                    .stream()
+                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificacao(), new EnderecoDTO(
+                            t.getEndereco().getLogradouro(),
+                            t.getEndereco().getBairro(),
+                            t.getEndereco().getNumero(),
+                            t.getEndereco().getComplemento(),
+                            t.getEndereco().getCep(),
+                            t.getEndereco().getCidade()
+                    )))
+                    .toList();
+            at.setFicha(new FichaTrabalhistaDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getReclamado(), f.getRelacaoEmpregaticia(), f.getDocumentosDepositadosNpj(), f.getOutrasInformacoes()));
 
-        if (a instanceof AtendimentoCivil aCivil) {
-            var aCivilDTO = (AtendimentoCivilDTO) dto;
-            FichaCivil f = aCivil.getFicha();
+            return at;
+        } else {
+            var ac = new AtendimentoCivilDTO();
+            var f = (FichaCivil) o.get("ficha");
+            var historicoDTO = a.getHistorico().stream().map(
+                    e -> new AtendimentoDTO.EntradaHistoricoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getInstante(),
+                            new AtendimentoDTO.EntradaHistoricoDTO.UsuarioMinDTO(
+                                    e.getCriadoPor().getEmail(),
+                                    e.getCriadoPor().getNome(),
+                                    e.getCriadoPor().getRole()))
+            ).toList();
+            ac.setId(a.getId());
+            ac.setStatus(a.getStatus());
+            ac.setArea(a.getArea());
+            ac.setInstante(a.getInstante());
+            ac.setHistorico(historicoDTO);
+            ac.setEnvolvidos(a.getEnvolvidos());
 
             var testemunhasDTO = f.getTestemunhas()
                     .stream()
-                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), t.getEndereco()))
-                    .toList();
-            var fCivilDTO = new FichaCivilDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getParteContraria(), f.getMedidaJudicial());
+                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificacao(), new EnderecoDTO(
+                            t.getEndereco().getLogradouro(),
+                            t.getEndereco().getBairro(),
+                            t.getEndereco().getNumero(),
+                            t.getEndereco().getComplemento(),
+                            t.getEndereco().getCep(),
+                            t.getEndereco().getCidade()
+                    )))
+                            .toList();
+            ac.setFicha(new FichaCivilDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getParteContraria(), f.getMedidaJudicial()));
 
-            aCivilDTO.setFicha(fCivilDTO);
-
-            return aCivilDTO;
-        } else if (a instanceof AtendimentoTrabalhista aTrabalhista) {
-            var aTrabalhistaDTO = (AtendimentoTrabalhistaDTO) dto;
-            FichaTrabalhista f = aTrabalhista.getFicha();
-
-            var testemunhasDTO = f.getTestemunhas()
-                    .stream()
-                    .map(t -> new FichaDTO.TestemunhaDTO(t.getNome(), t.getQualificao(), t.getEndereco()))
-                    .toList();
-            var fTrabalhistaDTO = new FichaTrabalhistaDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getReclamado(), f.getRelacaoEmpregaticia(), f.getDocumentosDepositadosNpj(), f.getOutrasInformacoes());
-
-            aTrabalhistaDTO.setFicha(fTrabalhistaDTO);
-
-            return aTrabalhistaDTO;
+            return ac;
         }
-
-        return null;
     }
 }

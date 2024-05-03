@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ErrorResponse {
@@ -14,6 +16,7 @@ public class ErrorResponse {
     private final Integer status;
     private final String error;
     private final String path;
+    private final List<FieldMessage> errors = new ArrayList<>();
 
     public ErrorResponse(Integer status, String error, String path) {
 
@@ -24,5 +27,14 @@ public class ErrorResponse {
         this.status = status;
         this.error = error;
         this.path = path;
+    }
+
+    public void addError(String field, String message) {
+        errors.removeIf(x -> x.field().equals(field));
+        errors.add(new FieldMessage(field, message));
+    }
+
+    public record FieldMessage(String field, String message) {
+
     }
 }

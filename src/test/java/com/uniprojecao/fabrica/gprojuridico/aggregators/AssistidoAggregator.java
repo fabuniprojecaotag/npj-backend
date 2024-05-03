@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 
+import java.util.HashMap;
+
 public class AssistidoAggregator implements ArgumentsAggregator {
     @Override
     public Object aggregateArguments(
@@ -33,7 +35,9 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             ac.setEmail(accessor.getString(8));
             ac.setFiliacao(new Assistido.Filiacao(accessor.getString(9), accessor.getString(10)));
             ac.setRemuneracao(accessor.getString(11));
-            ac.setEndereco(new Endereco(accessor.getString(12), accessor.getString(13)));
+
+//            ac.setEndereco(new Endereco(accessor.getString(12), accessor.getString(13)));
+            ac.setEndereco(new HashMap<>());
 
             ac.setNaturalidade(accessor.getString(14));
             ac.setDataNascimento(accessor.getString(15));
@@ -53,7 +57,7 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             at.setEmail(accessor.getString(8));
             at.setFiliacao(new Assistido.Filiacao(accessor.getString(9), accessor.getString(10)));
             at.setRemuneracao(accessor.getString(11));
-            at.setEndereco(new Endereco(accessor.getString(12), accessor.getString(13)));
+//            at.setEndereco(new Endereco(accessor.getString(12), accessor.getString(13)));
 
             at.setCtps(new AssistidoTrabalhista.Ctps(accessor.getString(14), accessor.getString(15), accessor.getString(16)));
             at.setPis(accessor.getString(17));

@@ -9,16 +9,31 @@ import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.SupervisorMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
-import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
-import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
-import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
-
-import java.util.Objects;
 
 public class UsuarioUtils {
+
     public static Usuario dtoToUsuario(UsuarioDTO dto) {
+        if (dto instanceof EstagiarioDTO e) {
+            var estagiario = new Estagiario();
+            var supervisorMinDTO = e.getSupervisor();
+
+            estagiario.setId(dto.getId());
+            estagiario.setEmail(dto.getEmail());
+            estagiario.setNome(dto.getNome());
+            estagiario.setCpf(dto.getCpf());
+            estagiario.setUnidadeInstitucional(dto.getUnidadeInstitucional());
+            estagiario.setSenha(dto.getSenha());
+            estagiario.setStatus(dto.getStatus());
+            estagiario.setRole(dto.getRole());
+            estagiario.setMatricula(e.getMatricula());
+            estagiario.setSemestre(e.getSemestre());
+            estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
+
+            return estagiario;
+        }
         Usuario usuario = new Usuario();
 
+        usuario.setId(dto.getId());
         usuario.setEmail(dto.getEmail());
         usuario.setNome(dto.getNome());
         usuario.setCpf(dto.getCpf());
@@ -27,61 +42,43 @@ public class UsuarioUtils {
         usuario.setStatus(dto.getStatus());
         usuario.setRole(dto.getRole());
 
-        if (dto instanceof EstagiarioDTO estagiarioDTO) {
-            var estagiario = (Estagiario) usuario;
-            var supervisorMinDTO = estagiarioDTO.getSupervisor();
-
-            estagiario.setMatricula(estagiarioDTO.getMatricula());
-            estagiario.setSemestre(estagiarioDTO.getMatricula());
-            estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
-
-            return estagiario;
-        }
-
         return usuario;
-    }
-
-    public static void verifyIfExistsUserInDatabase(UsuarioDTO dto, String id) {
-        var user = new UsuarioService(new UsuarioRepository());
-        var foundedUser = user.findById(id);
-        if (foundedUser != null) {
-            String userEmail = foundedUser.getEmail();
-            String userCpf = foundedUser.getCpf();
-            Boolean equalEmails = Objects.equals(userEmail, id);
-            Boolean equalCpfs = Objects.equals(userCpf, dto.getCpf());
-
-            if (equalEmails && equalCpfs) {
-                throw new UserAlreadyCreatedException(userEmail, userCpf);
-            } else {
-                throw new UserAlreadyCreatedException(UserUniqueField.EMAIL, userEmail);
-            }
-        }
     }
 
     public enum UserUniqueField { EMAIL }
 
     public static Object snapshotToUsuario(DocumentSnapshot snapshot, Boolean returnMinDTO) {
+        if (snapshot == null) return null;
+
         boolean dadosEstagiario = snapshot.contains("matricula");
 
-        if (returnMinDTO) return (dadosEstagiario) ? snapshot.toObject(EstagiarioMinDTO.class) : snapshot.toObject(UsuarioMinDTO.class);
+        if (returnMinDTO) {
+            if (dadosEstagiario) {
+                var object = snapshot.toObject(EstagiarioMinDTO.class);
+                object.setId(snapshot.getId());
+                return object;
+            } else {
+                var object = snapshot.toObject(UsuarioMinDTO.class);
+                object.setId(snapshot.getId());
+                return object;
+            }
+        }
 
         return (dadosEstagiario) ? snapshot.toObject(Estagiario.class) : snapshot.toObject(Usuario.class);
     }
 
     public static UsuarioDTO usuarioToDto(Usuario u) {
-        var dto = new UsuarioDTO();
-
-        dto.setEmail(u.getEmail());
-        dto.setNome(u.getNome());
-        dto.setCpf(u.getCpf());
-        dto.setUnidadeInstitucional(u.getUnidadeInstitucional());
-        dto.setSenha(u.getSenha());
-        dto.setStatus(u.getStatus());
-        dto.setRole(u.getRole());
-
         if (u instanceof Estagiario e) {
-            var eDto = (EstagiarioDTO) dto;
+            var eDto = new EstagiarioDTO();
 
+            eDto.setId(u.getId());
+            eDto.setEmail(u.getEmail());
+            eDto.setNome(u.getNome());
+            eDto.setCpf(u.getCpf());
+            eDto.setUnidadeInstitucional(u.getUnidadeInstitucional());
+            eDto.setSenha(u.getSenha());
+            eDto.setStatus(u.getStatus());
+            eDto.setRole(u.getRole());
             eDto.setMatricula(e.getMatricula());
             eDto.setSemestre(e.getSemestre());
             eDto.setSupervisor(new SupervisorMinDTO(
@@ -91,6 +88,16 @@ public class UsuarioUtils {
 
             return eDto;
         }
+        var dto = new UsuarioDTO();
+
+        dto.setId(u.getId());
+        dto.setEmail(u.getEmail());
+        dto.setNome(u.getNome());
+        dto.setCpf(u.getCpf());
+        dto.setUnidadeInstitucional(u.getUnidadeInstitucional());
+        dto.setSenha(u.getSenha());
+        dto.setStatus(u.getStatus());
+        dto.setRole(u.getRole());
 
         return dto;
     }

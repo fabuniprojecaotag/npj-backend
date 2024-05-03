@@ -18,19 +18,19 @@ public class AtendimentoRepository extends BaseRepository {
     private final String COLLECTION_NAME = "atendimentos";
 
     public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
-        String[] columnList = {"id", "area", "status", "envolvidos.assistido.nome"};
-        return BaseRepository.findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+        String[] columnList = {"area", "status", "envolvidos.assistido"};
+        return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true))
                 .toList();
     }
 
     public DocumentSnapshot findLast() {
-        return BaseRepository.findLast(COLLECTION_NAME);
+        return findLast(COLLECTION_NAME);
     }
 
     public Atendimento findById(String id) {
-        var snapshot = (DocumentSnapshot) BaseRepository.findById(COLLECTION_NAME, null, id);
+        var snapshot = (DocumentSnapshot) findById(COLLECTION_NAME, null, id);
         return (Atendimento) snapshotToAtendimento(snapshot, false);
     }
 }

@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -32,7 +34,7 @@ public abstract class Assistido {
     private String email;
     private Filiacao filiacao;
     private String remuneracao;
-    private Endereco endereco;
+    private Map<String, Endereco> endereco;
 
     @NoArgsConstructor
     @AllArgsConstructor

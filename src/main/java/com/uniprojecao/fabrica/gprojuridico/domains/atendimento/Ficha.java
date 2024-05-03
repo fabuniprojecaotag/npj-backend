@@ -32,16 +32,12 @@ public abstract class Ficha {
         this.testemunhas.addAll(testemunhas);
     }
 
-    public void removeTestemunha(Testemunha testemunha) {
-        testemunhas.remove(testemunha);
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Testemunha {
         private String nome;
-        private String qualificao;
+        private String qualificacao;
         private Endereco endereco;
     }
 }

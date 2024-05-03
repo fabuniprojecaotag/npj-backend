@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
@@ -13,10 +12,16 @@ import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoTrabalhistaDT
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFoundException;
 
+import java.util.Map;
+
 public class AssistidoUtils {
     public static Object snapshotToAssistido(DocumentSnapshot snapshot, Boolean returnMinDTO) {
 
-        if (returnMinDTO) return snapshot.toObject(AssistidoMinDTO.class);
+        if (returnMinDTO) {
+            var object = snapshot.toObject(AssistidoMinDTO.class);
+            object.setCpf(snapshot.getId());
+            return object;
+        }
 
         Boolean dadosFCivil =
                 snapshot.contains("naturalidade") &&
@@ -41,9 +46,8 @@ public class AssistidoUtils {
     }
 
     public static Assistido dtoToAssistido(AssistidoDTO dto) {
-        Assistido assistido = getAssistido(dto);
-
         if (dto instanceof AssistidoCivilDTO assistidoCivilDTO) {
+            Assistido assistido = getAssistido(dto, "Civil");
             AssistidoCivil ac = (AssistidoCivil) assistido;
             ac.setNaturalidade(assistidoCivilDTO.getNaturalidade());
             ac.setDataNascimento(assistidoCivilDTO.getDataNascimento());
@@ -52,6 +56,7 @@ public class AssistidoUtils {
             return ac;
 
         } else if (dto instanceof AssistidoTrabalhistaDTO assistidoTrabalhistaDTO) {
+            Assistido assistido = getAssistido(dto, "Trabalhista");
             AssistidoTrabalhista at = (AssistidoTrabalhista) assistido;
 
             at.setCtps(new AssistidoTrabalhista.Ctps(
@@ -66,8 +71,8 @@ public class AssistidoUtils {
         return null;
     }
 
-    private static Assistido getAssistido(AssistidoDTO dto) {
-        Assistido assistido = new AssistidoCivil();
+    private static Assistido getAssistido(AssistidoDTO dto, String tipo) {
+        Assistido assistido = (tipo == "Trabalhista") ? new AssistidoTrabalhista() : new AssistidoCivil();
 
         assistido.setNome(dto.getNome());
         assistido.setRg(dto.getRg());
@@ -82,13 +87,12 @@ public class AssistidoUtils {
                 dto.getFiliacao().getMae(),
                 dto.getFiliacao().getPai()));
         assistido.setRemuneracao(dto.getRemuneracao());
-        assistido.setEndereco(new Endereco(
-                dto.getEndereco().getLogradouro(),
-                dto.getEndereco().getBairro(),
-                dto.getEndereco().getNumero(),
-                dto.getEndereco().getComplemento(),
-                dto.getEndereco().getCep(),
-                dto.getEndereco().getCidade()));
+        assistido.setEndereco(
+                Map.of(
+                        "residencial", dto.getEndereco().get("residencial"),
+                        "comercial", dto.getEndereco().get("comercial")
+                )
+        );
         return assistido;
     }
 }

@@ -21,7 +21,7 @@ public class ProcessoService {
     private final String COLLECTION_NAME = "processos";
 
     public ProcessoDTO insert(ProcessoDTO dto) {
-        repository.save(COLLECTION_NAME , dtoToProcesso(dto));
+        repository.save(COLLECTION_NAME, dto.getNumero(), dtoToProcesso(dto));
         return dto;
     }
 
@@ -32,8 +32,8 @@ public class ProcessoService {
                 .toList();
     }
 
-    public ProcessoDTO findById(String id) {
-        return processoToDto(repository.findById(id));
+    public ProcessoDTO findByNumero(String numero) {
+        return processoToDto(repository.findByNumero(numero));
     }
 
     public void update(String id, Map<String, Object> data) {
