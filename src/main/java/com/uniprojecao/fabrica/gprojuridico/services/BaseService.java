@@ -9,24 +9,24 @@ import static java.lang.Integer.parseInt;
 
 public class BaseService {
 
-    private final BaseRepository REPOSITORY;
-    private final String COLLECTION_NAME;
+    private final BaseRepository repository;
+    private final String collectionName;
 
     public BaseService(BaseRepository repository, String collectionName) {
-        REPOSITORY = repository;
-        COLLECTION_NAME = collectionName;
+        this.repository = repository;
+        this.collectionName = collectionName;
     }
 
     public void update(String id, Map<String, Object> data) {
-        REPOSITORY.update(COLLECTION_NAME, id, data);
+        repository.update(collectionName, id, data);
     }
 
     public void delete(String id) {
-        REPOSITORY.delete(COLLECTION_NAME, id);
+        repository.delete(collectionName, id);
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        REPOSITORY.deleteAll(COLLECTION_NAME, null, parseInt(limit), initFilter(field, filter, value));
+        repository.deleteAll(collectionName, null, parseInt(limit), initFilter(field, filter, value));
     }
 
 

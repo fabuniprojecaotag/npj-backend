@@ -23,13 +23,12 @@ import static java.lang.Integer.parseInt;
 @Service
 public class UsuarioService extends BaseService implements UserDetailsService {
 
-    private final UsuarioRepository REPOSITORY;
-    private final String COLLECTION_NAME;
+    private final UsuarioRepository repository;
+    private static final String collectionName = USUARIOS_COLLECTION;
 
     public UsuarioService(UsuarioRepository repository) {
-        super(repository, USUARIOS_COLLECTION);
-        REPOSITORY = repository;
-        COLLECTION_NAME = USUARIOS_COLLECTION;
+        super(repository, collectionName);
+        this.repository = repository;
     }
 
     public UsuarioDTO insert(UsuarioDTO dto) {
@@ -38,16 +37,16 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         verifyIfExistsUserInDatabase(dto, id);
         encryptPassword(dto);
 
-        REPOSITORY.save(COLLECTION_NAME, id, dtoToUsuario(dto));
+        repository.save(collectionName, id, dtoToUsuario(dto));
         return dto;
     }
 
     public List<UsuarioMinDTO> findAll(String limit, String field, String filter, String value) {
-        return REPOSITORY.findAll(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAll(parseInt(limit), initFilter(field, filter, value));
     }
 
     public UsuarioDTO findById(String id) {
-        return usuarioToDto(REPOSITORY.findById(id));
+        return usuarioToDto(repository.findById(id));
     }
 
     private void verifyIfExistsUserInDatabase(UsuarioDTO dto, String id) {
@@ -68,7 +67,7 @@ public class UsuarioService extends BaseService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return REPOSITORY.findById(username);
+        return repository.findById(username);
     }
 
     public UsuarioDTO authenticated() {
