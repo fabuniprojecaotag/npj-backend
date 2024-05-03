@@ -43,6 +43,7 @@ public abstract class AtendimentoDTO {
     private List<EntradaHistoricoDTO> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
+    // Aviso: ignorar warning (da IDE) de que construtor é nunca usado, pois é necessário o uso dos setters abaixo
     public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante) {
         this.id = id;
         setStatus(status);
@@ -64,10 +65,6 @@ public abstract class AtendimentoDTO {
 
     public void setEnvolvidos(Map<String, EnvolvidoDTO> envolvidos) {
         this.envolvidos.putAll(envolvidos);
-    }
-
-    public void removeEnvolvido(String envolvido) {
-        this.envolvidos.remove(envolvido);
     }
 
     @Getter
@@ -116,6 +113,7 @@ public abstract class AtendimentoDTO {
 
         private UsuarioMinDTO criadoPor;
 
+        // TODO: Resolver pendência de implementar histórico no sistema para usar este método
         public void setInstante(String instante) {
             if (instante == null) {
                 var instant = Instant.now().with(ChronoField.NANO_OF_SECOND, 0).atZone(ZoneId.of("-3"));

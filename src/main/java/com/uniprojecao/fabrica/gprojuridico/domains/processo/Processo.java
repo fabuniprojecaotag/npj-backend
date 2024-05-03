@@ -1,8 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.processo;
 
 import com.google.cloud.firestore.annotation.DocumentId;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
