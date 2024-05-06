@@ -1,15 +1,19 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.SupervisorMin;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.SupervisorMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class UsuarioData {
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     public static List<UsuarioDTO> seedWithUsuarioDTO() {
         var unidade = "Taguatinga";
         var senha = "123456";
@@ -29,6 +33,10 @@ public class UsuarioData {
         );
     }
 
+    public static UsuarioDTO seedWithOneUsuarioDTO() {
+        return new UsuarioDTO("marcos.silva", "marcos.silva@projecao.br", "Marcos Silva", "028.923.381-02", "Taguatinga", "123456", true, "PROFESSOR");
+    }
+
     public static List<Usuario> seedWithUsuario() {
         return seedWithUsuarioDTO().stream().map(dto -> dtoToEntity(dto)).toList();
     }
@@ -44,16 +52,16 @@ public class UsuarioData {
         usuario.setStatus(dto.getStatus());
         usuario.setRole(dto.getRole());
 
-        if (dto instanceof EstagiarioDTO estagiarioDTO) {
-            var estagiario = new Estagiario(usuario);
-            var supervisorMinDTO = estagiarioDTO.getSupervisor();
-
-            estagiario.setMatricula(estagiarioDTO.getMatricula());
-            estagiario.setSemestre(estagiarioDTO.getSemestre());
-            estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
-
-            return estagiario;
-        }
+//        if (dto instanceof EstagiarioDTO estagiarioDTO) {
+//            var estagiario = new Estagiario(usuario);
+//            var supervisorMinDTO = estagiarioDTO.getSupervisor();
+//
+//            estagiario.setMatricula(estagiarioDTO.getMatricula());
+//            estagiario.setSemestre(estagiarioDTO.getSemestre());
+//            estagiario.setSupervisor(new SupervisorMin(supervisorMinDTO.getId(), supervisorMinDTO.getNome()));
+//
+//            return estagiario;
+//        }
 
         return usuario;
     }

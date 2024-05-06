@@ -11,8 +11,4 @@ public class Estagiario extends Usuario {
     private String matricula;
     private String semestre;
     private SupervisorMin supervisor;
-
-    public Estagiario(Usuario u) {
-        super(u.getId(), u.getEmail(), u.getNome(), u.getCpf(), u.getUnidadeInstitucional(), u.getSenha(), u.getStatus(), u.getRole());
-    }
 }

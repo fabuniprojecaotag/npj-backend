@@ -52,7 +52,7 @@ public class UsuarioController {
 
     @GetMapping("/me")
     public ResponseEntity<UsuarioDTO> getMe() {
-        var usuario = service.authenticated();
+        var usuario = service.findMe();
         return ResponseEntity.ok(usuario);
     }
 
