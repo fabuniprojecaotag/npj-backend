@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnderecoDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
@@ -23,7 +22,23 @@ import java.util.List;
 public abstract class FichaDTO {
     private String assinatura;
     private Boolean dadosSensiveis;
+    private String medidaJuridica;
     private List<TestemunhaDTO> testemunhas = new ArrayList<>();
+
+    public FichaDTO(String assinatura, String medidaJuridica, Boolean dadosSensiveis, List<TestemunhaDTO> testemunhas) {
+        this.assinatura = assinatura;
+        this.dadosSensiveis = dadosSensiveis;
+        setMedidaJuridica(medidaJuridica);
+        setTestemunhas(testemunhas);
+    }
+
+    public void setMedidaJuridica(String medidaJuridica) {
+        this.medidaJuridica = MedidaJuridica.valueOf(medidaJuridica
+                .replace(" – ", " ") // substitui travessão
+                .replace(" - ", " ") // substitui hífen
+                .replace(" ", "_")
+                .toUpperCase()).getNormalizedValue();
+    }
 
     public void setTestemunhas(List<TestemunhaDTO> testemunhas) {
         this.testemunhas.addAll(testemunhas);
