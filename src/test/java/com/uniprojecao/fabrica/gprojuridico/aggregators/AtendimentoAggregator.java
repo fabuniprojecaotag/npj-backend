@@ -128,7 +128,7 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             var relacaoEmpregaticia = new RelacaoEmpregaticia();
             var docDepositadosNpj= new DocumentosDepositadosNpj();
 
-            var ficha = new FichaTrabalhista(null, false, new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
+            var ficha = new FichaTrabalhista(null, false, "Reclamação trabalhista", new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
             at.setFicha(ficha);
 
             return at;

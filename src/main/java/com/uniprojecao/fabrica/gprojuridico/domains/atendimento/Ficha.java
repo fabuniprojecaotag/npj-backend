@@ -3,6 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridica;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,13 +20,23 @@ import java.util.List;
 })
 public abstract class Ficha {
     private String assinatura;
+    private String medidaJuridica;
     private Boolean dadosSensiveis;
     private List<Testemunha> testemunhas = new ArrayList<>();
 
-    public Ficha(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas) {
+    public Ficha(String assinatura, String medidaJuridica, Boolean dadosSensiveis, List<Testemunha> testemunhas) {
         this.assinatura = assinatura;
         this.dadosSensiveis = dadosSensiveis;
+        setMedidaJuridica(medidaJuridica);
         setTestemunhas(testemunhas);
+    }
+
+    public void setMedidaJuridica(String medidaJuridica) {
+        this.medidaJuridica = MedidaJuridica.valueOf(medidaJuridica
+                .replace(" – ", " ") // substitui travessão
+                .replace(" - ", " ") // substitui hífen
+                .replace(" ", "_")
+                .toUpperCase()).getNormalizedValue();
     }
 
     public void setTestemunhas(List<Testemunha> testemunhas) {

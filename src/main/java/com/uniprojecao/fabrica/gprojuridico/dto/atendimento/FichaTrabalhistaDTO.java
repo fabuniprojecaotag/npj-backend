@@ -18,8 +18,8 @@ public class FichaTrabalhistaDTO extends FichaDTO {
     private DocumentosDepositadosNpj documentosDepositadosNpj;
     private String outrasInformacoes;
 
-    public FichaTrabalhistaDTO(String assinatura, Boolean dadosSensiveis, List<TestemunhaDTO> testemunhasDTO, Reclamado reclamado, RelacaoEmpregaticia relacaoEmpregaticia, DocumentosDepositadosNpj documentosDepositadosNpj, String outrasInformacoes) {
-        super(assinatura, dadosSensiveis, testemunhasDTO);
+    public FichaTrabalhistaDTO(String assinatura, Boolean dadosSensiveis, String medidaJuridica, List<TestemunhaDTO> testemunhasDTO, Reclamado reclamado, RelacaoEmpregaticia relacaoEmpregaticia, DocumentosDepositadosNpj documentosDepositadosNpj, String outrasInformacoes) {
+        super(assinatura, medidaJuridica, dadosSensiveis, testemunhasDTO);
         this.reclamado = reclamado;
         this.relacaoEmpregaticia = relacaoEmpregaticia;
         this.documentosDepositadosNpj = documentosDepositadosNpj;

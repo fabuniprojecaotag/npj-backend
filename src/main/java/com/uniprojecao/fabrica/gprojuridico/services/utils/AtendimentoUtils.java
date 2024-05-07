@@ -100,6 +100,7 @@ public class AtendimentoUtils {
                     new FichaTrabalhista(
                             dto.getFicha().getAssinatura(),
                             dto.getFicha().getDadosSensiveis(),
+                            dto.getFicha().getMedidaJuridica(),
                             dto.getFicha().getTestemunhas()
                                     .stream()
                                     .map(t -> new Ficha.Testemunha(
@@ -162,7 +163,7 @@ public class AtendimentoUtils {
                                             )
                                     ).toList(),
                             ficha.getParteContraria(),
-                            ficha.getMedidaJudicial()
+                            ficha.getMedidaJuridica()
                     )
             );
         }
@@ -198,7 +199,7 @@ public class AtendimentoUtils {
                             t.getEndereco().getCidade()
                     )))
                     .toList();
-            at.setFicha(new FichaTrabalhistaDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getReclamado(), f.getRelacaoEmpregaticia(), f.getDocumentosDepositadosNpj(), f.getOutrasInformacoes()));
+            at.setFicha(new FichaTrabalhistaDTO(f.getAssinatura(), f.getDadosSensiveis(), f.getMedidaJuridica(), testemunhasDTO, f.getReclamado(), f.getRelacaoEmpregaticia(), f.getDocumentosDepositadosNpj(), f.getOutrasInformacoes()));
 
             return at;
         } else {
@@ -229,7 +230,7 @@ public class AtendimentoUtils {
                             t.getEndereco().getCidade()
                     )))
                             .toList();
-            ac.setFicha(new FichaCivilDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getParteContraria(), f.getMedidaJudicial()));
+            ac.setFicha(new FichaCivilDTO(f.getAssinatura(), f.getDadosSensiveis(), testemunhasDTO, f.getParteContraria(), f.getMedidaJuridica()));
 
             return ac;
         }
