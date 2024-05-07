@@ -11,9 +11,9 @@ public class RelacaoEmpregaticia {
     private String dataAdmissao;
     private String dataSaida;
     private String funcaoExercida;
-    private Integer valorSalarioCtps;
+    private String valorSalarioCtps;
     private Boolean salarioAnotadoCtps;
-    private Integer valorUltimaRemuneracao;
+    private String valorUltimaRemuneracao;
     private Boolean ctpsAssinadaCerto;
     private String dispensa;
     private String jornadaTrabalho;
@@ -30,12 +30,12 @@ public class RelacaoEmpregaticia {
     private Boolean recebeuFormSeguroDesemprego;
     private Boolean inssRecolhido;
     private String pagaAlgumaVerba;
-    private Integer saldoSalario;
+    private String saldoSalario;
     private String avisoPrevioIndenizado;
     private String _13SalarioProporcional;
     private String feriasVencidas;
     private String feriasProporcionais;
-    private Integer umTercoConstitucionalFerias;
+    private String umTercoConstitucionalFerias;
     private String comissoes;
     private String outrasInformacoes;
 }
