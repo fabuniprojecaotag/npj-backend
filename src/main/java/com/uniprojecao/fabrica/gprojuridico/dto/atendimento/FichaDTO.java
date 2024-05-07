@@ -36,6 +36,6 @@ public abstract class FichaDTO {
         @NotBlank
         private String nome;
         private String qualificacao;
-        private EnderecoDTO endereco; // TODO: Adicionar tipo EnderecoDTO
+        private EnderecoDTO endereco;
     }
 }
