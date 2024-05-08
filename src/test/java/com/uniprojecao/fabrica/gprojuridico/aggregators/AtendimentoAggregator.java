@@ -108,7 +108,8 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
                             accessor.getString(22),
                             accessor.getString(23)
                     ),
-                    accessor.getString(19)
+                    accessor.getString(24),
+                    accessor.getString(25)
             );
             var ficha = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null); // campos da herança ignorados.
             ac.setFicha(ficha);
