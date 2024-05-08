@@ -33,7 +33,7 @@ public class AtendimentoData {
 
         // Para o atributo "ficha" (Ficha Civil)
         var enderecoParteContraria = new Endereco("Rua das Flores", "São Paulo", "123", "Apartamento 101", "01234-567", "São Paulo");
-        var parteContraria = new ParteContraria("Alberto Gomes Pereira", "Padeiro", "4.223.124-5", "948.234.153-23", "alberto.gomes@example.com", enderecoParteContraria, "(61) 98392-2934");
+        var parteContraria = new ParteContraria("Alberto Gomes Pereira", "Padeiro", "4.223.124-5", "948.234.153-23", "alberto.gomes@example.com", enderecoParteContraria, "(61) 98392-2934", "Nada a constar");
         var fichaCivil = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null);
 
         // Para o atributo "ficha" (Ficha Trabalhista)
