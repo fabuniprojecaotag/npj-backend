@@ -58,6 +58,6 @@ class ProcessoRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        if (count == 4) utils.clearDatabase(null, Clazz.PROCESSO);
+        if (count == 4) utils.clearDatabase(null, "processos");
     }
 }

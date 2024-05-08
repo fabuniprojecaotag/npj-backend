@@ -55,6 +55,6 @@ class UsuarioRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        if (count == 7) utils.clearDatabase(null, Clazz.USUARIO);
+        if (count == 7) utils.clearDatabase(null, "usuarios");
     }
 }

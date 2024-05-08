@@ -5,10 +5,9 @@ import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
+import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +18,8 @@ import java.util.List;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.UserUniqueField;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toEntity;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
@@ -58,15 +59,11 @@ import static java.lang.Integer.parseInt;
 @Service
 public class UsuarioService extends BaseService implements UserDetailsService {
 
-    private final UsuarioRepository repository;
+    public UsuarioRepository repository = new UsuarioRepository();
     private static final String collectionName = USUARIOS_COLLECTION;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
-    public UsuarioService(UsuarioRepository repository) {
-        super(repository, collectionName);
-        this.repository = repository;
+    public UsuarioService() {
+        super(collectionName);
     }
 
     private void checkIfExists(UsuarioDTO dto, String id) {
@@ -86,7 +83,14 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         }
     }
 
-    public static void encryptPassword(UsuarioDTO u) {
+    private void defineId(UsuarioDTO usuario) {
+        String id = (!(usuario instanceof EstagiarioDTO estagiario))
+                ? usuario.getEmail().replaceAll("@projecao\\.br", "") // Retira o "@projecao.br"
+                : estagiario.getMatricula();
+        usuario.setId(id);
+    }
+
+    private void encryptPassword(UsuarioDTO u) {
         u.setSenha(BCrypt.withDefaults().hashToString(12, u.getSenha().toCharArray()));
     }
 
@@ -106,32 +110,19 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         return findById(id);
     }
 
-    private String generateId(UsuarioDTO dto) {
-        return (!(dto instanceof EstagiarioDTO e)) ? dto.getEmail().replaceAll("@projecao.br", "") : e.getMatricula();
-    }
-
     public UsuarioDTO insert(UsuarioDTO dto) {
-        var id = generateId(dto);
-        dto.setId(id);
+        defineId(dto);
+        String id = dto.getId();
 
         checkIfExists(dto, id);
         encryptPassword(dto);
 
-        repository.save(collectionName, id, toEntity(dto));
+        BaseRepository.save(collectionName, id, toEntity(dto));
         return dto;
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) {
         return repository.findById(username);
-    }
-
-    private UsuarioDTO toDto(Usuario entity) {
-        return modelMapper.map(entity, UsuarioDTO.class);
-    }
-
-    public Usuario toEntity(UsuarioDTO dto) {
-        return modelMapper.map(dto, Usuario.class);
     }
 }

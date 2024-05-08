@@ -2,7 +2,9 @@ package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.lang.reflect.Field;
@@ -99,5 +101,19 @@ public class Utils {
     public static URI createUri(String id) {
         return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(id).toUri();
+    }
+
+    public static class ModelMapper {
+        private static final org.modelmapper.ModelMapper modelMapper = new org.modelmapper.ModelMapper();
+
+        public static UsuarioDTO toDto(Usuario entity) {
+            return modelMapper.map(entity, UsuarioDTO.class);
+        }
+
+        public static Usuario toEntity(UsuarioDTO dto) {
+            return modelMapper.map(dto, Usuario.class);
+        }
+
+
     }
 }

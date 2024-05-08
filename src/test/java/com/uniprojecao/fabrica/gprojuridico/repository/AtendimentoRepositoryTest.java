@@ -59,6 +59,6 @@ class AtendimentoRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        if (count == 3) utils.clearDatabase(null, Clazz.ATENDIMENTO);
+        if (count == 3) utils.clearDatabase(null, "atendimentos");
     }
 }

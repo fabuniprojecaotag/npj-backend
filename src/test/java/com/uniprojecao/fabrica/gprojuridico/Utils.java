@@ -4,9 +4,11 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
-import com.uniprojecao.fabrica.gprojuridico.repository.*;
+import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import java.util.List;
 
 import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.data.AtendimentoData.seedWithAtendimento;
@@ -30,34 +32,32 @@ public class Utils {
         USUARIO, ASSISTIDO, PROCESSO, ATENDIMENTO
     }
 
-    // save() method is tested with seedDatabase() method
-    public boolean seedDatabase(int count, Clazz clazz) {
+    public static boolean seedDatabase(int count, Clazz clazz) {
         if (count == 0) {
-            BaseRepository baseRepository = new BaseRepository();
-            baseRepository.firestore = getFirestore();
+            BaseRepository.firestore = getFirestore();
             switch (clazz) {
                 case USUARIO:
                     var usuarios = seedWithUsuario();
                     for (var usuario : usuarios) {
-                        baseRepository.save("usuarios", usuario.getEmail(), usuario);
+                        BaseRepository.save("usuarios", usuario.getId(), usuario);
                     }
                     break;
                 case ASSISTIDO:
                     var assistidos = seedWithAssistido();
                     for (var assistido : assistidos) {
-                        baseRepository.save("assistidos", assistido.getCpf(), assistido);
+                        BaseRepository.save("assistidos", assistido.getCpf(), assistido);
                     }
                     break;
                 case PROCESSO:
                     var processos = seedWithProcesso();
                     for (var processo : processos) {
-                        baseRepository.save("processos", processo.getNumero(), processo);
+                        BaseRepository.save("processos", processo.getNumero(), processo);
                     }
                     break;
                 case ATENDIMENTO:
                     var atendimentos = seedWithAtendimento();
                     for (var atendimento : atendimentos) {
-                        baseRepository.save("atendimentos", atendimento.getId(), atendimento);
+                        BaseRepository.save("atendimentos", atendimento.getId(), atendimento);
                     }
                     break;
             }
@@ -66,49 +66,16 @@ public class Utils {
         return true;
     }
 
-    // deleteAll() method is tested with clearDatabase() method
-    public boolean clearDatabase(@Nullable QueryFilter queryFilter, Clazz clazz) {
-        int limit = 20;
-        String collectionName;
+    public static boolean clearDatabase(@Nullable QueryFilter queryFilter, String collectionName) {
+        var acceptedCollectionNames = List.of("usuarios", "assistidos", "processos", "atendimentos");
+        var result = acceptedCollectionNames.stream().filter(name -> collectionName == name).findFirst();
 
-        switch (clazz) {
-            case USUARIO:
-                var uRepository = new UsuarioRepository();
-                uRepository.firestore = getFirestore();
-                collectionName = "usuarios";
+        if (result.isEmpty()) throw new RuntimeException("O nome de coleção passado não é válido");
 
-                uRepository.deleteAll(collectionName, null, limit, queryFilter);
-                var usuarios = uRepository.findAll(limit, queryFilter);
+        BaseRepository.firestore = getFirestore();
+        BaseRepository.deleteAll(collectionName, null, 20, queryFilter);
+        var database = BaseRepository.findAll(collectionName, null, null, 20, queryFilter);
 
-                return usuarios.isEmpty();
-            case ASSISTIDO:
-                var aRepository = new AssistidoRepository();
-                aRepository.firestore = getFirestore();
-                collectionName = "assistidos";
-
-                aRepository.deleteAll(collectionName, null, limit, queryFilter);
-                var assistidos = aRepository.findAll(limit, queryFilter);
-
-                return assistidos.isEmpty();
-            case PROCESSO:
-                var pRepository = new ProcessoRepository();
-                pRepository.firestore = getFirestore();
-                collectionName = "processos";
-
-                pRepository.deleteAll(collectionName, null, limit, queryFilter);
-                var processos = pRepository.findAll(limit, queryFilter);
-
-                return processos.isEmpty();
-            case ATENDIMENTO:
-                var atRepository = new AtendimentoRepository();
-                atRepository.firestore = getFirestore();
-                collectionName = "atendimentos";
-
-                atRepository.deleteAll(collectionName, null, limit, queryFilter);
-                var atendimentos = atRepository.findAll(limit, queryFilter);
-
-                return atendimentos.isEmpty();
-        }
-        return false;
+        return database.isEmpty();
     }
 }

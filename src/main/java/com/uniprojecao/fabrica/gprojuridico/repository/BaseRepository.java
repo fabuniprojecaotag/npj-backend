@@ -5,10 +5,11 @@ import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +24,31 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 @Primary
 public class BaseRepository {
 
-    @Autowired
-    public Firestore firestore;
+    public static Firestore firestore; // TODO: mudar para static parece funcionar, porém é necessário ter certeza disso, por conta das exceções lançadas
+
+    @Value("${spring.cloud.gcp.project-id}")
+    private String projectId;
+
+    private boolean initialized = false;
+
+    @PostConstruct
+    private void init() {
+        if (!initialized) {
+            firestore = firestore();
+            System.out.println("initialized: " + initialized);
+            initialized = true;
+            System.out.println("initialized: " + initialized);
+            System.out.println();
+        }
+    }
+
+    private Firestore firestore() {
+        System.out.println("Repositório carregado: " + this.getClass().getSimpleName());
+        FirestoreOptions options = FirestoreOptions.newBuilder()
+                .setProjectId(projectId)
+                .build();
+        return options.getService();
+    }
 
     public void save(String collectionName, Object data) {
         try {
@@ -34,7 +58,7 @@ public class BaseRepository {
         }
     }
 
-    public void save(String collectionName, String CustomId, Object data) {
+    public static void save(String collectionName, String CustomId, Object data) {
         try {
             firestore.collection(collectionName).document(CustomId).set(data).get();
         } catch (Exception e) {
@@ -42,7 +66,7 @@ public class BaseRepository {
         }
     }
 
-    List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public static List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         List<Object> list = new ArrayList<>();
 
         try {
@@ -79,15 +103,15 @@ public class BaseRepository {
         }
     }
 
-    public void update(String collectionName, String id, Map<String, Object> data) {
+    public static void update(String collectionName, String id, Map<String, Object> data) {
         firestore.collection(collectionName).document(id).update(convertMap(data));
     }
 
-    public void delete(String collectionName, String id) {
+    public static void delete(String collectionName, String id) {
         firestore.collection(collectionName).document(id).delete();
     }
 
-    public void deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
+    public static void deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
         var result = getDocSnapshots(collectionName, list, limit, queryFilter);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();
@@ -95,7 +119,7 @@ public class BaseRepository {
         }
     }
 
-    List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         if (list == null) list = new String[]{"id"};
 
         ApiFuture<QuerySnapshot> future;

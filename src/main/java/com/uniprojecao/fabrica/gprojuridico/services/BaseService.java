@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
@@ -9,24 +10,22 @@ import static java.lang.Integer.parseInt;
 
 public class BaseService {
 
-    private final BaseRepository repository;
     private final String collectionName;
 
-    public BaseService(BaseRepository repository, String collectionName) {
-        this.repository = repository;
+    public BaseService(String collectionName) {
         this.collectionName = collectionName;
     }
 
     public void update(String id, Map<String, Object> data) {
-        repository.update(collectionName, id, data);
+        BaseRepository.update(collectionName, id, data);
     }
 
     public void delete(String id) {
-        repository.delete(collectionName, id);
+        BaseRepository.delete(collectionName, id);
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        repository.deleteAll(collectionName, null, parseInt(limit), initFilter(field, filter, value));
+        BaseRepository.deleteAll(collectionName, null, parseInt(limit), initFilter(field, filter, value)); // TODO: Converter método para static
     }
 
 

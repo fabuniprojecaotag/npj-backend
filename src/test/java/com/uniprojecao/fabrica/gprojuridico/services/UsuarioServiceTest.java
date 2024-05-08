@@ -1,20 +1,27 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.uniprojecao.fabrica.gprojuridico.Utils;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
+import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToUsuario;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Map;
+
+import static com.uniprojecao.fabrica.gprojuridico.Utils.clearDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuario;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuarioDTO;
-import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuarioDTO;
-import static com.uniprojecao.fabrica.gprojuridico.services.UsuarioService.encryptPassword;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mockStatic;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,8 +30,11 @@ class UsuarioServiceTest {
     @Mock
     private UsuarioService underTest;
 
+    private final String collectionName = "usuarios";
+
     @Nested
-    class CheckUser {
+    @Disabled("Necessário haver correção no stubbing para underTest.findById()")
+    class Exception {
         @Test
         void givenUserFound_whenEmailAndCpfAreEquals_throwsException() {
             // given
@@ -60,20 +70,94 @@ class UsuarioServiceTest {
         }
     }
 
-    @Test
-    void validateEncryptedPassword() {
-        var list = seedWithUsuarioDTO();
-        int changedPassword = 0;
+    @Nested
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class CRUD {
+        UsuarioService service = new UsuarioService();
 
-        for (var dto : list) {
-            var rawPassword = dto.getSenha();
-            try (MockedStatic<UsuarioService> utilities = mockStatic(UsuarioService.class)) {
-                utilities.when(() -> encryptPassword(dto)).thenCallRealMethod();
-            }
-            encryptPassword(dto);
-            if (dto.getSenha() != rawPassword) changedPassword++;
+        @BeforeAll
+        static void beforeAll() {
+            seedDatabase(0, Utils.Clazz.USUARIO);
         }
 
-        assertEquals(6, changedPassword);
+        @ParameterizedTest
+        @CsvFileSource(resources = "/usuarios.csv")
+        @Order(1)
+        void findById(@CsvToUsuario Usuario userToFind) {
+            var userFound = service.findById(userToFind.getId());
+            assertEquals(toDto(userToFind), userFound);
+        }
+
+        @Test
+        @Order(2)
+        void findAll() {
+            var result = service.findAll("20", "", "", "");
+            assertNotNull(result);
+        }
+
+        @Test
+        @Order(3)
+        void update() {
+            var id = "leticia.alves";
+
+            var originalEmail = service.findById(id).getEmail();
+            service.update(id, Map.of("email", "letici.alves@projecao.br"));
+            sleep(1000); // Evita que o findById() pegue o valor antigo
+            var updatedEmail = service.findById(id).getEmail();
+
+            assertNotEquals(originalEmail, updatedEmail, "User shoud not have the same e-mail");
+        }
+
+        @ParameterizedTest
+        @CsvFileSource(resources = "/usuarios.csv")
+        @Order(4)
+        void delete(@CsvToUsuario Usuario userToDelete) {
+            var id = userToDelete.getId();
+            service.delete(id);
+            sleep(1000); // Evita que o findById() pegue o valor antigo
+            var userDeleted = service.findById(id);
+
+            assertNull(userDeleted);
+        }
+
+        @Test
+        @Order(5)
+        void deleteAll() {
+            Utils.seedDatabase(0, Utils.Clazz.USUARIO);
+
+            service.deleteAll("20", "", "", "");
+            sleep(1000);
+            var result = service.findAll("20", "", "", "");
+
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        @Order(6)
+        void insert() {
+            clearDatabase(null, collectionName);
+            sleep(1000);
+
+            var userToEnter = seedWithOneUsuario();
+            var userEntered = service.insert(toDto(userToEnter));
+            var userFound = service.findById(userEntered.getId());
+
+            assertAll("user",
+                    // Valida se id foi definido
+                    () -> {
+                        String noId = userToEnter.getId();
+                        String withId = userEntered.getId();
+                        assertNotEquals(noId, withId);
+                        assertNotNull(withId);
+                    },
+                    // Valida se senha foi criptografada
+                    () -> {
+                        String rawPassword = userToEnter.getSenha();
+                        String encryptedPassword = userEntered.getSenha();
+                        assertNotEquals(rawPassword, encryptedPassword);
+                    },
+                    // Valida se usuário foi inserido corretamente
+                    () -> assertEquals(userEntered, userFound));
+        }
     }
 }

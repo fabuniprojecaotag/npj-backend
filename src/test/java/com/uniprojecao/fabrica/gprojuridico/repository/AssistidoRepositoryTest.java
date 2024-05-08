@@ -57,6 +57,6 @@ class AssistidoRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        if (count == 4) utils.clearDatabase(null, Utils.Clazz.ASSISTIDO);
+        if (count == 4) utils.clearDatabase(null, "assistidos");
     }
 }
