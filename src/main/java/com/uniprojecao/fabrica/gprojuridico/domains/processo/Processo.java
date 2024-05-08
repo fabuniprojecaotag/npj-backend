@@ -33,12 +33,8 @@ public class Processo {
 
     @Getter
     enum Status {
-        REPROVADO("Reprovado"),
-        ARQUIVADO("Arquivado"),
-        AGUARDANDO_DOCUMENTOS("Aguardando documentos"),
-        PENDENTE_DISTRIBUICAO("Pendente distribuição"),
-        PROCESSO_ATIVO("Processo ativo"),
-        PROCESSO_ARQUIVADO("Processo arquivado");
+        ATIVO("Ativo"),
+        ARQUIVADO("Arquivado");
 
         private final String value;
 

@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.Utils;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
@@ -12,23 +11,23 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.*;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // Sem esta annotation, o atributo "count" não é incrementado sequencialmente.
 class AssistidoRepositoryTest {
 
     private final AssistidoRepository underTest = new AssistidoRepository();
-    private final Utils utils = new Utils();
     private Integer count = 0;
 
     public AssistidoRepositoryTest() {
-        underTest.firestore = getFirestore();
+        BaseRepository.firestore = getFirestore();
     }
 
     @BeforeEach
     void setUp() {
-        utils.seedDatabase(count, Utils.Clazz.ASSISTIDO);
+        seedDatabase(count, ASSISTIDOS_COLLECTION);
     }
 
     @Test
@@ -57,6 +56,6 @@ class AssistidoRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        if (count == 4) utils.clearDatabase(null, "assistidos");
+        if (count == 4) clearDatabase(null, "assistidos");
     }
 }

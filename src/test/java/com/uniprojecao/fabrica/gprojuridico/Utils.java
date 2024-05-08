@@ -14,6 +14,7 @@ import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithAs
 import static com.uniprojecao.fabrica.gprojuridico.data.AtendimentoData.seedWithAtendimento;
 import static com.uniprojecao.fabrica.gprojuridico.data.ProcessoData.seedWithProcesso;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithUsuario;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.*;
 
 public class Utils {
     @Nonnull
@@ -28,36 +29,42 @@ public class Utils {
                 .getService();
     }
 
-    public enum Clazz {
-        USUARIO, ASSISTIDO, PROCESSO, ATENDIMENTO
-    }
+    public static boolean seedDatabase(int count, String collectionName) {
+        var acceptedCollectionNames = List.of(
+                USUARIOS_COLLECTION,
+                ASSISTIDOS_COLLECTION,
+                PROCESSOS_COLLECTION,
+                ATENDIMENTOS_COLLECTION
+        );
+        var result = acceptedCollectionNames.stream().filter(name -> collectionName == name).findFirst();
 
-    public static boolean seedDatabase(int count, Clazz clazz) {
-        if (count == 0) {
+        if (result.isEmpty()) throw new RuntimeException("O nome de coleção passado não é válido");
+
+        if (count == 0) { // TODO: analisar se deve ser feito rollback disso (voltar para ser boolean)
             BaseRepository.firestore = getFirestore();
-            switch (clazz) {
-                case USUARIO:
-                    var usuarios = seedWithUsuario();
-                    for (var usuario : usuarios) {
-                        BaseRepository.save("usuarios", usuario.getId(), usuario);
-                    }
-                    break;
-                case ASSISTIDO:
+            switch (collectionName) {
+                case ASSISTIDOS_COLLECTION:
                     var assistidos = seedWithAssistido();
                     for (var assistido : assistidos) {
-                        BaseRepository.save("assistidos", assistido.getCpf(), assistido);
+                        BaseRepository.save(ASSISTIDOS_COLLECTION, assistido.getCpf(), assistido);
                     }
                     break;
-                case PROCESSO:
-                    var processos = seedWithProcesso();
-                    for (var processo : processos) {
-                        BaseRepository.save("processos", processo.getNumero(), processo);
-                    }
-                    break;
-                case ATENDIMENTO:
+                case ATENDIMENTOS_COLLECTION:
                     var atendimentos = seedWithAtendimento();
                     for (var atendimento : atendimentos) {
-                        BaseRepository.save("atendimentos", atendimento.getId(), atendimento);
+                        BaseRepository.save(ATENDIMENTOS_COLLECTION, atendimento.getId(), atendimento);
+                    }
+                    break;
+                case PROCESSOS_COLLECTION:
+                    var processos = seedWithProcesso();
+                    for (var processo : processos) {
+                        BaseRepository.save(PROCESSOS_COLLECTION, processo.getNumero(), processo);
+                    }
+                    break;
+                case USUARIOS_COLLECTION:
+                    var usuarios = seedWithUsuario();
+                    for (var usuario : usuarios) {
+                        BaseRepository.save(USUARIOS_COLLECTION, usuario.getId(), usuario);
                     }
                     break;
             }
@@ -67,7 +74,12 @@ public class Utils {
     }
 
     public static boolean clearDatabase(@Nullable QueryFilter queryFilter, String collectionName) {
-        var acceptedCollectionNames = List.of("usuarios", "assistidos", "processos", "atendimentos");
+        var acceptedCollectionNames = List.of(
+                USUARIOS_COLLECTION,
+                ASSISTIDOS_COLLECTION,
+                PROCESSOS_COLLECTION,
+                ATENDIMENTOS_COLLECTION
+        );
         var result = acceptedCollectionNames.stream().filter(name -> collectionName == name).findFirst();
 
         if (result.isEmpty()) throw new RuntimeException("O nome de coleção passado não é válido");

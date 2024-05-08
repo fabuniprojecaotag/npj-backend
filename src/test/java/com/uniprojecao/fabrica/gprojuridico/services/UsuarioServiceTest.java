@@ -18,6 +18,7 @@ import static com.uniprojecao.fabrica.gprojuridico.Utils.clearDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuario;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuarioDTO;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -29,8 +30,6 @@ class UsuarioServiceTest {
 
     @Mock
     private UsuarioService underTest;
-
-    private final String collectionName = "usuarios";
 
     @Nested
     @Disabled("Necessário haver correção no stubbing para underTest.findById()")
@@ -77,7 +76,7 @@ class UsuarioServiceTest {
 
         @BeforeAll
         static void beforeAll() {
-            seedDatabase(0, Utils.Clazz.USUARIO);
+            seedDatabase(0, USUARIOS_COLLECTION);
         }
 
         @ParameterizedTest
@@ -123,7 +122,7 @@ class UsuarioServiceTest {
         @Test
         @Order(5)
         void deleteAll() {
-            Utils.seedDatabase(0, Utils.Clazz.USUARIO);
+            Utils.seedDatabase(0, USUARIOS_COLLECTION);
 
             service.deleteAll("20", "", "", "");
             sleep(1000);
@@ -135,7 +134,7 @@ class UsuarioServiceTest {
         @Test
         @Order(6)
         void insert() {
-            clearDatabase(null, collectionName);
+            clearDatabase(null, USUARIOS_COLLECTION);
             sleep(1000);
 
             var userToEnter = seedWithOneUsuario();

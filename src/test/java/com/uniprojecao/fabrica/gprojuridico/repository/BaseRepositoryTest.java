@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.Utils;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAtendimento;
@@ -12,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,16 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class BaseRepositoryTest {
 
     private final AtendimentoRepository underTest = new AtendimentoRepository();
-    private final Utils utils = new Utils();
     private Integer count = 0;
 
     public BaseRepositoryTest() {
-        underTest.firestore = getFirestore();
+        BaseRepository.firestore = getFirestore();
     }
 
     @BeforeEach
     void setUp() {
-        utils.seedDatabase(count, Utils.Clazz.ATENDIMENTO);
+        seedDatabase(count, ATENDIMENTOS_COLLECTION);
     }
 
     @Order(1)
@@ -47,7 +47,7 @@ class BaseRepositoryTest {
 
         String id = atendimento.getId();
 
-        underTest.update("atendimentos", id, data);
+        BaseRepository.update("atendimentos", id, data);
         var updatedAtendimento = (AtendimentoCivil) underTest.findById(id);
 
         assertNotEquals(atendimento, updatedAtendimento);
@@ -61,7 +61,7 @@ class BaseRepositoryTest {
     void delete(@CsvToAtendimento Atendimento atendimento) {
         String id = atendimento.getId();
 
-        underTest.delete("atendimentos", id);
+        BaseRepository.delete("atendimentos", id);
         sleep(3);
         var result = underTest.findById(id);
 
@@ -73,7 +73,7 @@ class BaseRepositoryTest {
     @Order(3)
     @Test
     void deleteAll() {
-        underTest.deleteAll("atendimentos", null, 20, null);
+        BaseRepository.deleteAll("atendimentos", null, 20, null);
         var result = underTest.findAll(20, null);
         assertTrue(result.isEmpty());
     }

@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.Utils;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
@@ -12,24 +11,23 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import static com.uniprojecao.fabrica.gprojuridico.Utils.Clazz;
-import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.*;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.PROCESSOS_COLLECTION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // Sem esta annotation, o atributo "count" não é incrementado sequencialmente.
 class ProcessoRepositoryTest {
 
     private final ProcessoRepository underTest = new ProcessoRepository();
-    private final Utils utils = new Utils();
     private Integer count = 0;
 
     public ProcessoRepositoryTest() {
-        underTest.firestore = getFirestore();
+        BaseRepository.firestore = getFirestore();
     }
 
     @BeforeEach
     void setUp() {
-        utils.seedDatabase(count, Clazz.PROCESSO);
+        seedDatabase(count, PROCESSOS_COLLECTION);
     }
 
     @Test
@@ -58,6 +56,6 @@ class ProcessoRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        if (count == 4) utils.clearDatabase(null, "processos");
+        if (count == 4) clearDatabase(null, "processos");
     }
 }
