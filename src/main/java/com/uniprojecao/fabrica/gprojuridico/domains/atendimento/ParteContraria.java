@@ -16,4 +16,5 @@ public class ParteContraria {
     private String email;
     private Endereco endereco;
     private String telefone;
+    private String informacoesComplementares;
 }
