@@ -18,55 +18,6 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             ArgumentsAccessor accessor,
             ParameterContext context
     ) {
-        /* É tido que:
-        *
-        * A classe abstrata Atendimento possui 6 atributos e 17 campos, sendo:
-        *   - 3 String
-        *   - 1 Timestamp
-        *   - 1 List<EntradaHistorico>, a qual EntradaHistorico possui 5 atributos e 11 campos, sendo:
-        *       - 3 String
-        *       - 1 Instant
-        *       - 1 UsuarioMin (3 atributos/campos, sendo todos do tipo String)
-        *
-        *       Logo, é tido que este atributo envolve 7 campos * n EntradaHi..., sendo "n" um número natural positivo.
-        *
-        *   - 1 Map<String, Envolvido>, a qual Envolvido possui 2 atributos/campos, sendo:
-        *       - 2 String
-        *
-        *       Logo, é tido que este atributo envolve 2 campos * k chave, sendo "k" um número natural positivo.
-        *
-        * Total, assumindo que "n" e "k" valem 1:
-        *
-        *   3 + 1 + (n * (3 + 1 + (4))) + (k * (2)) = 4 + 8 + 2 = 14 campos
-        *
-        * -------------------------------------------------------------------------------
-        *
-        * A classe AssistidoCivil possui 7 atributos e 25 campos, sendo:
-        *   - 1 FichaCivil, a qual esta abrange:
-        *       - 1 ParteContraria (7 atributos/campos, sendo todos String)
-        *       - 1 String
-        *
-        *   Logo, é tido que este atributo envolve 8 campos.
-        *
-        * Total: 14 campos (da herança) + 8 (da própria classe) = 22 campos
-        *
-        * OBS: os campos da herança da classe Ficha não foram considerados nessa conta.
-        *
-        * -------------------------------------------------------------------------------
-        *
-        * A classe AssistidoTrabalhista possui 7 atributos e 63 campos, sendo:
-        *   - 1 FichaTrabalhista, a qual esta abrange:
-        *       - 1 Reclamado (4 atributos/campos, sendo 4 String)
-        *       - 1 RelacaoEmpregaticia (30 atributos/campos, sendo 15 String, 4 Integer e 11 Boolean)
-        *       - 1 DocumentosDepositadosNpj (12 atributos/campos, sendo 11 Boolean e 1 String)
-        *       - 1 String
-        *
-        *   Logo, é tido que este atributo envolve 46 campos.
-        *
-        * Total: 14 campos (da herança) + 46 (da própria class) = 63 campos
-        *
-        * OBS: os campos da herança da classe Ficha não foram considerados nessa conta.
-        * */
         int accessorSize = accessor.size();
 
         // Para o atributo "historico"
@@ -82,56 +33,66 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
         var estagiario = new EnvolvidoDTO(accessor.getString(7), accessor.getString(8));
         var professor = new EnvolvidoDTO(accessor.getString(9), accessor.getString(10));
         var secretaria = new EnvolvidoDTO(accessor.getString(11), accessor.getString(12));
-        Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(Map.of("estagiario", estagiario, "professor", professor, "secretaria", secretaria));
+        var assistido = new EnvolvidoDTO("028.283.199-43", "Jonathan Alves");
+        Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(
+                Map.of(
+                        "estagiario", estagiario,
+                        "professor", professor,
+                        "secretaria", secretaria,
+                        "assistido", assistido));
 
-        if (accessorSize == 20) {
-            var ac = new AtendimentoCivil();
-            ac.setId(accessor.getString(0));
-            ac.setStatus(accessor.getString(1));
-            ac.setArea(accessor.getString(2));
+        if (accessorSize == 13) {
+            var atendimento = new AtendimentoCivil();
+            atendimento.setId(accessor.getString(0));
+            atendimento.setStatus(accessor.getString(1));
+            atendimento.setArea(accessor.getString(2));
             // instante ignorado
-            ac.setHistorico(historico);
-            ac.setEnvolvidos(envolvidos);
+            atendimento.setHistorico(historico);
+            atendimento.setEnvolvidos(envolvidos);
 
             // Para o atributo "ficha"
             var parteContraria = new ParteContraria(
-                    accessor.getString(13),
-                    accessor.getString(14),
-                    accessor.getString(15),
-                    accessor.getString(16),
-                    accessor.getString(17),
-                    new Endereco(
-                            accessor.getString(18),
-                            accessor.getString(19),
-                            accessor.getString(20),
-                            accessor.getString(21),
-                            accessor.getString(22),
-                            accessor.getString(23)
-                    ),
-                    accessor.getString(19)
+                    "Alberto Gomes Pereira",
+                    "Padeiro",
+                    "4.223.124-5",
+                    "948.234.153-23",
+                    "alberto.gomes@example.com",
+                    new Endereco(),
+                    "(61) 98392-2934"
             );
-            var ficha = new FichaCivil(null, false, new ArrayList<>(), parteContraria, null); // campos da herança ignorados.
-            ac.setFicha(ficha);
+            var ficha = new FichaCivil(
+                    null,
+                    false,
+                    new ArrayList<>(),
+                    parteContraria,
+                    null
+            );
+            atendimento.setFicha(ficha);
 
-            return ac;
-        } else if (accessorSize == 13) {
-            var at = new AtendimentoTrabalhista();
-            at.setId(accessor.getString(0));
-            at.setStatus(accessor.getString(1));
-            at.setArea(accessor.getString(2));
+            return atendimento;
+        }
+        else if (accessorSize == 14) {
+
+            var atendimento = new AtendimentoTrabalhista();
+            atendimento.setId(accessor.getString(0));
+            atendimento.setStatus(accessor.getString(1));
+            atendimento.setArea(accessor.getString(2));
             // instante ignorado
-            at.setHistorico(historico);
-            at.setEnvolvidos(envolvidos);
+            atendimento.setHistorico(historico);
+            atendimento.setEnvolvidos(envolvidos);
 
-            // Para o atributo "ficha"
-            var reclamado = new Reclamado();
-            var relacaoEmpregaticia = new RelacaoEmpregaticia();
-            var docDepositadosNpj= new DocumentosDepositadosNpj();
+            var ficha = new FichaTrabalhista(
+                    null,
+                    false,
+                    new ArrayList<>(),
+                    new Reclamado(),
+                    new RelacaoEmpregaticia(),
+                    new DocumentosDepositadosNpj(),
+                    null
+            );
+            atendimento.setFicha(ficha);
 
-            var ficha = new FichaTrabalhista(null, false, new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
-            at.setFicha(ficha);
-
-            return at;
+            return atendimento;
         }
 
         return null;
