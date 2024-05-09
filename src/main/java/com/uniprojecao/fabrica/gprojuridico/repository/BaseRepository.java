@@ -66,7 +66,7 @@ public class BaseRepository {
         }
     }
 
-    Object findById(String collectionName, @Nullable Class<?> type, String id) {
+    static Object findById(String collectionName, @Nullable Class<?> type, String id) {
         try {
             DocumentReference document = firestore.collection(collectionName).document(id);
             DocumentSnapshot snapshot = document.get().get();
@@ -94,7 +94,7 @@ public class BaseRepository {
         }
     }
 
-    static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    private static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         if (list == null) list = new String[]{"id"};
 
         ApiFuture<QuerySnapshot> future;
@@ -110,7 +110,7 @@ public class BaseRepository {
         }
     }
 
-    public static Map<String, Object> convertMap(Map<String, Object> inputMap) {
+    private static Map<String, Object> convertMap(Map<String, Object> inputMap) {
         Map<String, Object> outputMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
             processEntry(entry.getKey(), entry.getValue(), outputMap, "");
@@ -121,7 +121,8 @@ public class BaseRepository {
     private static void processEntry(String key, Object value, Map<String, Object> outputMap, String parentKey) {
         // Se o valor é um Map, deve-se percorrer o método recursivamente para concatenar as chaves aninhadas
         if (value instanceof Map) {
-            Map<String, Object> subMap = (Map<String, Object>) value;
+            @SuppressWarnings("unchecked")
+            var subMap = (Map<String, Object>) value;
             for (Map.Entry<String, Object> entry : subMap.entrySet()) {
                 processEntry(entry.getKey(), entry.getValue(), outputMap, parentKey + key + ".");
             }
