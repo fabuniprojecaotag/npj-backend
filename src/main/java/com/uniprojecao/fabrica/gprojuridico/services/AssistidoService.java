@@ -3,27 +3,30 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.AssistidoToDTO;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.dtoToAssistido;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toEntity;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
 @Service
-public class AssistidoService {
+public class AssistidoService extends BaseService {
 
-    @Autowired
-    AssistidoRepository repository;
-    private final String COLLECTION_NAME = "assistidos";
+    AssistidoRepository repository = new AssistidoRepository();
+    private static final String collectionName = ASSISTIDOS_COLLECTION;
 
-    public AssistidoDTO insert(AssistidoDTO data) {
-        repository.save(COLLECTION_NAME, data.getCpf(), dtoToAssistido(data));
-        return data;
+    public AssistidoService() {
+        super(collectionName);
+    }
+
+    public AssistidoDTO insert(AssistidoDTO dto) {
+        BaseRepository.save(collectionName, dto.getCpf(), toEntity(dto));
+        return dto;
     }
 
     public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
@@ -31,19 +34,7 @@ public class AssistidoService {
     }
 
     public AssistidoDTO findById(String id) {
-        var result = repository.findById(id);
-        return AssistidoToDTO(result);
-    }
-
-    public void update(String id, Map<String, Object> data) {
-        repository.update(COLLECTION_NAME, id, data);
-    }
-
-    public void delete(String id) {
-        repository.delete(COLLECTION_NAME, id);
-    }
-
-    public void deleteAll(String limit, String field, String filter, String value) {
-        repository.deleteAll(COLLECTION_NAME, null, parseInt(limit), initFilter(field, filter, value));
+        var assistido = repository.findById(id);
+        return (assistido != null) ? toDto(assistido) : null;
     }
 }

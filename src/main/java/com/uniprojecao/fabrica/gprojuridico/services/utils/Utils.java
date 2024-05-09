@@ -1,11 +1,19 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.Filter;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoCivilDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoFullDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoTrabalhistaDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -108,12 +116,22 @@ public class Utils {
     public static class ModelMapper {
         private static final org.modelmapper.ModelMapper modelMapper = new org.modelmapper.ModelMapper();
 
-        public static UsuarioDTO toDto(Usuario entity) {
-            return modelMapper.map(entity, UsuarioDTO.class);
+        public static AssistidoDTO toDto(Assistido entity) {
+            if (entity instanceof AssistidoCivil) {
+                return modelMapper.map(entity, AssistidoCivilDTO.class);
+            } else if (entity instanceof AssistidoTrabalhista) {
+                return modelMapper.map(entity, AssistidoTrabalhistaDTO.class);
+            }
+            return modelMapper.map(entity, AssistidoFullDTO.class);
         }
 
-        public static Usuario toEntity(UsuarioDTO dto) {
-            return modelMapper.map(dto, Usuario.class);
+        public static Assistido toEntity(AssistidoDTO dto) {
+            if (dto instanceof AssistidoCivilDTO) {
+                return modelMapper.map(dto, AssistidoCivil.class);
+            } else if (dto instanceof AssistidoTrabalhistaDTO) {
+                return modelMapper.map(dto, AssistidoTrabalhista.class);
+            }
+            return modelMapper.map(dto, AssistidoFull.class);
         }
 
         public static ProcessoDTO toDto(Processo entity) {
@@ -123,5 +141,14 @@ public class Utils {
         public static Processo toEntity(ProcessoDTO dto) {
             return modelMapper.map(dto, Processo.class);
         }
+
+        public static UsuarioDTO toDto(Usuario entity) {
+            return modelMapper.map(entity, UsuarioDTO.class);
+        }
+
+        public static Usuario toEntity(UsuarioDTO dto) {
+            return modelMapper.map(dto, Usuario.class);
+        }
+
     }
 }

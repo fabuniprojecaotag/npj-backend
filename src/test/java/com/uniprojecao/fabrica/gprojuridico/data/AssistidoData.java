@@ -18,4 +18,9 @@ public class AssistidoData {
                 new AssistidoTrabalhista("Rogério Bezerra Brito", "48.433.953-9", "223.128.851-66", "Brasileiro", "Mestrado", "Solteiro", "Gerente financeiro", "(61) 93872-0425", "rogerio.bezerra@example.com", new Assistido.Filiacao("Kamila Ervano Quintanilha", "Osvaldo dos Anjos Cordeiro"), "R$ 11.100", endereco, new AssistidoTrabalhista.Ctps("0921002", "001-0", "DF"), "276.65825.76-7", true)
         );
     }
+
+    public static Assistido seedWithOneAssistido() {
+        Map<String, Endereco> endereco = new HashMap<>();
+        return new AssistidoCivil("Cleyton Pina Auzier", "14.762.687-0", "288.610.170-29", "Brasileiro", "Superior", "Casado", "Advogado", "(61) 92413-0161", "cleyton.pina@example.com", new Assistido.Filiacao("Thayanna Moraes Elias", "José Mário Sena Santos"), "R$ 9.000", endereco, "Brasília", "21/02/1985", 3);
+    }
 }
