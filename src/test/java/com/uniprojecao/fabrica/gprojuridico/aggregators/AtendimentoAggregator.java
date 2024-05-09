@@ -58,7 +58,8 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
                     "948.234.153-23",
                     "alberto.gomes@example.com",
                     new Endereco(),
-                    "(61) 98392-2934"
+                    "(61) 98392-2934",
+                    null
             );
             var ficha = new FichaCivil(
                     null,
@@ -84,6 +85,7 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             var ficha = new FichaTrabalhista(
                     null,
                     false,
+                    "Reclamação trabalhista",
                     new ArrayList<>(),
                     new Reclamado(),
                     new RelacaoEmpregaticia(),

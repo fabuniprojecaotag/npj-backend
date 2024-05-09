@@ -71,7 +71,7 @@ public class AtendimentoData {
         var reclamado = new Reclamado();
         var relacaoEmpregaticia = new RelacaoEmpregaticia();
         var docDepositadosNpj= new DocumentosDepositadosNpj();
-        var fichaTrabalhista = new FichaTrabalhista(null, false, new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
+        var fichaTrabalhista = new FichaTrabalhista(null, false, "Reclamação trabalhista", new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
 
 
         return new AtendimentoTrabalhista("ATE00071", "Aguardando documentos", "Trabalhista", null, historico, envolvidos, fichaTrabalhista);
