@@ -10,11 +10,9 @@ import java.util.List;
 @Data
 public class FichaCivilDTO extends FichaDTO {
     private ParteContraria parteContraria;
-    private String medidaJudicial;
 
     public FichaCivilDTO(String assinatura, Boolean dadosSensiveis, List<TestemunhaDTO> testemunhasDTO, ParteContraria parteContraria, String medidaJuridica) {
         super(assinatura, medidaJuridica, dadosSensiveis, testemunhasDTO);
         this.parteContraria = parteContraria;
-        this.medidaJudicial = medidaJuridica;
     }
 }

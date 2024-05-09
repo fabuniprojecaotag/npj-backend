@@ -66,7 +66,7 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
                     false,
                     new ArrayList<>(),
                     parteContraria,
-                    null
+                    "Ação de guarda"
             );
             atendimento.setFicha(ficha);
 
