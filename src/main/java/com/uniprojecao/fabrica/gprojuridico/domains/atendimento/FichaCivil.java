@@ -9,11 +9,9 @@ import java.util.List;
 @NoArgsConstructor
 public class FichaCivil extends Ficha {
     private ParteContraria parteContraria;
-    private String medidaJudicial;
 
-    public FichaCivil(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas, ParteContraria parteContraria, String medidaJudicial) {
-        super(assinatura, dadosSensiveis, testemunhas);
+    public FichaCivil(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas, ParteContraria parteContraria, String medidaJuridica) {
+        super(assinatura, medidaJuridica, dadosSensiveis, testemunhas);
         this.parteContraria = parteContraria;
-        this.medidaJudicial = medidaJudicial;
     }
 }

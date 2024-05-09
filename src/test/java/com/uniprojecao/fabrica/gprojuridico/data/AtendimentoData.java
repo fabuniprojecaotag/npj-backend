@@ -40,7 +40,7 @@ public class AtendimentoData {
         var reclamado = new Reclamado();
         var relacaoEmpregaticia = new RelacaoEmpregaticia();
         var docDepositadosNpj= new DocumentosDepositadosNpj();
-        var fichaTrabalhista = new FichaTrabalhista(null, false, new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
+        var fichaTrabalhista = new FichaTrabalhista(null, false, "Reclamação trabalhista", new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
 
         return List.of(
                 new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, historico, envolvidos, fichaCivil),
