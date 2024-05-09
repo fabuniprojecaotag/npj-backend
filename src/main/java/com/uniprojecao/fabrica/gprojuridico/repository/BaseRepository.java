@@ -43,14 +43,6 @@ public class BaseRepository {
         return options.getService();
     }
 
-    public void save(String collectionName, Object data) {
-        try {
-            firestore.collection(collectionName).add(data).get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static void save(String collectionName, String CustomId, Object data) {
         try {
             firestore.collection(collectionName).document(CustomId).set(data).get();
