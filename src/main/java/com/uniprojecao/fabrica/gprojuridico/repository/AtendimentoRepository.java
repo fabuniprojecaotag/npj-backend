@@ -11,28 +11,41 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.snapshotToAtendimento;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 
 @Repository
 @DependsOn("baseRepository")
 public class AtendimentoRepository extends BaseRepository {
 
-    private final String COLLECTION_NAME = "atendimentos";
+    private final String collectionName = ATENDIMENTOS_COLLECTION;
 
     public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = {"area", "status", "envolvidos.assistido"};
-        return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+        return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true))
                 .toList();
     }
 
     public DocumentSnapshot findLast() {
-        return findLast(COLLECTION_NAME);
+        try {
+            var list = firestore
+                    .collection(collectionName)
+                    .orderBy("instante", DESCENDING)
+                    .limit(1)
+                    .get()
+                    .get()
+                    .getDocuments();
+            return (!list.isEmpty()) ? list.get(0) : null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Atendimento findById(String id) {
-        var snapshot = (DocumentSnapshot) findById(COLLECTION_NAME, null, id);
+        var snapshot = (DocumentSnapshot) findById(collectionName, null, id);
         return (Atendimento) snapshotToAtendimento(snapshot, false);
     }
 }

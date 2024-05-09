@@ -11,24 +11,25 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.snapshotToUsuario;
 
 @Repository
 @DependsOn("baseRepository")
 public class UsuarioRepository extends BaseRepository {
 
-    private final String COLLECTION_NAME = "usuarios";
+    private final String collectionName = USUARIOS_COLLECTION;
 
     public List<UsuarioMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = {"nome", "email", "role", "status", "matricula", "semestre"};
-        return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+        return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (UsuarioMinDTO) snapshotToUsuario((DocumentSnapshot) o, true))
                 .toList();
     }
 
     public Usuario findById(String id) {
-        var snapshot = (DocumentSnapshot) findById(COLLECTION_NAME, null, id);
+        var snapshot = (DocumentSnapshot) findById(collectionName, null, id);
         return (Usuario) snapshotToUsuario(snapshot, false);
     }
 }

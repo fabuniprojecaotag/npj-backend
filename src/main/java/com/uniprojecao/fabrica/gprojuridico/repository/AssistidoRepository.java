@@ -12,23 +12,24 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.snapshotToAssistido;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
 
 @Repository
 @DependsOn("baseRepository")
 public class AssistidoRepository extends BaseRepository {
 
-    private static final String COLLECTION_NAME = "assistidos";
+    private final String collectionName = ASSISTIDOS_COLLECTION;
 
     public List<AssistidoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = {"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
-        return findAll(COLLECTION_NAME, columnList, null, limit, queryFilter)
+        return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AssistidoMinDTO) snapshotToAssistido((DocumentSnapshot) o, true))
                 .toList();
     }
 
     public Assistido findById(String id) {
-        var snapshot = (DocumentSnapshot) findById(COLLECTION_NAME, null, id);
+        var snapshot = (DocumentSnapshot) findById(collectionName, null, id);
         return (Assistido) snapshotToAssistido(snapshot, false);
     }
 }

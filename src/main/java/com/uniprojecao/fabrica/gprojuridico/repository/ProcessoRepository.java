@@ -8,22 +8,24 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.PROCESSOS_COLLECTION;
+
 @Repository
 @DependsOn("baseRepository")
 public class ProcessoRepository extends BaseRepository {
 
-    private static final String COLLECTION_NAME = "processos";
-    private static final Class<Processo> TYPE = Processo.class;
+    private final String collectionName = PROCESSOS_COLLECTION;
+    private final Class<Processo> TYPE = Processo.class;
 
     public List<Processo> findAll(int limit, @Nullable QueryFilter queryFilter) {
         String[] columnList = new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
-        return findAll(COLLECTION_NAME, columnList, TYPE, limit, queryFilter)
+        return findAll(collectionName, columnList, TYPE, limit, queryFilter)
                 .stream()
                 .map(o -> (Processo) o)
                 .toList();
     }
 
     public Processo findByNumero(String numero) {
-        return (Processo) findById(COLLECTION_NAME, TYPE, numero);
+        return (Processo) findById(collectionName, TYPE, numero);
     }
 }
