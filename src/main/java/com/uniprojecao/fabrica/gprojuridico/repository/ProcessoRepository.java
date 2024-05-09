@@ -3,11 +3,13 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nullable;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@DependsOn("baseRepository")
 public class ProcessoRepository extends BaseRepository {
 
     private static final String COLLECTION_NAME = "processos";

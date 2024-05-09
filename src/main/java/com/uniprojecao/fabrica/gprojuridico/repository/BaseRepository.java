@@ -24,26 +24,20 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 @Primary
 public class BaseRepository {
 
-    public static Firestore firestore; // TODO: mudar para static parece funcionar, porém é necessário ter certeza disso, por conta das exceções lançadas
+    public static Firestore firestore;
 
     @Value("${spring.cloud.gcp.project-id}")
     private String projectId;
 
-    private boolean initialized = false;
-
     @PostConstruct
     private void init() {
-        if (!initialized) {
+        var clazz = this.getClass().getSimpleName();
+        if (clazz == BaseRepository.class.getSimpleName()) {
             firestore = firestore();
-            System.out.println("initialized: " + initialized);
-            initialized = true;
-            System.out.println("initialized: " + initialized);
-            System.out.println();
         }
     }
 
     private Firestore firestore() {
-        System.out.println("Repositório carregado: " + this.getClass().getSimpleName());
         FirestoreOptions options = FirestoreOptions.newBuilder()
                 .setProjectId(projectId)
                 .build();
