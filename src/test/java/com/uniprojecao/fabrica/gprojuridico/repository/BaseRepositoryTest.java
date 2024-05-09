@@ -10,26 +10,19 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BaseRepositoryTest {
 
-    private final AtendimentoRepository underTest = new AtendimentoRepository();
-    private Integer count = 0;
+    AtendimentoRepository repository = new AtendimentoRepository();
 
-    public BaseRepositoryTest() {
-        BaseRepository.firestore = getFirestore();
-    }
-
-    @BeforeEach
-    void setUp() {
-        seedDatabase(count, ATENDIMENTOS_COLLECTION);
+    @BeforeAll
+    static void beforeAll() {
+        seedDatabase(0, ATENDIMENTOS_COLLECTION);
     }
 
     @Order(1)
@@ -48,11 +41,9 @@ class BaseRepositoryTest {
         String id = atendimento.getId();
 
         BaseRepository.update("atendimentos", id, data);
-        var updatedAtendimento = (AtendimentoCivil) underTest.findById(id);
+        var updatedAtendimento = (AtendimentoCivil) repository.findById(id);
 
         assertNotEquals(atendimento, updatedAtendimento);
-
-        count++;
     }
 
     @Order(2)
@@ -62,19 +53,23 @@ class BaseRepositoryTest {
         String id = atendimento.getId();
 
         BaseRepository.delete("atendimentos", id);
-        sleep(3);
-        var result = underTest.findById(id);
+        sleep(1000);
+        var result = repository.findById(id);
 
         assertNull(result);
-
-        count = 0;
     }
 
     @Order(3)
     @Test
     void deleteAll() {
         BaseRepository.deleteAll("atendimentos", null, 20, null);
-        var result = underTest.findAll(20, null);
+        var result = repository.findAll(20, null);
         assertTrue(result.isEmpty());
+    }
+
+    @AfterAll
+    static void afterAll() throws Exception {
+        BaseRepository.firestore.close();
+        sleep(1000);
     }
 }
