@@ -98,13 +98,27 @@ class UsuarioServiceTest {
         @Order(3)
         void update() {
             var id = "leticia.alves";
+            var rawPassword = "132435";
 
-            var originalEmail = service.findById(id).getEmail();
-            service.update(id, Map.of("email", "letici.alves@projecao.br"));
+            var user = service.findById(id);
+            service.update(id, Map.of(
+                    "nome", "Letícia Neves",
+                    "email", "letica.neves@projecao.br",
+                    "senha", rawPassword
+            ));
             sleep(1000); // Evita que o findById() pegue o valor antigo
-            var updatedEmail = service.findById(id).getEmail();
+            var updatedUser = service.findById(id);
+            var encryptedPassword = updatedUser.getSenha();
 
-            assertNotEquals(originalEmail, updatedEmail, "User shoud not have the same e-mail");
+            System.out.println("original: " + user);
+            System.out.println("updated: " + updatedUser);
+
+            assertAll(
+                    () -> assertNotEquals(user, updatedUser, "User shoud not have the same data"),
+                    () -> assertNotEquals(rawPassword, encryptedPassword, "User shoud have the password encrypted")
+            );
+
+
         }
 
         @ParameterizedTest
