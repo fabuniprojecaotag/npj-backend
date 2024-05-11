@@ -112,7 +112,7 @@ public class UsuarioService extends BaseService implements UserDetailsService {
     public UsuarioDTO findMe() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) authentication.getPrincipal();
-        String id = usuario.getEmail();
+        String id = usuario.getId();
         return findById(id);
     }
 
