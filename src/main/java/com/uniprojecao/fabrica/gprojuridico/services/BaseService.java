@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class BaseService {
     }
 
     public void deleteAll(String limit, String field, String filter, String value) {
-        BaseRepository.deleteAll(collectionName, null, parseInt(limit), initFilter(field, filter, value)); // TODO: Converter método para static
+        BaseRepository.deleteAll(collectionName, null, parseInt(limit), initFilter(field, filter, value));
     }
 
 

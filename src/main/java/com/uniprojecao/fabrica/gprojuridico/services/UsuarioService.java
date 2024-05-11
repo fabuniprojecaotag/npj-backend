@@ -14,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.UserUniqueField;
@@ -94,6 +96,10 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         u.setSenha(BCrypt.withDefaults().hashToString(12, u.getSenha().toCharArray()));
     }
 
+    private String encryptPassword(String rawPassword) {
+        return BCrypt.withDefaults().hashToString(12, rawPassword.toCharArray());
+    }
+
     public List<UsuarioMinDTO> findAll(String limit, String field, String filter, String value) {
         return repository.findAll(parseInt(limit), initFilter(field, filter, value));
     }
@@ -124,5 +130,27 @@ public class UsuarioService extends BaseService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         return repository.findById(username);
+    }
+
+    @Override
+    public void update(String id, Map<String, Object> data) {
+        String senhaKey = "senha";
+        // Caso o "data" contém o atributo "senha" para ser atualizado, este deve ser criptografado
+        if (data.containsKey(senhaKey)) {
+            var rawPassword = (String) data.get(senhaKey);
+            var encryptedPassword = encryptPassword(rawPassword);
+
+            // Dados em mapas Java são imutáveis; logo, uma alternativa é criar um novo map de pares chave-valor
+            Map<String, Object> newData = new HashMap<>();
+            for (var entry : data.entrySet()) {
+                if (entry.getKey() != senhaKey) newData.put(entry.getKey(), entry.getValue());
+            }
+            newData.put(senhaKey, encryptedPassword);
+
+            // Salva os dados recebidos e com a senha criptografada
+            BaseRepository.update(collectionName, id, newData);
+        } else {
+            BaseRepository.update(collectionName, id, data);
+        }
     }
 }
