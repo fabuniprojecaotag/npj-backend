@@ -11,6 +11,7 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithOneAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +31,15 @@ class AssistidoServiceTest {
     void findAll() {
         var result = service.findAll("20", "", "", "");
         assertNotNull(result);
+    }
+
+    @Test
+    @Order(1)
+    void findAllAtendimentos() {
+        var id = "288.610.170-29";
+        seedDatabase(0, ATENDIMENTOS_COLLECTION);
+        var result = service.findAllAtendimentos(id, "20");
+        assertFalse(result.isEmpty(), "List should not be empty.");
     }
 
     @ParameterizedTest

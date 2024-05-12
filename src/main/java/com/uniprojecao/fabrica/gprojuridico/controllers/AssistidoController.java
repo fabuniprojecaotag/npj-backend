@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.projections.AtendimentosDoAssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,14 @@ public class AssistidoController {
                                                 @RequestParam(defaultValue = "") String filter,
                                                 @RequestParam(defaultValue = "") String value) {
         List<AssistidoMinDTO> list = service.findAll(limit, field, filter, value);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/{id}/atendimentos")
+    public ResponseEntity<List<AtendimentosDoAssistidoDTO>> findAllAtendimentos(@PathVariable String id,
+                                                                                @RequestParam(defaultValue = "20")
+                                                                                String limit) {
+        List<AtendimentosDoAssistidoDTO> list = service.findAllAtendimentos(id, limit);
         return ResponseEntity.ok(list);
     }
 

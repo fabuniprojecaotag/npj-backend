@@ -2,7 +2,9 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.projections.AtendimentosDoAssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,12 @@ public class AssistidoService extends BaseService {
 
     public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
         return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+    }
+
+    public List<AtendimentosDoAssistidoDTO> findAllAtendimentos(String id, String limit) {
+        var atendimentoRepository = new AtendimentoRepository();
+        return atendimentoRepository.findAllToAssistido(parseInt(limit),
+                initFilter("envolvidos.assistido.id", "EQUAL", id));
     }
 
     public AssistidoDTO findById(String id) {

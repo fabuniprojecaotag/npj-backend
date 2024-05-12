@@ -23,7 +23,7 @@ public class AtendimentoData {
         var estagiario = new EnvolvidoDTO("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
         var professor = new EnvolvidoDTO("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
         var secretaria = new EnvolvidoDTO("leticia.alves@projecao.br", "Letícia Alves Martins");
-        var assistido = new EnvolvidoDTO("028.283.199-43", "Jonathan Alves");
+        var assistido = new EnvolvidoDTO("288.610.170-29", "Cleyton Pina Auzier");
         Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(
                 Map.of(
                         "estagiario", estagiario,
@@ -59,7 +59,7 @@ public class AtendimentoData {
         var estagiario = new EnvolvidoDTO("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
         var professor = new EnvolvidoDTO("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
         var secretaria = new EnvolvidoDTO("leticia.alves@projecao.br", "Letícia Alves Martins");
-        var assistido = new EnvolvidoDTO("028.283.199-43", "Jonathan Alves");
+        var assistido = new EnvolvidoDTO("288.610.170-29", "Cleyton Pina Auzier");
         Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(
                 Map.of(
                         "estagiario", estagiario,
