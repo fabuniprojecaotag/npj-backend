@@ -29,7 +29,14 @@ class AtendimentoServiceTest {
     @Order(1)
     void findAll() {
         var result = service.findAll("20", "", "", "");
-        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        result.forEach(record -> assertAll(
+                () -> assertNotNull(record.getId()),
+                () -> assertNotNull(record.getArea()),
+                () -> assertNotNull(record.getStatus()),
+                () -> assertNotNull(record.getAssistido()),
+                () -> assertNotNull(record.getInstante())
+        ));
     }
 
     @ParameterizedTest
