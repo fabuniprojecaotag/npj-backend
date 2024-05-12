@@ -9,6 +9,7 @@ import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhis
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnderecoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
@@ -18,6 +19,7 @@ import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoFullDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoTrabalhistaDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.*;
+import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -147,10 +149,16 @@ public class Utils {
         }
 
         public static UsuarioDTO toDto(Usuario entity) {
+            if (entity instanceof Estagiario) {
+                return modelMapper.map(entity, EstagiarioDTO.class);
+            }
             return modelMapper.map(entity, UsuarioDTO.class);
         }
 
         public static Usuario toEntity(UsuarioDTO dto) {
+            if (dto instanceof EstagiarioDTO) {
+                return modelMapper.map(dto, Estagiario.class);
+            }
             return modelMapper.map(dto, Usuario.class);
         }
     }
