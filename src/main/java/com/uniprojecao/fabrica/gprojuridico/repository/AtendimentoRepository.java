@@ -4,6 +4,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -25,7 +26,15 @@ public class AtendimentoRepository extends BaseRepository {
         String[] columnList = {"area", "status", "envolvidos.assistido"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
-                .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true))
+                .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true, false))
+                .toList();
+    }
+
+    public List<AtendimentoVinculadoAssistidoDTO> findAllToAssistido(@Nonnull Integer limit, QueryFilter queryFilter) {
+        String[] columnList = {"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
+        return findAll(collectionName, columnList, null, limit, queryFilter)
+                .stream()
+                .map(o -> (AtendimentoVinculadoAssistidoDTO) snapshotToAtendimento((DocumentSnapshot) o, false, true))
                 .toList();
     }
 
@@ -46,6 +55,6 @@ public class AtendimentoRepository extends BaseRepository {
 
     public Atendimento findById(String id) {
         var snapshot = (DocumentSnapshot) findById(collectionName, null, id);
-        return (Atendimento) snapshotToAtendimento(snapshot, false);
+        return (Atendimento) snapshotToAtendimento(snapshot, false, false);
     }
 }

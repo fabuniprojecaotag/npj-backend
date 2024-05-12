@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AtendimentoMinDTO {
+public class AtendimentoVinculadoAssistidoDTO {
     private String id;
     private String area;
     private String status;
     private EnvolvidoDTO assistido;
+    private EnvolvidoDTO estagiario;
     private Timestamp instante;
 }
