@@ -4,7 +4,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.projections.AtendimentosDoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -30,11 +30,11 @@ public class AtendimentoRepository extends BaseRepository {
                 .toList();
     }
 
-    public List<AtendimentosDoAssistidoDTO> findAllToAssistido(@Nonnull Integer limit, QueryFilter queryFilter) {
+    public List<AtendimentoVinculadoAssistidoDTO> findAllToAssistido(@Nonnull Integer limit, QueryFilter queryFilter) {
         String[] columnList = {"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
-                .map(o -> (AtendimentosDoAssistidoDTO) snapshotToAtendimento((DocumentSnapshot) o, false, true))
+                .map(o -> (AtendimentoVinculadoAssistidoDTO) snapshotToAtendimento((DocumentSnapshot) o, false, true))
                 .toList();
     }
 

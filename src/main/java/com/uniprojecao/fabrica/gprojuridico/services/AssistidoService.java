@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.projections.AtendimentosDoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
@@ -35,7 +35,7 @@ public class AssistidoService extends BaseService {
         return repository.findAll(parseInt(limit), initFilter(field, filter, value));
     }
 
-    public List<AtendimentosDoAssistidoDTO> findAllAtendimentos(String id, String limit) {
+    public List<AtendimentoVinculadoAssistidoDTO> findAllAtendimentos(String id, String limit) {
         var atendimentoRepository = new AtendimentoRepository();
         return atendimentoRepository.findAllToAssistido(parseInt(limit),
                 initFilter("envolvidos.assistido.id", "EQUAL", id));

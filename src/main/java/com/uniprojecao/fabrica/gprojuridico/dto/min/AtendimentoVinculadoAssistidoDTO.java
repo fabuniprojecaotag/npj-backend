@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.projections;
+package com.uniprojecao.fabrica.gprojuridico.dto.min;
 
 import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AtendimentosDoAssistidoDTO {
+public class AtendimentoVinculadoAssistidoDTO {
     private String id;
     private String area;
     private String status;

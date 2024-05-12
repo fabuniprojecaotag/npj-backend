@@ -6,7 +6,7 @@ import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.projections.AtendimentosDoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 
 import java.util.Objects;
 
@@ -53,7 +53,7 @@ public class AtendimentoUtils {
                             (String) estagiarioMap.get("id"),
                             (String) estagiarioMap.get("nome"));
 
-            return new AtendimentosDoAssistidoDTO(
+            return new AtendimentoVinculadoAssistidoDTO(
                     snapshot.getId(),
                     (String) snapshot.get("area"),
                     (String) snapshot.get("status"),
