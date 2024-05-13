@@ -20,6 +20,8 @@ public class TokenService {
         return JWT.create()
                 .withIssuer("NPJ-Api")
                 .withSubject(usuario.getId())
+                .withClaim("role", usuario.getRole())
+                .withClaim("nome", usuario.getNome())
                 .withExpiresAt(genExpirationDate())
                 .sign(algorithm);
 
