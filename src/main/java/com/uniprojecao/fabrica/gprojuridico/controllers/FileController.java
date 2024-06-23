@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/storage")
@@ -19,10 +20,10 @@ public class FileController {
     private FileService service;
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> upload(@RequestParam("files") MultipartFile[] files) {
         try {
-            String fileName = service.upload(file);
-            return ResponseEntity.ok("File uploaded successfully: " + fileName);
+            List<String> filesName = service.upload(files);
+            return ResponseEntity.ok("File uploaded successfully: " + filesName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
         }
