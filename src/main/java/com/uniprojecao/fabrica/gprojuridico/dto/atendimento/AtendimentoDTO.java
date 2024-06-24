@@ -2,7 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.dto.atendimento;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -30,14 +29,14 @@ public abstract class AtendimentoDTO {
     private String area; // Enum Area convertido em String
 
     @Nullable
-    private Timestamp instante;
+    private String instante;
 
     private FichaDTO ficha;
 
     private List<EntradaHistoricoDTO> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable Timestamp instante) {
+    public AtendimentoDTO(@Nullable String id, String status, String area, @Nullable String instante) {
         this.id = id;
         setStatus(status);
         setArea(area);

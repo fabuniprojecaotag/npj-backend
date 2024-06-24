@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
-import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
@@ -67,7 +66,7 @@ public class AtendimentoUtils {
                     (String) snapshot.get("status"),
                     assistidoEnvolvido,
                     estagiarioEnvolvido,
-                    (Timestamp) snapshot.get("instante")
+                    (String) snapshot.get("instante")
             );
         }
 

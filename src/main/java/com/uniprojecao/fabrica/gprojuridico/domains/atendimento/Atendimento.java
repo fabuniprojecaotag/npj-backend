@@ -3,9 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
-import com.google.cloud.firestore.annotation.ServerTimestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,14 +32,12 @@ public abstract class Atendimento {
     private String status; // Enum Status convertido em String
     private String area; // Enum Area convertido em String
 
-    @ServerTimestamp
-    @JsonIgnore
-    private Timestamp instante;
+    private String instante;
 
     private List<EntradaHistorico> historico = new ArrayList<>();
     private Map<String, EnvolvidoDTO> envolvidos = new HashMap<>();
 
-    public Atendimento(String id, String status, String area, Timestamp instante, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
+    public Atendimento(String id, String status, String area, String instante, List<EntradaHistorico> historico, Map<String, EnvolvidoDTO> envolvidos) {
         this.id = id;
         setStatus(status);
         setArea(area);
