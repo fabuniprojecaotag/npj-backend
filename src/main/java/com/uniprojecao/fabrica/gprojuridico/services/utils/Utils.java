@@ -25,10 +25,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.google.cloud.firestore.Filter.*;
 
@@ -74,6 +74,66 @@ public class Utils {
             clazz = clazz.getSuperclass();
         }
         return fieldsMap.values().toArray(new Field[0]);
+    }
+
+    public static <T> Map<String, Object> filterValidKeys(Map<String, Object> inputMap, Class<T> clazz) {
+        Map<String, Object> filteredMap = new HashMap<>();
+
+        // Gets all fields of the class passed as a parameter
+        Field[] fields = clazz.getDeclaredFields();
+
+        // Creates a Set with the names of the fields in the class passed as parameters
+        Set<String> validKeys = getAllFields2(clazz).stream()
+                .map(Field::getName)
+                .collect(Collectors.toSet());
+
+        // Filters the inputMap, keeping only valid keys
+        for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (validKeys.contains(key)) {
+                if (value instanceof Map) {
+                    Field field = getFieldByName(clazz, key);
+                    if (field != null) {
+                        Class<?> fieldType = field.getType();
+                        if (!fieldType.getName().startsWith("java.lang") && !fieldType.isPrimitive()) {
+                            value = filterValidKeys((Map<String, Object>) value, fieldType);
+                        }
+                    }
+                }
+                filteredMap.put(key, value);
+            }
+        }
+
+        return filteredMap;
+    }
+
+    // Recursive method to get all fields of a class and its superclasses
+    private static Set<Field> getAllFields2(Class<?> clazz) {
+        Set<Field> fields = new HashSet<>();
+        while (clazz != null) {
+            for (Field field : clazz.getDeclaredFields()) {
+                fields.add(field);
+                // Checks if the field is a custom class (not primitive or String)
+                if (!field.getType().isPrimitive() && !field.getType().getName().startsWith("java.lang")) {
+                    fields.addAll(getAllFields2(field.getType()));
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
+    }
+
+    private static Field getFieldByName(Class<?> clazz, String fieldName) {
+        while (clazz != null) {
+            try {
+                return clazz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return null;
     }
 
     public static Filter filter(QueryFilter filter) {
