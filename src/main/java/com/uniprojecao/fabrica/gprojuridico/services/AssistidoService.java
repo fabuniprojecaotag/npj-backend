@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
@@ -33,6 +34,10 @@ public class AssistidoService extends BaseService {
 
     public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
         return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+    }
+
+    public List<AssistidoAutocomplete> findAllMin(String limit, String field, String filter, String value) {
+        return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
     }
 
     public List<AtendimentoVinculadoAssistidoDTO> findAllAtendimentos(String id, String limit) {

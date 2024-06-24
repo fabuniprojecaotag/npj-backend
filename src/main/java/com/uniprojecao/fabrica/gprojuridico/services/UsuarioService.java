@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
@@ -102,6 +103,10 @@ public class UsuarioService extends BaseService implements UserDetailsService {
 
     public List<UsuarioMinDTO> findAll(String limit, String field, String filter, String value) {
         return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+    }
+
+    public List<UsuarioAutocomplete> findAllMin(String limit, String field, String filter, String value) {
+        return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
     }
 
     public UsuarioDTO findById(String id) {

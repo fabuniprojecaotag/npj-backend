@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
@@ -18,6 +19,7 @@ public class AtendimentoUtils {
      * registered service area
      */
     public static Object snapshotToAtendimento(DocumentSnapshot snapshot, Boolean returnMinDTO,
+                                               Boolean returnAutocomplete,
                                                Boolean returnAtendimentosDeAssistidoDTO) {
         if (returnMinDTO) {
             var assistidoMap = convertUsingReflection(snapshot.get("envolvidos.assistido"), false);
@@ -34,6 +36,12 @@ public class AtendimentoUtils {
                     (String) snapshot.get("status"),
                     assistidoEnvolvido,
                     snapshot.getCreateTime()
+            );
+        }
+
+        if (returnAutocomplete) {
+            return new AtendimentoAutocomplete(
+                    snapshot.getId()
             );
         }
 

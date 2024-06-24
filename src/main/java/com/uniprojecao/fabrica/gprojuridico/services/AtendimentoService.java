@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
@@ -57,6 +58,10 @@ public class AtendimentoService extends BaseService {
 
     public List<AtendimentoMinDTO> findAll(String limit, String field, String filter, String value) {
         return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+    }
+
+    public List<AtendimentoAutocomplete> findAllMin(String limit, String field, String filter, String value) {
+        return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
     }
 
     public AtendimentoDTO findById(String id) {

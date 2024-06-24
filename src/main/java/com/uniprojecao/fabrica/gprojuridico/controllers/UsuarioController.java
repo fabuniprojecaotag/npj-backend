@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
@@ -32,6 +33,15 @@ public class UsuarioController {
                                                        @RequestParam(defaultValue = "") String filter,
                                                        @RequestParam(defaultValue = "") String value) {
         var usuarios = service.findAll(limit, field, filter, value);
+        return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/min")
+    public ResponseEntity<List<UsuarioAutocomplete>> findAllMin(@RequestParam(defaultValue = "20") String limit,
+                                                                @RequestParam(defaultValue = "") String field,
+                                                                @RequestParam(defaultValue = "") String filter,
+                                                                @RequestParam(defaultValue = "") String value) {
+        var usuarios = service.findAllMin(limit, field, filter, value);
         return ResponseEntity.ok(usuarios);
     }
 

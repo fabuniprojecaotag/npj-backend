@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
@@ -26,7 +27,14 @@ public class AtendimentoRepository extends BaseRepository {
         String[] columnList = {"area", "status", "envolvidos.assistido"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
-                .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true, false))
+                .map(o -> (AtendimentoMinDTO) snapshotToAtendimento((DocumentSnapshot) o, true, false, false))
+                .toList();
+    }
+
+    public List<AtendimentoAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+        return findAll(collectionName, null, null, limit, queryFilter)
+                .stream()
+                .map(o -> (AtendimentoAutocomplete) snapshotToAtendimento((DocumentSnapshot) o, false, true, false))
                 .toList();
     }
 
@@ -34,7 +42,7 @@ public class AtendimentoRepository extends BaseRepository {
         String[] columnList = {"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
-                .map(o -> (AtendimentoVinculadoAssistidoDTO) snapshotToAtendimento((DocumentSnapshot) o, false, true))
+                .map(o -> (AtendimentoVinculadoAssistidoDTO) snapshotToAtendimento((DocumentSnapshot) o, false, false, true))
                 .toList();
     }
 
@@ -55,6 +63,6 @@ public class AtendimentoRepository extends BaseRepository {
 
     public Atendimento findById(String id) {
         var snapshot = (DocumentSnapshot) findById(collectionName, null, id);
-        return (Atendimento) snapshotToAtendimento(snapshot, false, false);
+        return (Atendimento) snapshotToAtendimento(snapshot, false, false, false);
     }
 }

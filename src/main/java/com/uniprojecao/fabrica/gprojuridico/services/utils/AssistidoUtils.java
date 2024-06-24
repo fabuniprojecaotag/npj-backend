@@ -1,13 +1,17 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 
 public class AssistidoUtils {
-    public static Object snapshotToAssistido(DocumentSnapshot snapshot, Boolean returnMinDTO) {
+    public static Object snapshotToAssistido(DocumentSnapshot snapshot, Boolean returnMinDTO,
+                                             Boolean returnAutocomplete) {
+
+        if (snapshot == null) return null;
 
         if (returnMinDTO) {
             var object = snapshot.toObject(AssistidoMinDTO.class);
@@ -15,7 +19,9 @@ public class AssistidoUtils {
             return object;
         }
 
-        if (snapshot == null) return null;
+        if (returnAutocomplete) {
+            return snapshot.toObject(AssistidoAutocomplete.class);
+        }
 
         Boolean dadosFCivil =
                 snapshot.contains("naturalidade") &&

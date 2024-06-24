@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
@@ -34,6 +35,15 @@ public class AssistidoController {
                                                 @RequestParam(defaultValue = "") String filter,
                                                 @RequestParam(defaultValue = "") String value) {
         List<AssistidoMinDTO> list = service.findAll(limit, field, filter, value);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/min")
+    public ResponseEntity<List<AssistidoAutocomplete>> findAllMin(@RequestParam(defaultValue = "20") String limit,
+                                                         @RequestParam(defaultValue = "") String field,
+                                                         @RequestParam(defaultValue = "") String filter,
+                                                         @RequestParam(defaultValue = "") String value) {
+        List<AssistidoAutocomplete> list = service.findAllMin(limit, field, filter, value);
         return ResponseEntity.ok(list);
     }
 

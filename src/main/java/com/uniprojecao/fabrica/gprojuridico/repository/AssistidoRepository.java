@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
@@ -24,12 +25,20 @@ public class AssistidoRepository extends BaseRepository {
         String[] columnList = {"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
-                .map(o -> (AssistidoMinDTO) snapshotToAssistido((DocumentSnapshot) o, true))
+                .map(o -> (AssistidoMinDTO) snapshotToAssistido((DocumentSnapshot) o, true, false))
+                .toList();
+    }
+
+    public List<AssistidoAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+        String[] columnList = {"nome"};
+        return findAll(collectionName, columnList, null, limit, queryFilter)
+                .stream()
+                .map(o -> (AssistidoAutocomplete) snapshotToAssistido((DocumentSnapshot) o, false, true))
                 .toList();
     }
 
     public Assistido findById(String id) {
         var snapshot = (DocumentSnapshot) findById(collectionName, null, id);
-        return (Assistido) snapshotToAssistido(snapshot, false);
+        return (Assistido) snapshotToAssistido(snapshot, false, false);
     }
 }
