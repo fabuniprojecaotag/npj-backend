@@ -61,9 +61,10 @@ public class AtendimentoController {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
-        service.update(id, data);
+    @PutMapping("/{id}/{clazz}")
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Map<String, Object> data,
+                                    @PathVariable String clazz) {
+        service.update(id, data, clazz);
         return ResponseEntity.ok().build();
     }
 

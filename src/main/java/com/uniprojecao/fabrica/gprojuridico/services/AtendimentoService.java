@@ -2,6 +2,8 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
@@ -9,12 +11,14 @@ import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toEntity;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
@@ -38,7 +42,7 @@ public class AtendimentoService extends BaseService {
 
     private String incrementId(String id) {
         String numbers = id.substring(3); // numbers = "nnnnn" of {"ATE" + "nnnnn"}
-        int increment = Integer.parseInt(numbers) + 1;
+        int increment = parseInt(numbers) + 1;
 
         Matcher matcher = Pattern.compile("0").matcher(numbers);
         var remainingZeros = new StringBuilder();
@@ -67,5 +71,17 @@ public class AtendimentoService extends BaseService {
     public AtendimentoDTO findById(String id) {
         var atendimento = repository.findById(id);
         return (atendimento != null) ? toDto(atendimento) : null;
+    }
+
+    public void update(String id, Map<String, Object> data, String clazz) {
+        var validClazz = switch(clazz) {
+            case "Trabalhista" -> AtendimentoTrabalhista.class;
+            case "Civil" -> AtendimentoCivil.class;
+            default -> throw new IllegalStateException("Unexpected value: " + clazz);
+        };
+
+        var filteredData = filterValidKeys(data, validClazz);
+
+        update(id, filteredData);
     }
 }
