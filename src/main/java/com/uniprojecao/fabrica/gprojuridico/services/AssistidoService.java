@@ -1,6 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
+import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
@@ -10,10 +12,12 @@ import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toEntity;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
@@ -49,5 +53,17 @@ public class AssistidoService extends BaseService {
     public AssistidoDTO findById(String id) {
         var assistido = repository.findById(id);
         return (assistido != null) ? toDto(assistido) : null;
+    }
+
+    public void update(String id, Map<String, Object> data, String clazz) {
+        var validClazz = switch(clazz) {
+            case "Trabalhista" -> AssistidoTrabalhista.class;
+            case "Civil" -> AssistidoCivil.class;
+            default -> throw new IllegalStateException("Unexpected value: " + clazz);
+        };
+
+        var filteredData = filterValidKeys(data, validClazz);
+
+        update(id, filteredData);
     }
 }

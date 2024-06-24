@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.UsuarioAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
@@ -23,6 +24,7 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUA
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.UserUniqueField;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toEntity;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
@@ -137,25 +139,31 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         return repository.findById(username);
     }
 
-    @Override
-    public void update(String id, Map<String, Object> data) {
+    public void update(String id, Map<String, Object> data, String clazz) {
+        var validClazz = switch(clazz) {
+            case "Usuario" -> Usuario.class;
+            case "Estagiario" -> Estagiario.class;
+            default -> throw new IllegalStateException("Unexpected value: " + clazz);
+        };
+
+        var filteredData = filterValidKeys(data, validClazz);
+
         String senhaKey = "senha";
-        // Caso o "data" contém o atributo "senha" para ser atualizado, este deve ser criptografado
-        if (data.containsKey(senhaKey)) {
-            var rawPassword = (String) data.get(senhaKey);
+        if (filteredData.containsKey(senhaKey)) {
+            var rawPassword = (String) filteredData.get(senhaKey);
             var encryptedPassword = encryptPassword(rawPassword);
 
             // Dados em mapas Java são imutáveis; logo, uma alternativa é criar um novo map de pares chave-valor
             Map<String, Object> newData = new HashMap<>();
-            for (var entry : data.entrySet()) {
+            for (var entry : filteredData.entrySet()) {
                 if (entry.getKey() != senhaKey) newData.put(entry.getKey(), entry.getValue());
             }
             newData.put(senhaKey, encryptedPassword);
 
             // Salva os dados recebidos e com a senha criptografada
-            BaseRepository.update(collectionName, id, newData);
+            update(id, newData);
         } else {
-            BaseRepository.update(collectionName, id, data);
+            update(id, filteredData);
         }
     }
 }
