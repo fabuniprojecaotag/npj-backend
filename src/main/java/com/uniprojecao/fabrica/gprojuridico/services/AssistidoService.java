@@ -43,7 +43,7 @@ public class AssistidoService extends BaseService {
     public List<AtendimentoVinculadoAssistidoDTO> findAllAtendimentos(String id, String limit) {
         var atendimentoRepository = new AtendimentoRepository();
         return atendimentoRepository.findAllToAssistido(parseInt(limit),
-                initFilter("envolvidos.assistido.cpf", "EQUAL", id));
+                initFilter("envolvidos.assistido.id", "EQUAL", id));
     }
 
     public AssistidoDTO findById(String id) {
