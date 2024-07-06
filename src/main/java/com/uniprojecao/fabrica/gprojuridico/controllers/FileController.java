@@ -48,4 +48,15 @@ public class FileController {
         var files = service.list(directory);
         return ResponseEntity.ok(files);
     }
+
+    @DeleteMapping("/{fileName}")
+    public ResponseEntity<String> delete(@PathVariable String fileName,
+                                         @RequestParam("directory") String directory) {
+        try {
+            service.delete(fileName, directory);
+            return ResponseEntity.ok("File deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to delete file: " + e.getMessage());
+        }
+    }
 }

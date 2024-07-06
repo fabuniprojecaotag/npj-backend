@@ -69,6 +69,15 @@ public class FileService {
         return files;
     }
 
+    public void delete(String fileName, String directory) {
+        if (directory == null || !directory.startsWith("ATE")) {
+            throw new RuntimeException("Directory cannot be null or needs to have ATE prefix");
+        }
+
+        var storage = getStorage();
+        storage.delete(BlobId.of(bucketName, directory + "/" + fileName));
+    }
+
     static Storage getStorage() {
         return StorageOptions.getDefaultInstance().getService();
     }
