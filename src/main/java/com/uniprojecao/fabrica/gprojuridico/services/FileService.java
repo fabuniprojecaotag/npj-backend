@@ -1,9 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.*;
+import com.uniprojecao.fabrica.gprojuridico.domains.ResponseFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +38,15 @@ public class FileService {
         }
 
         return filesName;
+    }
+
+    public void list() {
+        Page<Blob> blobs = getStorage().list(bucketName);
+
+        for (Blob blob : blobs.iterateAll()) {
+            var file = new ResponseFile(blob.getName(), blob.getContentType(), blob.getSize());
+            System.out.println(file);
+        }
     }
 
     static Storage getStorage() {

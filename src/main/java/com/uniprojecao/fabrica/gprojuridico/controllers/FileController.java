@@ -39,4 +39,9 @@ public class FileController {
                 .contentLength(data.length)
                 .body(resource);
     }
+
+    @GetMapping
+    public void getAll() {
+        service.list();
+    }
 }
