@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.ResponseFile;
 import com.uniprojecao.fabrica.gprojuridico.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -20,9 +21,10 @@ public class FileController {
     private FileService service;
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> upload(@RequestParam("files") MultipartFile[] files) {
+    public ResponseEntity<String> upload(@RequestParam("files") MultipartFile[] files,
+                                         @RequestParam("directory") String directory) {
         try {
-            List<String> filesName = service.upload(files);
+            List<String> filesName = service.upload(files, directory);
             return ResponseEntity.ok("File uploaded successfully: " + filesName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
@@ -30,8 +32,9 @@ public class FileController {
     }
 
     @GetMapping("/{fileName}")
-    public ResponseEntity<ByteArrayResource> download(@PathVariable String fileName) {
-        byte[] data = service.download(fileName);
+    public ResponseEntity<ByteArrayResource> download(@PathVariable String fileName,
+                                                      @RequestParam("directory") String directory) {
+        byte[] data = service.download(fileName, directory);
         ByteArrayResource resource = new ByteArrayResource(data);
 
         return ResponseEntity.ok()
@@ -41,7 +44,8 @@ public class FileController {
     }
 
     @GetMapping
-    public void getAll() {
-        service.list();
+    public ResponseEntity<List<ResponseFile>> getAll(@RequestParam("directory") String directory) {
+        var files = service.list(directory);
+        return ResponseEntity.ok(files);
     }
 }

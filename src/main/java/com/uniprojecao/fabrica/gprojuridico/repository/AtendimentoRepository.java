@@ -40,9 +40,11 @@ public class AtendimentoRepository extends BaseRepository {
 
     public DocumentSnapshot findLast() {
         try {
+            String[] fields = {"id"}; // The field doesn't matter; what matters is the ID captured through the getId() method;
             var list = firestore
                     .collection(collectionName)
                     .orderBy("instante", DESCENDING)
+                    .select(fields)
                     .limit(1)
                     .get()
                     .get()
