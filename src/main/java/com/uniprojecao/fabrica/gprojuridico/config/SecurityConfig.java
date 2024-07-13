@@ -48,11 +48,12 @@ public class SecurityConfig {
 
                         .requestMatchers(POST, "/usuarios").hasRole(secretariaRole)
                         .requestMatchers(POST, "/processos").hasRole(professorRole)
+                        .requestMatchers(POST, "/medidas-juridicas/demo-data").hasRole(coordenadorRole)
 
-                        .requestMatchers(PUT, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(secretariaRole)
+                        .requestMatchers(PUT, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**", "/medidas-juridicas/**").hasRole(secretariaRole)
 
-                        .requestMatchers(DELETE, "/usuarios", "/assistidos", "/atendimentos", "/processos").hasRole(coordenadorRole)
-                        .requestMatchers(DELETE, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "/usuarios", "/assistidos", "/atendimentos", "/processos", "/medidas-juridicas").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**", "/medidas-juridicas/**").hasRole(coordenadorRole)
 
                         .anyRequest().authenticated()
                 )
