@@ -5,4 +5,5 @@ public class Constants {
     public static final String ATENDIMENTOS_COLLECTION = "atendimentos";
     public static final String PROCESSOS_COLLECTION = "processos";
     public static final String USUARIOS_COLLECTION = "usuarios";
+    public static final String MEDIDA_JURIDICA_COLLECTION = "medidas juridicas";
 }
