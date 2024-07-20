@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.min;
 
-import com.google.cloud.Timestamp;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +13,5 @@ public class AtendimentoMinDTO {
     private String area;
     private String status;
     private EnvolvidoDTO assistido;
-    private Timestamp instante;
+    private String instante;
 }

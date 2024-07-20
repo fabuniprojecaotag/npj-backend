@@ -8,6 +8,9 @@ import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.convertUsingReflection;
@@ -29,12 +32,22 @@ public class AtendimentoUtils {
                             (String) assistidoMap.get("id"),
                             (String) assistidoMap.get("nome"));
 
+            var date = snapshot.getCreateTime().toDate();
+
+            LocalDateTime localDateTime = date.toInstant()
+                    .atZone(ZoneId.of("America/Sao_Paulo"))
+                    .toLocalDateTime();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            String formattedDateTime = localDateTime.format(formatter);
+
+
             return new AtendimentoMinDTO(
                     snapshot.getId(),
                     (String) snapshot.get("area"),
                     (String) snapshot.get("status"),
                     assistidoEnvolvido,
-                    snapshot.getCreateTime()
+                    formattedDateTime
             );
         }
 
