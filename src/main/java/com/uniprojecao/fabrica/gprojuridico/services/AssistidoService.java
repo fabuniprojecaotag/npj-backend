@@ -6,9 +6,11 @@ import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhis
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +50,12 @@ public class AssistidoService extends BaseService {
         var atendimentoRepository = new AtendimentoRepository();
         return atendimentoRepository.findAllToAssistido(parseInt(limit),
                 initFilter("envolvidos.assistido.id", "EQUAL", id));
+    }
+
+    public List<ProcessoVinculado> findAllProcessos(String id, String limit) {
+        var processoRepository = new ProcessoRepository();
+        return processoRepository.findAllToAssistido(parseInt(limit),
+                initFilter("assistidoId", "EQUAL", id));
     }
 
     public AssistidoDTO findById(String id) {
