@@ -4,6 +4,7 @@ import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutoco
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
 import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,14 @@ public class AssistidoController {
                                                                                       @RequestParam(defaultValue = "20")
                                                                                 String limit) {
         List<AtendimentoVinculadoAssistidoDTO> list = service.findAllAtendimentos(id, limit);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/{id}/processos")
+    public ResponseEntity<List<ProcessoVinculado>> findAllProcessos(@PathVariable String id,
+                                                                    @RequestParam(defaultValue = "20")
+                                                                                      String limit) {
+        List<ProcessoVinculado> list = service.findAllProcessos(id, limit);
         return ResponseEntity.ok(list);
     }
 
