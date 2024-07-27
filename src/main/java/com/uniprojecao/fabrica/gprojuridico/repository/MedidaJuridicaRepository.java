@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDA_JURIDICA_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 
 @Repository
 @DependsOn("baseRepository")
 public class MedidaJuridicaRepository extends BaseRepository {
 
-    private final String collectionName = MEDIDA_JURIDICA_COLLECTION;
+    private final String collectionName = MEDIDAS_JURIDICAS_COLLECTION;
     private final Class<MedidaJuridicaModel> type = MedidaJuridicaModel.class;
 
     public List<MedidaJuridicaModel> findAll(int limit, @Nullable QueryFilter queryFilter) {
