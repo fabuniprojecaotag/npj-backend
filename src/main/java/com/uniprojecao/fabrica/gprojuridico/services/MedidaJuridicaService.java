@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDA_JURIDICA_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
@@ -59,19 +58,5 @@ public class MedidaJuridicaService extends BaseService {
         String newId = (id != null) ? incrementId(id) : "MEDJUR00001"; // Incrementa o id
         model.setId(newId);
         return newId;
-    }
-
-    private String incrementId(String id) {
-        String numbers = id.substring(6); // numbers = "nnnnn" of {"MEDJUR" + "nnnnn"}
-        int increment = parseInt(numbers) + 1;
-
-        Matcher matcher = Pattern.compile("0").matcher(numbers);
-        var remainingZeros = new StringBuilder();
-
-        while (matcher.find()) {
-            remainingZeros.append("0");
-        }
-
-        return "MEDJUR" + remainingZeros + increment; // e.g. "MEDJUR00092", which is equivalent to "MEDJUR" + "000" + "92"
     }
 }
