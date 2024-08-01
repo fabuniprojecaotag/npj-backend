@@ -404,4 +404,37 @@ public class Utils {
             }
         }
     }
+
+    /**
+     * Método auxiliar que converte Lista em String.
+     *
+     * @param list A list de strings a ser convertida em uma única String.
+     * @return A lista convertida em String.
+     */
+    public static String listToString(List<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Método auxiliar que converte String em Lista.
+     *
+     * @param string A String a ser convertida em List.
+     * @return A String convertida em List.
+     */
+    public static List<String> stringToList(String string) {
+        return new ArrayList<>(List.of(string.split("")));
+    }
+
+    /**
+     * Método utilitário que otimiza a chamada de método para imprimir uma messagem no Console.
+     *
+     * @param message A mensagem a ser impressa.
+     */
+    public static void print(String message) {
+        System.out.println(message);
+    }
 }

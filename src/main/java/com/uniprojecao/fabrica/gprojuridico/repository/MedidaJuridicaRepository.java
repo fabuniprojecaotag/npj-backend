@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.FieldPath;
 import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nullable;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDA_JURIDICA_COLLECTION;
 
 @Repository
@@ -24,6 +26,21 @@ public class MedidaJuridicaRepository extends BaseRepository {
                 .stream()
                 .map(o -> (MedidaJuridicaModel) o)
                 .toList();
+    }
+
+    public DocumentSnapshot findLast() {
+        try {
+            var list = firestore
+                    .collection(collectionName)
+                    .orderBy(FieldPath.documentId(), DESCENDING)
+                    .limit(1)
+                    .get()
+                    .get()
+                    .getDocuments();
+            return (!list.isEmpty()) ? list.get(0) : null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public MedidaJuridicaModel findById(String id) {
