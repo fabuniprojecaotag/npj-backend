@@ -8,8 +8,19 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.listToSt
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.stringToList;
 
 public class IdUtils {
-    public static String generateId(String prefix, Integer decimalPlaces) {
-        return null;
+    /**
+     * Gera um ID de 5 casas decimais, contando a partir do 1, com base no prefixo passado.
+     * @param prefix O prefixo a ser passado; OBS: O tamanho não pode exercer 6 caracteres.
+     * @return O ID com o prefixo passado e o formato descrito.
+     */
+    public static String generateId(String prefix) {
+        int prefixLimit = 6;
+        int decimalPlaces = 5;
+
+        if (prefix.length() > prefixLimit) throw new RuntimeException("The prefix length cannot be greater than 6.");
+
+        String zeros = "0".repeat(Math.max(0, decimalPlaces - 1));
+        return prefix.toUpperCase() + zeros + "1";
     }
 
     /**

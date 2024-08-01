@@ -5,12 +5,25 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.print;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IdUtilsTest {
 
     @Test
     void generateId() {
+        var prefixes = List.of("ATE", "MEDJUR", "ABCDEF");
+        var ExpectedIds = List.of("ATE00001", "MEDJUR00001", "ABCDEF00001");
+
+        var i = 0;
+        for (var id : prefixes) {
+            var expected = ExpectedIds.get(i);
+
+            var res = IdUtils.generateId(id);
+            print("Prefix: " + id + ", Actual: " + res + ", Expected: " + expected);
+            assertEquals(expected, res);
+
+            i++;
+        }
     }
 
     @Test

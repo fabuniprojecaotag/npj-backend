@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDA_JURIDICA_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
@@ -55,7 +56,7 @@ public class MedidaJuridicaService extends BaseService {
     private String defineId(MedidaJuridicaModel model) {
         DocumentSnapshot doc = repository.findLast(); // Obtém o último documento
         String id = (doc != null) ? doc.getId() : null; // Armazena o id
-        String newId = (id != null) ? incrementId(id) : "MEDJUR00001"; // Incrementa o id
+        String newId = (id != null) ? incrementId(id) : generateId("MEDJUR"); // Incrementa o id
         model.setId(newId);
         return newId;
     }
