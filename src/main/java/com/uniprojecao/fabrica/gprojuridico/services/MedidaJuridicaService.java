@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDA_JURIDICA_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
@@ -25,13 +28,14 @@ public class MedidaJuridicaService extends BaseService {
     }
 
     public MedidaJuridicaModel insert(MedidaJuridicaModel model) {
-        BaseRepository.save(collectionName, model.getNome(), model);
+        String customId = defineId(model);
+        BaseRepository.save(collectionName, customId, model);
         return model;
     }
 
     public void insertMultipleDemoData() {
         for (var model : MedidaJuridica.values()){
-            BaseRepository.save(collectionName, model.getNormalizedValue(), new MedidaJuridicaModel(model.getNormalizedValue(), null, model.getArea()));
+            insert(new MedidaJuridicaModel(null, model.getNormalizedValue(), null, model.getArea()));
         }
     }
 
@@ -47,5 +51,27 @@ public class MedidaJuridicaService extends BaseService {
         var filteredData = filterValidKeys(data, MedidaJuridicaModel.class);
 
         update(id, filteredData);
+    }
+
+    private String defineId(MedidaJuridicaModel model) {
+        DocumentSnapshot doc = repository.findLast(); // Obtém o último documento
+        String id = (doc != null) ? doc.getId() : null; // Armazena o id
+        String newId = (id != null) ? incrementId(id) : "MEDJUR00001"; // Incrementa o id
+        model.setId(newId);
+        return newId;
+    }
+
+    private String incrementId(String id) {
+        String numbers = id.substring(6); // numbers = "nnnnn" of {"MEDJUR" + "nnnnn"}
+        int increment = parseInt(numbers) + 1;
+
+        Matcher matcher = Pattern.compile("0").matcher(numbers);
+        var remainingZeros = new StringBuilder();
+
+        while (matcher.find()) {
+            remainingZeros.append("0");
+        }
+
+        return "MEDJUR" + remainingZeros + increment; // e.g. "MEDJUR00092", which is equivalent to "MEDJUR" + "000" + "92"
     }
 }

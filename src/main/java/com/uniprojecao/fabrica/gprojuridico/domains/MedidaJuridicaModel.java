@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class MedidaJuridicaModel {
     @DocumentId
+    private String id;
     private String nome;
     private String descricao;
     private String area;

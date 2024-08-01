@@ -22,7 +22,7 @@ public class MedidaJuridicaController {
     @PostMapping
     public ResponseEntity<MedidaJuridicaModel> insert(@RequestBody @Valid MedidaJuridicaModel data) {
         var result = service.insert(data);
-        var id = result.getNome();
+        var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(result);
     }
 
