@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toEntity;
@@ -35,23 +35,9 @@ public class AtendimentoService extends BaseService {
     private String defineId(AtendimentoDTO dto) {
         DocumentSnapshot doc = repository.findLast(); // Obtém o último documento
         String id = (doc != null) ? doc.getId() : null; // Armazena o id
-        String newId = (id != null) ? incrementId(id) : "ATE00001"; // Incrementa o id
+        String newId = (id != null) ? incrementId(id) : generateId("ATE"); // Incrementa o id
         dto.setId(newId);
         return newId;
-    }
-
-    private String incrementId(String id) {
-        String numbers = id.substring(3); // numbers = "nnnnn" of {"ATE" + "nnnnn"}
-        int increment = parseInt(numbers) + 1;
-
-        Matcher matcher = Pattern.compile("0").matcher(numbers);
-        var remainingZeros = new StringBuilder();
-
-        while (matcher.find()) {
-            remainingZeros.append("0");
-        }
-
-        return "ATE" + remainingZeros + increment; // e.g. "ATE00092", which is equivalent to "ATE" + "000" + "92"
     }
 
     public AtendimentoDTO insert(AtendimentoDTO dto) {
