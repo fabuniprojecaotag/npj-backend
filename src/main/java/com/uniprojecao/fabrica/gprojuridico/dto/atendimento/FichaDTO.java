@@ -28,16 +28,8 @@ public abstract class FichaDTO {
     public FichaDTO(String assinatura, String medidaJuridica, Boolean dadosSensiveis, List<TestemunhaDTO> testemunhas) {
         this.assinatura = assinatura;
         this.dadosSensiveis = dadosSensiveis;
-        setMedidaJuridica(medidaJuridica);
+        this.medidaJuridica = medidaJuridica;
         setTestemunhas(testemunhas);
-    }
-
-    public void setMedidaJuridica(String medidaJuridica) {
-        this.medidaJuridica = MedidaJuridica.valueOf(medidaJuridica
-                .replace(" – ", " ") // substitui travessão
-                .replace(" - ", " ") // substitui hífen
-                .replace(" ", "_")
-                .toUpperCase()).getNormalizedValue();
     }
 
     public void setTestemunhas(List<TestemunhaDTO> testemunhas) {
