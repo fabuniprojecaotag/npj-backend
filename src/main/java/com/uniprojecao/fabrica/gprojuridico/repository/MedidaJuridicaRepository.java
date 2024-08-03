@@ -21,7 +21,7 @@ public class MedidaJuridicaRepository extends BaseRepository {
     private final Class<MedidaJuridicaModel> type = MedidaJuridicaModel.class;
 
     public List<MedidaJuridicaModel> findAll(int limit, @Nullable QueryFilter queryFilter) {
-        String[] columnList = {"area", "descricao"};
+        String[] columnList = {"area", "descricao", "nome"};
         return findAll(collectionName, columnList, type, limit, queryFilter)
                 .stream()
                 .map(o -> (MedidaJuridicaModel) o)
