@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.domains.Filiacao;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -32,7 +32,7 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             ac.setProfissao(accessor.getString(6));
             ac.setTelefone(accessor.getString(7));
             ac.setEmail(accessor.getString(8));
-            ac.setFiliacao(new Assistido.Filiacao(accessor.getString(9), accessor.getString(10)));
+            ac.setFiliacao(new Filiacao(accessor.getString(9), accessor.getString(10)));
             ac.setRemuneracao(accessor.getString(11));
 
 //            ac.setEndereco(new Endereco(accessor.getString(12), accessor.getString(13)));
@@ -54,7 +54,7 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             at.setProfissao(accessor.getString(6));
             at.setTelefone(accessor.getString(7));
             at.setEmail(accessor.getString(8));
-            at.setFiliacao(new Assistido.Filiacao(accessor.getString(9), accessor.getString(10)));
+            at.setFiliacao(new Filiacao(accessor.getString(9), accessor.getString(10)));
             at.setRemuneracao(accessor.getString(11));
             at.setEndereco(new HashMap<>());
 

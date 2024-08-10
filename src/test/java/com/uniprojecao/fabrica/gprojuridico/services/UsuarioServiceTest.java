@@ -2,7 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.Utils;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToUsuario;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
 import org.junit.jupiter.api.*;
@@ -17,9 +16,7 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.clearDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuario;
-import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuarioDTO;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +34,7 @@ class UsuarioServiceTest {
         @Test
         void givenUserFound_whenEmailAndCpfAreEquals_throwsException() {
             // given
-            var UserToEnter = seedWithOneUsuarioDTO();
+            var UserToEnter = seedWithOneUsuario();
 
             // when
             when(underTest.insert(UserToEnter)).thenCallRealMethod();
@@ -52,9 +49,9 @@ class UsuarioServiceTest {
         @Test
         void givenUserFound_whenEmailIsEqual_throwsException() {
             // given
-            var userToEnter = seedWithOneUsuarioDTO();
+            var userToEnter = seedWithOneUsuario();
 
-            var userFoundInTheDatabase = new UsuarioDTO();
+            var userFoundInTheDatabase = new Usuario();
             userFoundInTheDatabase.setEmail(userToEnter.getEmail());
             userFoundInTheDatabase.setCpf("999.999.999-99");
 
@@ -84,7 +81,7 @@ class UsuarioServiceTest {
         @Order(1)
         void findById(@CsvToUsuario Usuario userToFind) {
             var userFound = service.findById(userToFind.getId());
-            assertEquals(toDto(userToFind), userFound);
+            assertEquals(userToFind, userFound);
         }
 
         @Test
@@ -152,7 +149,7 @@ class UsuarioServiceTest {
             sleep(1000);
 
             var userToEnter = seedWithOneUsuario();
-            var userEntered = service.insert(toDto(userToEnter));
+            var userEntered = service.insert(userToEnter);
             var userFound = service.findById(userEntered.getId());
 
             assertAll("user",

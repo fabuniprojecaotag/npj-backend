@@ -11,7 +11,6 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.AtendimentoData.seedWithOneAtendimento;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,7 +87,7 @@ class AtendimentoServiceTest {
     @Order(6)
     void insert() {
         var atendimentoToEnter = seedWithOneAtendimento();
-        var atendimentoEntered = service.insert(toDto(atendimentoToEnter));
+        var atendimentoEntered = service.insert(atendimentoToEnter);
         var atendimentoFound = service.findById(atendimentoEntered.getId());
 
         assertNotNull(atendimentoFound);
