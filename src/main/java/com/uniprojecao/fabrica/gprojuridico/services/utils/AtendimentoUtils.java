@@ -4,7 +4,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.domains.Envolvido;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 
@@ -28,7 +28,7 @@ public class AtendimentoUtils {
 
             // Defini o atributo "assistido"
             var assistidoEnvolvido =
-                    new EnvolvidoDTO(
+                    new Envolvido(
                             (String) assistidoMap.get("id"),
                             (String) assistidoMap.get("nome"));
 
@@ -63,13 +63,13 @@ public class AtendimentoUtils {
 
             // Defini o atributo "assistido"
             var assistidoEnvolvido =
-                    new EnvolvidoDTO(
+                    new Envolvido(
                             (String) assistidoMap.get("id"),
                             (String) assistidoMap.get("nome"));
 
             // Defini o atributo "estagiario"
             var estagiarioEnvolvido =
-                    new EnvolvidoDTO(
+                    new Envolvido(
                             (String) estagiarioMap.get("id"),
                             (String) estagiarioMap.get("nome"));
 

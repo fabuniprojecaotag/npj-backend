@@ -2,9 +2,9 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
@@ -16,8 +16,6 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toDto;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ManualMapper.toEntity;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
@@ -32,7 +30,7 @@ public class AtendimentoService extends BaseService {
         super(collectionName);
     }
 
-    private String defineId(AtendimentoDTO dto) {
+    private String defineId(Atendimento dto) {
         DocumentSnapshot doc = repository.findLast(); // Obtém o último documento
         String id = (doc != null) ? doc.getId() : null; // Armazena o id
         String newId = (id != null) ? incrementId(id) : generateId("ATE"); // Incrementa o id
@@ -40,10 +38,10 @@ public class AtendimentoService extends BaseService {
         return newId;
     }
 
-    public AtendimentoDTO insert(AtendimentoDTO dto) {
-        String customId = defineId(dto);
-        BaseRepository.save(collectionName, customId, toEntity(dto));
-        return dto;
+    public Atendimento insert(Atendimento data) {
+        String customId = defineId(data);
+        BaseRepository.save(collectionName, customId, data);
+        return data;
     }
 
     public List<AtendimentoMinDTO> findAll(String limit, String field, String filter, String value) {
@@ -54,9 +52,8 @@ public class AtendimentoService extends BaseService {
         return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
     }
 
-    public AtendimentoDTO findById(String id) {
-        var atendimento = repository.findById(id);
-        return (atendimento != null) ? toDto(atendimento) : null;
+    public Atendimento findById(String id) {
+        return repository.findById(id);
     }
 
     public void update(String id, Map<String, Object> data, String clazz) {

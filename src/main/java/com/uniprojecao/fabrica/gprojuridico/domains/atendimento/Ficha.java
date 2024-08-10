@@ -2,9 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridica;
-import lombok.AllArgsConstructor;
+import com.uniprojecao.fabrica.gprojuridico.domains.Testemunha;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,14 +31,5 @@ public abstract class Ficha {
 
     public void setTestemunhas(List<Testemunha> testemunhas) {
         this.testemunhas.addAll(testemunhas);
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Testemunha {
-        private String nome;
-        private String qualificacao;
-        private Endereco endereco;
     }
 }

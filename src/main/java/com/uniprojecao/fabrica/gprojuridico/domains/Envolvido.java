@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.dto;
+package com.uniprojecao.fabrica.gprojuridico.domains;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class EnvolvidoDTO {
+public class Envolvido {
     private String id;
     private String nome;
 }

@@ -1,8 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.domains.EntradaHistorico;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
-import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.domains.Envolvido;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,19 +13,18 @@ import java.util.Map;
 public class AtendimentoData {
     public static List<Atendimento> seedWithAtendimento() {
         // Para o atributo "historico"
-        var usuario = new Atendimento
-                .EntradaHistorico
+        var usuario = new EntradaHistorico
                 .UsuarioMin("leticia.alves@projecao.br", "Letícia Alves Martins", "PROFESSOR");
-        var entrada = new Atendimento.EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
-        List<Atendimento.EntradaHistorico> historico = new ArrayList<>();
+        var entrada = new EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
+        List<EntradaHistorico> historico = new ArrayList<>();
         historico.add(entrada);
 
         // Para o atributo "envolvidos"
-        var estagiario = new EnvolvidoDTO("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
-        var professor = new EnvolvidoDTO("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
-        var secretaria = new EnvolvidoDTO("leticia.alves@projecao.br", "Letícia Alves Martins");
-        var assistido = new EnvolvidoDTO("288.610.170-29", "Cleyton Pina Auzier");
-        Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(
+        var estagiario = new Envolvido("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
+        var professor = new Envolvido("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
+        var secretaria = new Envolvido("leticia.alves@projecao.br", "Letícia Alves Martins");
+        var assistido = new Envolvido("288.610.170-29", "Cleyton Pina Auzier");
+        Map<String, Envolvido> envolvidos = new HashMap<>(
                 Map.of(
                         "estagiario", estagiario,
                         "professor", professor,
@@ -50,17 +50,17 @@ public class AtendimentoData {
 
     public static Atendimento seedWithOneAtendimento() {
         // Para o atributo "historico"
-        var usuario = new Atendimento.EntradaHistorico.UsuarioMin("leticia.alves@projecao.br", "Letícia Alves Martins", "PROFESSOR");
-        var entrada = new Atendimento.EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
-        List<Atendimento.EntradaHistorico> historico = new ArrayList<>();
+        var usuario = new EntradaHistorico.UsuarioMin("leticia.alves@projecao.br", "Letícia Alves Martins", "PROFESSOR");
+        var entrada = new EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
+        List<EntradaHistorico> historico = new ArrayList<>();
         historico.add(entrada);
 
         // Para o atributo "envolvidos"
-        var estagiario = new EnvolvidoDTO("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
-        var professor = new EnvolvidoDTO("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
-        var secretaria = new EnvolvidoDTO("leticia.alves@projecao.br", "Letícia Alves Martins");
-        var assistido = new EnvolvidoDTO("288.610.170-29", "Cleyton Pina Auzier");
-        Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(
+        var estagiario = new Envolvido("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
+        var professor = new Envolvido("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
+        var secretaria = new Envolvido("leticia.alves@projecao.br", "Letícia Alves Martins");
+        var assistido = new Envolvido("288.610.170-29", "Cleyton Pina Auzier");
+        Map<String, Envolvido> envolvidos = new HashMap<>(
                 Map.of(
                         "estagiario", estagiario,
                         "professor", professor,

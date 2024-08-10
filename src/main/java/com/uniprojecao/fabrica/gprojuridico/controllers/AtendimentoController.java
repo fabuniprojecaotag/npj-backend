@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.dto.atendimento.AtendimentoDTO;
+import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AtendimentoService;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class AtendimentoController {
     private AtendimentoService service;
 
     @PostMapping
-    public ResponseEntity<AtendimentoDTO> insert(@RequestBody @Valid AtendimentoDTO data) {
+    public ResponseEntity<Atendimento> insert(@RequestBody @Valid Atendimento data) {
         var result = service.insert(data);
         var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(result);
@@ -56,7 +56,7 @@ public class AtendimentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AtendimentoDTO> findById(@PathVariable String id) {
+    public ResponseEntity<Atendimento> findById(@PathVariable String id) {
         var result = service.findById(id);
         return ResponseEntity.ok(result);
     }

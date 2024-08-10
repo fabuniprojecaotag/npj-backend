@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.atendimento;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Testemunha;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
