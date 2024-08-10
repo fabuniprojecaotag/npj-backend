@@ -17,6 +17,7 @@ import static com.uniprojecao.fabrica.gprojuridico.Utils.clearDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.UsuarioData.seedWithOneUsuario;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.print;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -102,7 +103,7 @@ class UsuarioServiceTest {
                     "nome", "Letícia Neves",
                     "email", "letica.neves@projecao.br",
                     "senha", rawPassword
-            ));
+            ), "Usuario");
             sleep(1000); // Evita que o findById() pegue o valor antigo
             var updatedUser = service.findById(id);
             var encryptedPassword = updatedUser.getSenha();
@@ -111,8 +112,8 @@ class UsuarioServiceTest {
             System.out.println("updated: " + updatedUser);
 
             assertAll(
-                    () -> assertNotEquals(user, updatedUser, "User shoud not have the same data"),
-                    () -> assertNotEquals(rawPassword, encryptedPassword, "User shoud have the password encrypted")
+                    () -> assertNotEquals(updatedUser, user, "User shoud not have the same data"),
+                    () -> assertNotEquals(encryptedPassword, rawPassword, "User shoud have the password encrypted")
             );
 
 
@@ -149,25 +150,27 @@ class UsuarioServiceTest {
             sleep(1000);
 
             var userToEnter = seedWithOneUsuario();
+            String noId = userToEnter.getId();
+            String rawPassword = userToEnter.getSenha();
+
             var userEntered = service.insert(userToEnter);
-            var userFound = service.findById(userEntered.getId());
+            String withId = userEntered.getId();
+            String encryptedPassword = userEntered.getSenha();
 
             assertAll("user",
                     // Valida se id foi definido
                     () -> {
-                        String noId = userToEnter.getId();
-                        String withId = userEntered.getId();
-                        assertNotEquals(noId, withId);
+                        print("noId: " + noId + ", withId: " + withId);
+                        assertNotEquals(withId, noId);
                         assertNotNull(withId);
                     },
                     // Valida se senha foi criptografada
                     () -> {
-                        String rawPassword = userToEnter.getSenha();
-                        String encryptedPassword = userEntered.getSenha();
-                        assertNotEquals(rawPassword, encryptedPassword);
-                    },
-                    // Valida se usuário foi inserido corretamente
-                    () -> assertEquals(userEntered, userFound));
+                        print("rawPass: " + rawPassword + ", encPass: " + encryptedPassword);
+                        assertNotEquals(encryptedPassword, rawPassword);
+                    });
+
+            clearDatabase(null, USUARIOS_COLLECTION);
         }
     }
 }

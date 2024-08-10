@@ -13,7 +13,7 @@ public class UsuarioAggregator implements ArgumentsAggregator {
             ArgumentsAccessor accessor,
             ParameterContext context
     ) {
-        if (accessor.toList().size() == 11) {
+        if (accessor.toList().size() == 12) {
             var e = new Estagiario();
             e.setId((String) accessor.get(0));
             e.setEmail((String) accessor.get(1));
