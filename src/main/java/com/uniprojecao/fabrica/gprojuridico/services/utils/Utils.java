@@ -8,11 +8,9 @@ import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
 import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.EnderecoDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoCivilDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
@@ -198,14 +196,6 @@ public class Utils {
                 return modelMapper.map(dto, AssistidoTrabalhista.class);
             }
             return modelMapper.map(dto, AssistidoFull.class);
-        }
-
-        public static ProcessoDTO toDto(Processo entity) {
-            return modelMapper.map(entity, ProcessoDTO.class);
-        }
-
-        public static Processo toEntity(ProcessoDTO dto) {
-            return modelMapper.map(dto, Processo.class);
         }
 
         public static UsuarioDTO toDto(Usuario entity) {
