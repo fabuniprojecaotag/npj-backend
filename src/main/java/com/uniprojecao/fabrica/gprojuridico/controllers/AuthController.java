@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.uniprojecao.fabrica.gprojuridico.dto.auth.AuthenticationDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.auth.LoginResponseDTO;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

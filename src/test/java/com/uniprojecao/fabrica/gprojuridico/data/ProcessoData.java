@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 
 import java.util.List;
 

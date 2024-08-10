@@ -1,9 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.domains.EntradaHistorico;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
-import com.uniprojecao.fabrica.gprojuridico.domains.Envolvido;
+import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.models.EntradaHistorico;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
+import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.uniprojecao.fabrica.gprojuridico.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToUsuario;
 import org.junit.jupiter.api.BeforeAll;

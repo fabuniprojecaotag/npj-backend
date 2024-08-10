@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.services.MedidaJuridicaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

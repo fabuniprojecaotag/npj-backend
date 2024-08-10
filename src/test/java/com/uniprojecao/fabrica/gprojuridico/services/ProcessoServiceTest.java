@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToProcesso;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.Filiacao;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;

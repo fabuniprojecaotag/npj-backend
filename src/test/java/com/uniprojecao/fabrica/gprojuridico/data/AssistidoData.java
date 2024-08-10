@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.domains.Filiacao;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 
 import java.util.HashMap;
 import java.util.List;

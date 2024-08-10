@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoFull;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.AssistidoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoFull;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 
 public class AssistidoUtils {

@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.min;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.Envolvido;
+import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

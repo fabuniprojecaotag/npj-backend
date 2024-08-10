@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAtendimento;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;

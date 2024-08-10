@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAssistido;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;

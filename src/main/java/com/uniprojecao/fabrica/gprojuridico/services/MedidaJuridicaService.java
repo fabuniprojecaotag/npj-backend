@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridica;
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.MedidaJuridicaRepository;
 import org.springframework.stereotype.Service;

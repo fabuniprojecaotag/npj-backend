@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.FieldPath;
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
