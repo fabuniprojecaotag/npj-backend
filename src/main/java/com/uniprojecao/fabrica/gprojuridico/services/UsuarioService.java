@@ -5,8 +5,6 @@ import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.UsuarioAutocomp
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.usuario.EstagiarioDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
@@ -22,8 +20,6 @@ import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.UserUniqueField;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toEntity;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
@@ -58,7 +54,7 @@ import static java.lang.Integer.parseInt;
  * dados. <p>
  *
  * @author Jonatas Mateus
- * @see UsuarioDTO
+ * @see Usuario
  * @since 1.0
  */
 @Service
@@ -71,14 +67,14 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         super(collectionName);
     }
 
-    private void checkIfExists(UsuarioDTO dto, String id) {
+    private void checkIfExists(Usuario data, String id) {
         var result = findById(id);
         if (result != null) {
             String userEmailFound = result.getEmail();
             String userCpfFound = result.getCpf();
 
-            Boolean equalEmails = userEmailFound == dto.getEmail();
-            Boolean equalCpfs = userCpfFound == dto.getCpf();
+            Boolean equalEmails = userEmailFound == data.getEmail();
+            Boolean equalCpfs = userCpfFound == data.getCpf();
 
             if (equalEmails && equalCpfs) {
                 throw new UserAlreadyCreatedException(userEmailFound, userCpfFound);
@@ -88,14 +84,14 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         }
     }
 
-    private void defineId(UsuarioDTO usuario) {
-        String id = (!(usuario instanceof EstagiarioDTO estagiario))
+    private void defineId(Usuario usuario) {
+        String id = (!(usuario instanceof Estagiario estagiario))
                 ? usuario.getEmail().replaceAll("@projecao\\.br", "") // Retira o "@projecao.br"
                 : estagiario.getMatricula();
         usuario.setId(id);
     }
 
-    private void encryptPassword(UsuarioDTO u) {
+    private void encryptPassword(Usuario u) {
         u.setSenha(BCrypt.withDefaults().hashToString(12, u.getSenha().toCharArray()));
     }
 
@@ -111,27 +107,26 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
     }
 
-    public UsuarioDTO findById(String id) {
-        var usuario = repository.findById(id);
-        return (usuario != null) ? toDto(usuario) : null;
+    public Usuario findById(String id) {
+        return repository.findById(id);
     }
 
-    public UsuarioDTO findMe() {
+    public Usuario findMe() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = (Usuario) authentication.getPrincipal();
         String id = usuario.getId();
         return findById(id);
     }
 
-    public UsuarioDTO insert(UsuarioDTO dto) {
-        defineId(dto);
-        String id = dto.getId();
+    public Usuario insert(Usuario data) {
+        defineId(data);
+        String id = data.getId();
 
-        checkIfExists(dto, id);
-        encryptPassword(dto);
+        checkIfExists(data, id);
+        encryptPassword(data);
 
-        BaseRepository.save(collectionName, id, toEntity(dto));
-        return dto;
+        BaseRepository.save(collectionName, id, data);
+        return data;
     }
 
     @Override

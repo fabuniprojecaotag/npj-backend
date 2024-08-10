@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.Filter;
-import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.enums.FilterType;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

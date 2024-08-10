@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.UsuarioAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.usuario.UsuarioDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class UsuarioController {
     private UsuarioService service;
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> insert(@RequestBody @Valid UsuarioDTO data) {
+    public ResponseEntity<Usuario> insert(@RequestBody @Valid Usuario data) {
         var result = service.insert(data);
         var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(result);
@@ -55,13 +55,13 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> findById(@PathVariable String id) {
+    public ResponseEntity<Usuario> findById(@PathVariable String id) {
         var usuario = service.findById(id);
         return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UsuarioDTO> getMe() {
+    public ResponseEntity<Usuario> getMe() {
         var usuario = service.findMe();
         return ResponseEntity.ok(usuario);
     }
