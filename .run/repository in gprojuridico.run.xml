@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="gprojuridico in back-end" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
-    <module name="back-end" />
+  <configuration default="false" name="repository in gprojuridico" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="gprojuridico" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.uniprojecao.fabrica.gprojuridico.repository.*" />
@@ -11,7 +11,7 @@
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="directory" />
-    <dir value="$PROJECT_DIR$/src/test/java/com/uniprojecao/fabrica/gprojuridico" />
+    <dir value="$PROJECT_DIR$/src/test/java/com/uniprojecao/fabrica/gprojuridico/repository" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
