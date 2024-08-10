@@ -29,7 +29,16 @@ public class Processo {
     @NotBlank
     private String assistidoId;
 
-    public Processo(String numero, String nome, String dataDistribuicao, String vara, String forum, String atendimentoId, String status, String assistidoId) {
+    public Processo(
+            String numero,
+            String nome,
+            String dataDistribuicao,
+            String vara,
+            String forum,
+            String atendimentoId,
+            String status,
+            String assistidoId
+    ) {
         this.nome = nome;
         this.numero = numero;
         this.dataDistribuicao = dataDistribuicao;

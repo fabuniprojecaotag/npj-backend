@@ -11,7 +11,13 @@ import java.util.List;
 public class FichaCivil extends Ficha {
     private ParteContraria parteContraria;
 
-    public FichaCivil(String assinatura, Boolean dadosSensiveis, List<Testemunha> testemunhas, ParteContraria parteContraria, String medidaJuridica) {
+    public FichaCivil(
+            String assinatura,
+            Boolean dadosSensiveis,
+            List<Testemunha> testemunhas,
+            ParteContraria parteContraria,
+            String medidaJuridica
+    ) {
         super(assinatura, medidaJuridica, dadosSensiveis, testemunhas);
         this.parteContraria = parteContraria;
     }

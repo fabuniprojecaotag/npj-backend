@@ -13,7 +13,15 @@ import java.util.Map;
 public class AtendimentoTrabalhista extends Atendimento {
     private FichaTrabalhista ficha;
 
-    public AtendimentoTrabalhista(String id, String status, String area, String instante, List<EntradaHistorico> historico, Map<String, Envolvido> envolvidos, FichaTrabalhista ficha) {
+    public AtendimentoTrabalhista(
+            String id,
+            String status,
+            String area,
+            String instante,
+            List<EntradaHistorico> historico,
+            Map<String, Envolvido> envolvidos,
+            FichaTrabalhista ficha
+    ) {
         super(id, status, area, instante, historico, envolvidos);
         this.ficha = ficha;
     }

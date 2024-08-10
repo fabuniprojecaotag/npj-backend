@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
+import com.uniprojecao.fabrica.gprojuridico.models.Ctps;
 import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
@@ -58,7 +59,7 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             at.setRemuneracao(accessor.getString(11));
             at.setEndereco(new HashMap<>());
 
-            at.setCtps(new AssistidoTrabalhista.Ctps(accessor.getString(14), accessor.getString(15), accessor.getString(16)));
+            at.setCtps(new Ctps(accessor.getString(14), accessor.getString(15), accessor.getString(16)));
             at.setPis(accessor.getString(17));
             at.setEmpregadoAtualmente(accessor.getBoolean(18));
 

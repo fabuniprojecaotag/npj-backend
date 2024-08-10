@@ -13,7 +13,15 @@ import java.util.Map;
 public class AtendimentoCivil extends Atendimento {
     private FichaCivil ficha;
 
-    public AtendimentoCivil(String id, String status, String area, String instante, List<EntradaHistorico> historico, Map<String, Envolvido> envolvidos, FichaCivil ficha) {
+    public AtendimentoCivil(
+            String id,
+            String status,
+            String area,
+            String instante,
+            List<EntradaHistorico> historico,
+            Map<String, Envolvido> envolvidos,
+            FichaCivil ficha
+    ) {
         super(id, status, area, instante, historico, envolvidos);
         this.ficha = ficha;
     }
