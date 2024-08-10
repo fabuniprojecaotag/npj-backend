@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.domains.assistido;
 
+import com.uniprojecao.fabrica.gprojuridico.domains.Ctps;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class AssistidoFull extends Assistido {
-
     // dados exclusivos da ficha civil
     @NotBlank
     private String naturalidade;
@@ -24,7 +24,7 @@ public class AssistidoFull extends Assistido {
 
     // dados exclusivos da ficha trabalhista
     @NotNull
-    private AssistidoTrabalhista.Ctps ctps;
+    private Ctps ctps;
 
     @NotBlank
     private String pis;
