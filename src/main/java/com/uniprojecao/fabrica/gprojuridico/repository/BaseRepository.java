@@ -2,7 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 
 @Repository
@@ -51,7 +49,7 @@ public class BaseRepository {
         }
     }
 
-    public static List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public static List<Object> findAll(String collectionName, @Nullable String[] fields, @Nullable Class<?> type, @Nonnull Integer limit, @Nullable Filter queryFilter) {
         List<Object> list = new ArrayList<>();
 
         try {
@@ -86,7 +84,7 @@ public class BaseRepository {
         firestore.collection(collectionName).document(id).delete();
     }
 
-    public static void deleteAll(String collectionName, String[] list, Integer limit, @Nullable QueryFilter queryFilter) {
+    public static void deleteAll(String collectionName, String[] list, Integer limit, @Nullable Filter queryFilter) {
         var result = getDocSnapshots(collectionName, list, limit, queryFilter);
         for (QueryDocumentSnapshot document : result) {
             document.getReference().delete();
@@ -94,13 +92,13 @@ public class BaseRepository {
         }
     }
 
-    private static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    private static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable Filter filter) {
         if (list == null) list = new String[]{"id"};
 
         ApiFuture<QuerySnapshot> future;
 
-        future = (queryFilter != null) ?
-                firestore.collection(collectionName).where(filter(queryFilter)).select(list).limit(limit).get() :
+        future = (filter != null) ?
+                firestore.collection(collectionName).where(filter).select(list).limit(limit).get() :
                 firestore.collection(collectionName).select(list).limit(limit).get();
 
         try {

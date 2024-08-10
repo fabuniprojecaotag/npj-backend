@@ -4,7 +4,6 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +15,22 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.snapshotToAtendimento;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.*;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.snapshotToUsuario;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filter;
 
 @Service
 public class FirestoreService extends BaseRepository {
 
-    public Map<String, Object> getDocuments(String collectionName, String startAfter, int pageSize, QueryFilter queryFilter)
+    public Map<String, Object> getDocuments(
+            String collectionName,
+            String startAfter,
+            int pageSize,
+            Filter filter
+    )
             throws Exception {
         CollectionReference collection = firestore.collection(collectionName);
         String[] fieldNames = getFieldNames(collectionName);
 
-        Query query = (queryFilter != null) ?
-                collection.orderBy("__name__").where(filter(queryFilter)).select(fieldNames).limit(pageSize) :
+        Query query = (filter != null) ?
+                collection.orderBy("__name__").where(filter).select(fieldNames).limit(pageSize) :
                 collection.orderBy("__name__").select(fieldNames).limit(pageSize);
 
         if (startAfter != null) {
@@ -64,7 +67,7 @@ public class FirestoreService extends BaseRepository {
             case MEDIDAS_JURIDICAS_COLLECTION -> new String[]{"area", "descricao"};
             case PROCESSOS_COLLECTION -> new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
             case USUARIOS_COLLECTION -> new String[]{"nome", "email", "role", "status", "matricula", "semestre"};
-            default -> throw new RuntimeException("Collection name invalid. Please, check if the collection exists.");
+            default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
         };
     }
 
@@ -75,7 +78,7 @@ public class FirestoreService extends BaseRepository {
             case MEDIDAS_JURIDICAS_COLLECTION -> snapshot.toObject(MedidaJuridicaModel.class);
             case PROCESSOS_COLLECTION -> snapshot.toObject(Processo.class);
             case USUARIOS_COLLECTION -> snapshotToUsuario(snapshot, true, false);
-            default -> throw new RuntimeException("Collection name invalid. Please, check if the collection exists.");
+            default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
         };
     }
 }

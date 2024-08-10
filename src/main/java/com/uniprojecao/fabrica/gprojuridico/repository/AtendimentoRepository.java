@@ -1,11 +1,11 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AtendimentoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AtendimentoAutocomplete;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -23,7 +23,7 @@ public class AtendimentoRepository extends BaseRepository {
 
     private final String collectionName = ATENDIMENTOS_COLLECTION;
 
-    public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<AtendimentoMinDTO> findAll(@Nonnull Integer limit, @Nullable Filter queryFilter) {
         String[] columnList = {"area", "status", "envolvidos.assistido"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
@@ -31,14 +31,14 @@ public class AtendimentoRepository extends BaseRepository {
                 .toList();
     }
 
-    public List<AtendimentoAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<AtendimentoAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable Filter queryFilter) {
         return findAll(collectionName, null, null, limit, queryFilter)
                 .stream()
                 .map(o -> (AtendimentoAutocomplete) snapshotToAtendimento((DocumentSnapshot) o, false, true, false))
                 .toList();
     }
 
-    public List<AtendimentoVinculadoAssistidoDTO> findAllToAssistido(@Nonnull Integer limit, QueryFilter queryFilter) {
+    public List<AtendimentoVinculadoAssistidoDTO> findAllToAssistido(@Nonnull Integer limit, Filter queryFilter) {
         String[] columnList = {"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()

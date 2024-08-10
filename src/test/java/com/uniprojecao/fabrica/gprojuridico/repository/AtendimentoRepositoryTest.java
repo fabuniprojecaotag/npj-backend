@@ -1,9 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAtendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,7 +26,7 @@ class AtendimentoRepositoryTest {
 
     @Test
     void findAll() {
-        QueryFilter queryFilter = new QueryFilter("area", "Civil", FilterType.EQUAL);
+        Filter queryFilter = getFilter("area", "Civil", "EQUAL");
 
         var list1 = repository.findAll(20, null);
         assertNotNull(list1);

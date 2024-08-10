@@ -1,11 +1,11 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AtendimentoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,9 @@ import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
 @Service
@@ -45,11 +45,11 @@ public class AtendimentoService extends BaseService {
     }
 
     public List<AtendimentoMinDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
     }
 
     public List<AtendimentoAutocomplete> findAllMin(String limit, String field, String filter, String value) {
-        return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAllMin(parseInt(limit), getFilter(field, filter, value));
     }
 
     public Atendimento findById(String id) {

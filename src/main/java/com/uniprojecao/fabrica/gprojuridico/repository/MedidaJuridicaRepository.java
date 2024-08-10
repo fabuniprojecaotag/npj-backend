@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.FieldPath;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -20,7 +20,7 @@ public class MedidaJuridicaRepository extends BaseRepository {
     private final String collectionName = MEDIDAS_JURIDICAS_COLLECTION;
     private final Class<MedidaJuridicaModel> type = MedidaJuridicaModel.class;
 
-    public List<MedidaJuridicaModel> findAll(int limit, @Nullable QueryFilter queryFilter) {
+    public List<MedidaJuridicaModel> findAll(int limit, @Nullable Filter queryFilter) {
         String[] columnList = {"area", "descricao", "nome"};
         return findAll(collectionName, columnList, type, limit, queryFilter)
                 .stream()

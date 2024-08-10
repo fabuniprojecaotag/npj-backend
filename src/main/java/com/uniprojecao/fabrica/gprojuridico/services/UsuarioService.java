@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.UsuarioRepository;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.UserUniqueField;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -100,11 +100,11 @@ public class UsuarioService extends BaseService implements UserDetailsService {
     }
 
     public List<UsuarioMinDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
     }
 
     public List<UsuarioAutocomplete> findAllMin(String limit, String field, String filter, String value) {
-        return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAllMin(parseInt(limit), getFilter(field, filter, value));
     }
 
     public Usuario findById(String id) {

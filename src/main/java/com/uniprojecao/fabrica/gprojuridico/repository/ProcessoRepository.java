@@ -1,9 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -20,7 +20,7 @@ public class ProcessoRepository extends BaseRepository {
     private final String collectionName = PROCESSOS_COLLECTION;
     private final Class<Processo> TYPE = Processo.class;
 
-    public List<Processo> findAll(int limit, @Nullable QueryFilter queryFilter) {
+    public List<Processo> findAll(int limit, @Nullable Filter queryFilter) {
         String[] columnList = new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
         return findAll(collectionName, columnList, TYPE, limit, queryFilter)
                 .stream()
@@ -28,7 +28,7 @@ public class ProcessoRepository extends BaseRepository {
                 .toList();
     }
 
-    public List<ProcessoVinculado> findAllToAssistido(@Nonnull Integer limit, QueryFilter queryFilter) {
+    public List<ProcessoVinculado> findAllToAssistido(@Nonnull Integer limit, Filter queryFilter) {
         String[] columnList = {"vara", "status"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()

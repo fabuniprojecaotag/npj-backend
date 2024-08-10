@@ -1,15 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAssistido;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,7 +24,7 @@ class AssistidoRepositoryTest {
 
     @Test
     void findAll() {
-        QueryFilter queryFilter = new QueryFilter("escolaridade", "Superior", FilterType.EQUAL);
+        Filter queryFilter = getFilter("escolaridade", "Superior", "EQUAL");
 
         var list1 = repository.findAll(20, null);
         assertNotNull(list1);

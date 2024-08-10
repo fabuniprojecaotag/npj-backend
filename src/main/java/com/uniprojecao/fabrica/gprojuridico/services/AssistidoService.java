@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
 @Service
@@ -37,23 +37,23 @@ public class AssistidoService extends BaseService {
     }
 
     public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
     }
 
     public List<AssistidoAutocomplete> findAllMin(String limit, String field, String filter, String value) {
-        return repository.findAllMin(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAllMin(parseInt(limit), getFilter(field, filter, value));
     }
 
     public List<AtendimentoVinculadoAssistidoDTO> findAllAtendimentos(String id, String limit) {
         var atendimentoRepository = new AtendimentoRepository();
         return atendimentoRepository.findAllToAssistido(parseInt(limit),
-                initFilter("envolvidos.assistido.id", "EQUAL", id));
+                getFilter("envolvidos.assistido.id", "EQUAL", id));
     }
 
     public List<ProcessoVinculado> findAllProcessos(String id, String limit) {
         var processoRepository = new ProcessoRepository();
         return processoRepository.findAllToAssistido(parseInt(limit),
-                initFilter("assistidoId", "EQUAL", id));
+                getFilter("assistidoId", "EQUAL", id));
     }
 
     public Assistido findById(String id) {

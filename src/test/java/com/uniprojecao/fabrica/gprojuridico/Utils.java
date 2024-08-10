@@ -1,9 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico;
 
 import com.google.cloud.NoCredentials;
+import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -73,7 +73,7 @@ public class Utils {
         return true;
     }
 
-    public static boolean clearDatabase(@Nullable QueryFilter queryFilter, String collectionName) {
+    public static boolean clearDatabase(@Nullable Filter queryFilter, String collectionName) {
         var acceptedCollectionNames = List.of(
                 USUARIOS_COLLECTION,
                 ASSISTIDOS_COLLECTION,

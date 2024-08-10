@@ -12,9 +12,9 @@ import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
 
 @Service
@@ -40,7 +40,7 @@ public class MedidaJuridicaService extends BaseService {
     }
 
     public List<MedidaJuridicaModel> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), initFilter(field, filter, value));
+        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
     }
 
     public MedidaJuridicaModel findById(String id) {

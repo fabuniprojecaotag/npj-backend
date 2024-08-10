@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Filter;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -21,15 +21,15 @@ public class UsuarioRepository extends BaseRepository {
 
     private final String collectionName = USUARIOS_COLLECTION;
 
-    public List<UsuarioMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<UsuarioMinDTO> findAll(@Nonnull Integer limit, @Nullable Filter filter) {
         String[] columnList = {"nome", "email", "role", "status", "matricula", "semestre"};
-        return findAll(collectionName, columnList, null, limit, queryFilter)
+        return findAll(collectionName, columnList, null, limit, filter)
                 .stream()
                 .map(o -> (UsuarioMinDTO) snapshotToUsuario((DocumentSnapshot) o, true, false))
                 .toList();
     }
 
-    public List<UsuarioAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<UsuarioAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable Filter queryFilter) {
         String[] columnList = {"nome", "role"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()

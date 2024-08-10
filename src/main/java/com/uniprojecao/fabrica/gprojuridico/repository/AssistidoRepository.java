@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
@@ -21,7 +21,7 @@ public class AssistidoRepository extends BaseRepository {
 
     private final String collectionName = ASSISTIDOS_COLLECTION;
 
-    public List<AssistidoMinDTO> findAll(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<AssistidoMinDTO> findAll(@Nonnull Integer limit, @Nullable Filter queryFilter) {
         String[] columnList = {"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()
@@ -29,7 +29,7 @@ public class AssistidoRepository extends BaseRepository {
                 .toList();
     }
 
-    public List<AssistidoAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable QueryFilter queryFilter) {
+    public List<AssistidoAutocomplete> findAllMin(@Nonnull Integer limit, @Nullable Filter queryFilter) {
         String[] columnList = {"nome"};
         return findAll(collectionName, columnList, null, limit, queryFilter)
                 .stream()

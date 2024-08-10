@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.services.FirestoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
+
 
 @RestController
 @RequestMapping("/documents")
@@ -23,11 +24,11 @@ public class FirestoreController {
     public Map<String, Object> getDocuments(
             @RequestParam String collection,
             @RequestParam(required = false) String startAfter,
-            @RequestParam(defaultValue = "") String field,
-            @RequestParam(defaultValue = "") String filter,
-            @RequestParam(defaultValue = "") String value,
+            @RequestParam(required = false) String field,
+            @RequestParam(required = false) String operator,
+            @RequestParam(required = false) String value,
             @RequestParam(defaultValue = "10") int pageSize) throws Exception {
-        QueryFilter queryFilter = initFilter(field, filter, value);
+        Filter queryFilter = getFilter(field, operator, value);
         return service.getDocuments(collection, startAfter, pageSize, queryFilter);
     }
 }
