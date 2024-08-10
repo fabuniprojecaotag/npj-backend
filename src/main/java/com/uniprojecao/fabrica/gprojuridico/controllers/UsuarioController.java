@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.UsuarioAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
