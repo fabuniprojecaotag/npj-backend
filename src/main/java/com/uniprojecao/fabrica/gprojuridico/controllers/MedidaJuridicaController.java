@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.services.MedidaJuridicaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class MedidaJuridicaController {
     @PostMapping
     public ResponseEntity<MedidaJuridicaModel> insert(@RequestBody @Valid MedidaJuridicaModel data) {
         var result = service.insert(data);
-        var id = result.getNome();
+        var id = result.getId();
         return ResponseEntity.created(createUri(id)).body(result);
     }
 

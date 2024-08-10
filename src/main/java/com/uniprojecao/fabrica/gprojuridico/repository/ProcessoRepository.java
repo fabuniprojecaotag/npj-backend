@@ -1,7 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
@@ -25,7 +28,23 @@ public class ProcessoRepository extends BaseRepository {
                 .toList();
     }
 
+    public List<ProcessoVinculado> findAllToAssistido(@Nonnull Integer limit, QueryFilter queryFilter) {
+        String[] columnList = {"vara", "status"};
+        return findAll(collectionName, columnList, null, limit, queryFilter)
+                .stream()
+                .map(o -> snapshotToProcessoVinculado((DocumentSnapshot) o))
+                .toList();
+    }
+
     public Processo findByNumero(String numero) {
         return (Processo) findById(collectionName, TYPE, numero);
+    }
+
+    private ProcessoVinculado snapshotToProcessoVinculado(DocumentSnapshot snapshot) {
+        return new ProcessoVinculado(
+                snapshot.getId(),
+                (String) snapshot.get("vara"),
+                (String) snapshot.get("status")
+        );
     }
 }

@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.services.ProcessoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ public class ProcessoController {
     private ProcessoService service;
 
     @PostMapping
-    public ResponseEntity<ProcessoDTO> insert(@RequestBody @Valid ProcessoDTO data) {
+    public ResponseEntity<Processo> insert(@RequestBody @Valid Processo data) {
         var result = service.insert(data);
         var id = result.getNumero();
         return ResponseEntity.created(createUri(id)).body(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProcessoDTO>> findAll(@RequestParam(defaultValue = "20") String limit,
+    public ResponseEntity<List<Processo>> findAll(@RequestParam(defaultValue = "20") String limit,
                                                 @RequestParam(defaultValue = "") String field,
                                                 @RequestParam(defaultValue = "") String filter,
                                                 @RequestParam(defaultValue = "") String value) {
@@ -45,7 +45,7 @@ public class ProcessoController {
     }
 
     @GetMapping("/{numero}")
-    public ResponseEntity<ProcessoDTO> findById(@PathVariable String numero) {
+    public ResponseEntity<Processo> findById(@PathVariable String numero) {
         var result = service.findByNumero(numero);
         return ResponseEntity.ok(result);
     }

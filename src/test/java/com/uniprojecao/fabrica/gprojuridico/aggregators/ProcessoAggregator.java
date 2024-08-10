@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
@@ -18,7 +18,8 @@ public class ProcessoAggregator implements ArgumentsAggregator {
                 accessor.getString(3),
                 accessor.getString(4),
                 accessor.getString(5),
-                accessor.getString(6)
+                accessor.getString(6),
+                accessor.getString(7)
         );
     }
 }

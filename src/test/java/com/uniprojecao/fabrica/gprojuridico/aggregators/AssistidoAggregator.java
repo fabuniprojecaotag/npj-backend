@@ -1,8 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.AssistidoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.models.Ctps;
+import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
@@ -32,7 +33,7 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             ac.setProfissao(accessor.getString(6));
             ac.setTelefone(accessor.getString(7));
             ac.setEmail(accessor.getString(8));
-            ac.setFiliacao(new Assistido.Filiacao(accessor.getString(9), accessor.getString(10)));
+            ac.setFiliacao(new Filiacao(accessor.getString(9), accessor.getString(10)));
             ac.setRemuneracao(accessor.getString(11));
 
 //            ac.setEndereco(new Endereco(accessor.getString(12), accessor.getString(13)));
@@ -54,11 +55,11 @@ public class AssistidoAggregator implements ArgumentsAggregator {
             at.setProfissao(accessor.getString(6));
             at.setTelefone(accessor.getString(7));
             at.setEmail(accessor.getString(8));
-            at.setFiliacao(new Assistido.Filiacao(accessor.getString(9), accessor.getString(10)));
+            at.setFiliacao(new Filiacao(accessor.getString(9), accessor.getString(10)));
             at.setRemuneracao(accessor.getString(11));
             at.setEndereco(new HashMap<>());
 
-            at.setCtps(new AssistidoTrabalhista.Ctps(accessor.getString(14), accessor.getString(15), accessor.getString(16)));
+            at.setCtps(new Ctps(accessor.getString(14), accessor.getString(15), accessor.getString(16)));
             at.setPis(accessor.getString(17));
             at.setEmpregadoAtualmente(accessor.getBoolean(18));
 

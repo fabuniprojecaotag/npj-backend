@@ -1,9 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AssistidoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.AssistidoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
 import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class AssistidoController {
     private AssistidoService service;
 
     @PostMapping
-    public ResponseEntity<AssistidoDTO> insert(@RequestBody @Valid AssistidoDTO data) {
+    public ResponseEntity<Assistido> insert(@RequestBody @Valid Assistido data) {
         var result = service.insert(data);
         var id = result.getCpf();
         return ResponseEntity.created(createUri(id)).body(result);
@@ -55,6 +56,14 @@ public class AssistidoController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/{id}/processos")
+    public ResponseEntity<List<ProcessoVinculado>> findAllProcessos(@PathVariable String id,
+                                                                    @RequestParam(defaultValue = "20")
+                                                                                      String limit) {
+        List<ProcessoVinculado> list = service.findAllProcessos(id, limit);
+        return ResponseEntity.ok(list);
+    }
+
     @DeleteMapping
     public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit,
                                        @RequestParam(defaultValue = "") String field,
@@ -65,8 +74,8 @@ public class AssistidoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AssistidoDTO> findById(@PathVariable String id) {
-        AssistidoDTO result = service.findById(id);
+    public ResponseEntity<Assistido> findById(@PathVariable String id) {
+        Assistido result = service.findById(id);
         return ResponseEntity.ok(result);
     }
 

@@ -1,14 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
+import com.google.cloud.firestore.FieldPath;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import jakarta.annotation.Nullable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 
 @Repository
@@ -19,10 +21,26 @@ public class MedidaJuridicaRepository extends BaseRepository {
     private final Class<MedidaJuridicaModel> type = MedidaJuridicaModel.class;
 
     public List<MedidaJuridicaModel> findAll(int limit, @Nullable QueryFilter queryFilter) {
-        return findAll(collectionName, null, type, limit, queryFilter)
+        String[] columnList = {"area", "descricao", "nome"};
+        return findAll(collectionName, columnList, type, limit, queryFilter)
                 .stream()
                 .map(o -> (MedidaJuridicaModel) o)
                 .toList();
+    }
+
+    public DocumentSnapshot findLast() {
+        try {
+            var list = firestore
+                    .collection(collectionName)
+                    .orderBy(FieldPath.documentId(), DESCENDING)
+                    .limit(1)
+                    .get()
+                    .get()
+                    .getDocuments();
+            return (!list.isEmpty()) ? list.get(0) : null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public MedidaJuridicaModel findById(String id) {

@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Estagiario;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.SupervisorMin;
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.SupervisorMin;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
@@ -13,7 +13,7 @@ public class UsuarioAggregator implements ArgumentsAggregator {
             ArgumentsAccessor accessor,
             ParameterContext context
     ) {
-        if (accessor.toList().size() == 11) {
+        if (accessor.toList().size() == 12) {
             var e = new Estagiario();
             e.setId((String) accessor.get(0));
             e.setEmail((String) accessor.get(1));

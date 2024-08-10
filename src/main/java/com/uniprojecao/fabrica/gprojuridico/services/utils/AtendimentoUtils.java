@@ -1,13 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoCivil;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.AtendimentoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.AtendimentoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.convertUsingReflection;
@@ -25,16 +28,26 @@ public class AtendimentoUtils {
 
             // Defini o atributo "assistido"
             var assistidoEnvolvido =
-                    new EnvolvidoDTO(
+                    new Envolvido(
                             (String) assistidoMap.get("id"),
                             (String) assistidoMap.get("nome"));
+
+            var date = snapshot.getCreateTime().toDate();
+
+            LocalDateTime localDateTime = date.toInstant()
+                    .atZone(ZoneId.of("America/Sao_Paulo"))
+                    .toLocalDateTime();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            String formattedDateTime = localDateTime.format(formatter);
+
 
             return new AtendimentoMinDTO(
                     snapshot.getId(),
                     (String) snapshot.get("area"),
                     (String) snapshot.get("status"),
                     assistidoEnvolvido,
-                    snapshot.getCreateTime()
+                    formattedDateTime
             );
         }
 
@@ -50,13 +63,13 @@ public class AtendimentoUtils {
 
             // Defini o atributo "assistido"
             var assistidoEnvolvido =
-                    new EnvolvidoDTO(
+                    new Envolvido(
                             (String) assistidoMap.get("id"),
                             (String) assistidoMap.get("nome"));
 
             // Defini o atributo "estagiario"
             var estagiarioEnvolvido =
-                    new EnvolvidoDTO(
+                    new Envolvido(
                             (String) estagiarioMap.get("id"),
                             (String) estagiarioMap.get("nome"));
 

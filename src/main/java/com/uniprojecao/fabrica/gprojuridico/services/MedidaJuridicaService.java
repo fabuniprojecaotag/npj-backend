@@ -1,7 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridica;
-import com.uniprojecao.fabrica.gprojuridico.domains.MedidaJuridicaModel;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.MedidaJuridicaRepository;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
@@ -25,13 +28,14 @@ public class MedidaJuridicaService extends BaseService {
     }
 
     public MedidaJuridicaModel insert(MedidaJuridicaModel model) {
-        BaseRepository.save(collectionName, model.getNome(), model);
+        String customId = defineId(model);
+        BaseRepository.save(collectionName, customId, model);
         return model;
     }
 
     public void insertMultipleDemoData() {
         for (var model : MedidaJuridica.values()){
-            BaseRepository.save(collectionName, model.getNormalizedValue(), new MedidaJuridicaModel(model.getNormalizedValue(), null, model.getArea()));
+            insert(new MedidaJuridicaModel(null, model.getNormalizedValue(), null, model.getArea()));
         }
     }
 
@@ -47,5 +51,13 @@ public class MedidaJuridicaService extends BaseService {
         var filteredData = filterValidKeys(data, MedidaJuridicaModel.class);
 
         update(id, filteredData);
+    }
+
+    private String defineId(MedidaJuridicaModel model) {
+        DocumentSnapshot doc = repository.findLast(); // Obtém o último documento
+        String id = (doc != null) ? doc.getId() : null; // Armazena o id
+        String newId = (id != null) ? incrementId(id) : generateId("MEDJUR"); // Incrementa o id
+        model.setId(newId);
+        return newId;
     }
 }
