@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services.security;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.UsuarioService;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;

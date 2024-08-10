@@ -1,8 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.*;
-import com.uniprojecao.fabrica.gprojuridico.dto.EnvolvidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.models.EntradaHistorico;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
+import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
@@ -21,20 +22,20 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
         int accessorSize = accessor.size();
 
         // Para o atributo "historico"
-        var usuario = new Atendimento.EntradaHistorico.UsuarioMin(
+        var usuario = new EntradaHistorico.UsuarioMin(
                 accessor.getString(4),
                 accessor.getString(5),
                 accessor.getString(6));
-        var entrada = new Atendimento.EntradaHistorico(null, accessor.getString(3), null, null, usuario);
-        List<Atendimento.EntradaHistorico> historico = new ArrayList<>();
+        var entrada = new EntradaHistorico(null, accessor.getString(3), null, null, usuario);
+        List<EntradaHistorico> historico = new ArrayList<>();
         historico.add(entrada);
 
         // Para o atributo "envolvidos"
-        var estagiario = new EnvolvidoDTO(accessor.getString(7), accessor.getString(8));
-        var professor = new EnvolvidoDTO(accessor.getString(9), accessor.getString(10));
-        var secretaria = new EnvolvidoDTO(accessor.getString(11), accessor.getString(12));
-        var assistido = new EnvolvidoDTO("028.283.199-43", "Jonathan Alves");
-        Map<String, EnvolvidoDTO> envolvidos = new HashMap<>(
+        var estagiario = new Envolvido(accessor.getString(7), accessor.getString(8));
+        var professor = new Envolvido(accessor.getString(9), accessor.getString(10));
+        var secretaria = new Envolvido(accessor.getString(11), accessor.getString(12));
+        var assistido = new Envolvido("028.283.199-43", "Jonathan Alves");
+        Map<String, Envolvido> envolvidos = new HashMap<>(
                 Map.of(
                         "estagiario", estagiario,
                         "professor", professor,

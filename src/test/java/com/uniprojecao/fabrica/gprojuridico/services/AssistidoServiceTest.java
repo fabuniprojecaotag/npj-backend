@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.assistido.Assistido;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToAssistido;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +12,6 @@ import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.AssistidoData.seedWithOneAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +46,7 @@ class AssistidoServiceTest {
     @Order(2)
     void findById(@CsvToAssistido Assistido assistidoToFind) {
         var assistidoFound = service.findById(assistidoToFind.getCpf());
-        assertEquals(toDto(assistidoToFind), assistidoFound);
+        assertEquals(assistidoToFind, assistidoFound);
     }
 
     @Test
@@ -91,7 +90,7 @@ class AssistidoServiceTest {
     @Order(6)
     void insert() {
         var assistidoToEnter = seedWithOneAssistido();
-        var assistidoEntered = service.insert(toDto(assistidoToEnter));
+        var assistidoEntered = service.insert(assistidoToEnter);
         var assistidoFound = service.findById(assistidoEntered.getCpf());
 
         assertEquals(assistidoEntered, assistidoFound);

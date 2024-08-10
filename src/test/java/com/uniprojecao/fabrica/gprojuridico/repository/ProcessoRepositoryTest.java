@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.enums.FilterType;
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.enums.FilterType;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToProcesso;
 import org.junit.jupiter.api.BeforeAll;

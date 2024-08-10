@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.domains.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.interfaces.CsvToProcesso;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +11,6 @@ import java.util.Map;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.seedDatabase;
 import static com.uniprojecao.fabrica.gprojuridico.data.ProcessoData.seedWithOneProcesso;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.PROCESSOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +36,7 @@ class ProcessoServiceTest {
     @Order(2)
     void findByNumero(@CsvToProcesso Processo processToFind) {
         var processFound = service.findByNumero(processToFind.getNumero());
-        assertEquals(toDto(processToFind), processFound);
+        assertEquals(processToFind, processFound);
     }
 
     @Test
@@ -81,7 +80,7 @@ class ProcessoServiceTest {
     @Order(6)
     void insert() {
         var processToEnter = seedWithOneProcesso();
-        var processEntered = service.insert(toDto(processToEnter));
+        var processEntered = service.insert(processToEnter);
         var processFound = service.findByNumero(processEntered.getNumero());
 
         assertEquals(processEntered, processFound);

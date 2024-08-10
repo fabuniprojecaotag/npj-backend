@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.repository;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.domains.Autocomplete.AtendimentoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.domains.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.AtendimentoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.QueryFilter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
