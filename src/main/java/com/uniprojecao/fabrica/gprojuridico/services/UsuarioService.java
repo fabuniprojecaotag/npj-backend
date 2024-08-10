@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.UsuarioAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;

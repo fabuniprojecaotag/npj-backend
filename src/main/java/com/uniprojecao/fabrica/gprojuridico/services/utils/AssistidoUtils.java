@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services.utils;
 
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.AssistidoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoFull;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;

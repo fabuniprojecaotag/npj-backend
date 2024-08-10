@@ -36,7 +36,7 @@ public class BaseRepository {
         }
     }
 
-    private Firestore firestore() {
+    public Firestore firestore() {
         FirestoreOptions options = FirestoreOptions.newBuilder()
                 .setProjectId(projectId)
                 .build();

@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Autocomplete.AtendimentoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AtendimentoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.AtendimentoService;

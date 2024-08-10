@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.models.Autocomplete;
+package com.uniprojecao.fabrica.gprojuridico.models.autocomplete;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

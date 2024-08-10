@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
 import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDA_JURIDICA_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
 import static java.lang.Integer.parseInt;
@@ -21,7 +21,7 @@ import static java.lang.Integer.parseInt;
 public class MedidaJuridicaService extends BaseService {
 
     MedidaJuridicaRepository repository = new MedidaJuridicaRepository();
-    private static final String collectionName = MEDIDA_JURIDICA_COLLECTION;
+    private static final String collectionName = MEDIDAS_JURIDICAS_COLLECTION;
 
     public MedidaJuridicaService() {
         super(collectionName);
