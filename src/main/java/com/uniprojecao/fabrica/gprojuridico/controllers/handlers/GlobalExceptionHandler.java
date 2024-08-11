@@ -6,6 +6,7 @@ import com.uniprojecao.fabrica.gprojuridico.services.exceptions.ResourceNotFound
 import com.uniprojecao.fabrica.gprojuridico.dto.ErrorResponse;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,7 +21,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInstantiationException(InstantiationException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorResponse error = new ErrorResponse(status.value(), "Objeto(s) de classe especificado não pode(m) ser instanciado(s)", request.getRequestURI());
+        String message =
+                "O objeto passado não pode ser instanciado. " +
+                "Verifique se a classe passada: (1) não é Abstrata, (2) se possui um construtor público sem " +
+                "argumentos ou (3), se for classe interna, se é estática";
+        ErrorResponse error = new ErrorResponse(status.value(), message, request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);
     }
@@ -69,5 +74,17 @@ public class GlobalExceptionHandler {
             err.addError(f.getField(), f.getDefaultMessage());
         }
         return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        ErrorResponse error = new ErrorResponse(status.value(), "Validation failed", request.getRequestURI());
+
+        for (var constraint : e.getConstraintViolations()) {
+            error.addError(constraint.getPropertyPath().toString(), constraint.getMessage());
+        }
+
+        return ResponseEntity.status(status).body(error);
     }
 }

@@ -2,7 +2,9 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.DeleteBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.InsertBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.FirestoreService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +44,11 @@ public class FirestoreController {
     public ResponseEntity<?> deleteDocuments(@RequestBody DeleteBodyDTO payload) {
         service.deleteDocuments(payload);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> insert(@RequestBody @Valid InsertBodyDTO data) throws Exception {
+        var result = service.insertDocument(data);
+        return ResponseEntity.status(201).body(result);
     }
 }
