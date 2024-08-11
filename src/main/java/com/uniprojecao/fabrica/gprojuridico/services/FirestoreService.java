@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.uniprojecao.fabrica.gprojuridico.dto.DeleteBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
@@ -80,5 +81,14 @@ public class FirestoreService extends BaseRepository {
             case USUARIOS_COLLECTION -> snapshotToUsuario(snapshot, true, false);
             default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
         };
+    }
+
+    public void deleteDocuments(DeleteBodyDTO payload) {
+        var collectionName = payload.collectionName();
+        var ids = payload.ids();
+
+        for (var id : ids) {
+            firestore.collection(collectionName).document(id).delete();
+        }
     }
 }
