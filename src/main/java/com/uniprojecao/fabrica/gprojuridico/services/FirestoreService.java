@@ -4,14 +4,20 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.DeleteBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.InsertBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidModelPropertyException;
+import com.uniprojecao.fabrica.gprojuridico.services.exceptions.NullPropertyException;
 import jakarta.validation.*;
 import org.springframework.stereotype.Service;
 
@@ -125,7 +131,7 @@ public class FirestoreService extends BaseRepository {
     }
 
     private static Object insertSpecifiedData(Object body, Class<?> type, Boolean instantiateChildClass, Object serviceInstance) throws Exception {
-        var data = convertObject(body, type,instantiateChildClass);
+        var data = convertObject(body, type, instantiateChildClass);
         validateDataConstraints(data);
 
         if (serviceInstance == null) {
@@ -207,5 +213,79 @@ public class FirestoreService extends BaseRepository {
                 throw new ConstraintViolationException(violations);
             }
         }
+    }
+
+    public Object updateDocument(UpdateBodyDTO payload) throws Exception {
+        var collectionName = payload.collectionName();
+        var body = payload.body();
+        var model = payload.model();
+        var id = payload.id();
+
+        return switch (collectionName) {
+            case ASSISTIDOS_COLLECTION -> {
+                var className = Assistido.class.getSimpleName();
+                var childClasses = List.of(
+                        AssistidoCivil.class.getSimpleName().substring(className.length()),
+                        AssistidoTrabalhista.class.getSimpleName().substring(className.length())
+                );
+                checkModelProperty(model, className, childClasses);
+                yield updateSpecifiedData(id, body, model, new AssistidoService());
+            }
+            case ATENDIMENTOS_COLLECTION -> {
+                var className = Atendimento.class.getSimpleName();
+                var childClasses = List.of(
+                        AtendimentoCivil.class.getSimpleName().substring(className.length()),
+                        AtendimentoTrabalhista.class.getSimpleName().substring(className.length())
+                );
+                checkModelProperty(model, className, childClasses);
+                yield updateSpecifiedData(id, body, model, new AtendimentoService());
+            }
+            case MEDIDAS_JURIDICAS_COLLECTION -> updateSpecifiedData(id, body, null, new MedidaJuridicaService());
+            case PROCESSOS_COLLECTION -> updateSpecifiedData(id, body, null, new ProcessoService());
+            case USUARIOS_COLLECTION -> {
+                var className = Usuario.class.getSimpleName();
+                var childClasses = List.of(
+                        Usuario.class.getSimpleName(),
+                        Estagiario.class.getSimpleName()
+                );
+                checkModelProperty(model, className, childClasses);
+                yield updateSpecifiedData(id, body, model, new UsuarioService());
+            }
+            default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
+        };
+    }
+
+    private static void checkModelProperty(String modelProperty, String classModel, List<String> allowedTypes) {
+        if (modelProperty != null) {
+            var validModel = allowedTypes.contains(modelProperty);
+            if (!validModel)
+                throw new InvalidModelPropertyException(modelProperty, classModel, allowedTypes);
+        } else {
+            throw new NullPropertyException("model", classModel);
+        }
+    }
+
+    private static Object updateSpecifiedData(String id, Object body, String model, Object serviceInstance) throws Exception {
+        if (serviceInstance == null) {
+            throw new IllegalArgumentException("Service instance must not be null");
+        }
+
+        List<Class<?>> paramTypesList;
+        Object[] args;
+
+        if (model == null) {
+            paramTypesList = List.of(String.class, Map.class);
+            args = List.of(id, body).toArray();
+        }
+        else {
+            paramTypesList = List.of(String.class, Map.class, String.class);
+            args = List.of(id, body, model).toArray();
+        }
+
+        Class<?>[] paramTypesArray = paramTypesList.toArray(new Class<?>[0]);
+
+        Method updateMethod = serviceInstance.getClass().getMethod("update", paramTypesArray);
+
+        return updateMethod.invoke(serviceInstance, args);
     }
 }

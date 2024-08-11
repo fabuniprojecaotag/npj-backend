@@ -3,8 +3,8 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.DeleteBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.InsertBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.FirestoreService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +47,14 @@ public class FirestoreController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> insert(@RequestBody @Valid InsertBodyDTO data) throws Exception {
-        var result = service.insertDocument(data);
+    public ResponseEntity<Object> insert(@RequestBody InsertBodyDTO payload) throws Exception {
+        var result = service.insertDocument(payload);
         return ResponseEntity.status(201).body(result);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody UpdateBodyDTO payload) throws Exception {
+        var result = service.updateDocument(payload);
+        return ResponseEntity.ok().body(result);
     }
 }

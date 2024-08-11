@@ -12,21 +12,19 @@ import java.util.List;
 @Getter
 public class ErrorResponse {
 
-    private final String instant;
+    private final String time;
     private final Integer status;
-    private final String error;
-    private final String path;
+    private final String message;
     private final List<FieldMessage> errors = new ArrayList<>();
 
-    public ErrorResponse(Integer status, String error, String path) {
+    public ErrorResponse(Integer status, String message) {
 
         Instant instant = Instant.now().with(ChronoField.NANO_OF_SECOND , 0);
         ZonedDateTime zdt = instant.atZone(ZoneId.of("America/Sao_Paulo"));
 
-        this.instant = zdt.toLocalDateTime().toString() + " UTC-03";
+        this.time = zdt.toLocalDateTime().toString() + " UTC-03";
         this.status = status;
-        this.error = error;
-        this.path = path;
+        this.message = message;
     }
 
     public void addError(String field, String message) {
