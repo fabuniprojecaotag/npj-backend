@@ -44,7 +44,7 @@ public class FirestoreService extends BaseRepository {
         List<Object> list = new ArrayList<>();
 
         for (QueryDocumentSnapshot snapshot : future.get()) {
-            var document = convertSnapshot(collectionName, snapshot);
+            var document = convertSnapshot(collectionName, snapshot, true);
             list.add(document);
         }
 
@@ -72,13 +72,13 @@ public class FirestoreService extends BaseRepository {
         };
     }
 
-    private Object convertSnapshot(String collection, DocumentSnapshot snapshot) {
+    private Object convertSnapshot(String collection, DocumentSnapshot snapshot, Boolean returnMinDTO) {
         return switch (collection) {
-            case ASSISTIDOS_COLLECTION -> snapshotToAssistido(snapshot, true, false);
-            case ATENDIMENTOS_COLLECTION -> snapshotToAtendimento(snapshot, true, false, false);
+            case ASSISTIDOS_COLLECTION -> snapshotToAssistido(snapshot, returnMinDTO, false);
+            case ATENDIMENTOS_COLLECTION -> snapshotToAtendimento(snapshot, returnMinDTO, false, false);
             case MEDIDAS_JURIDICAS_COLLECTION -> snapshot.toObject(MedidaJuridicaModel.class);
             case PROCESSOS_COLLECTION -> snapshot.toObject(Processo.class);
-            case USUARIOS_COLLECTION -> snapshotToUsuario(snapshot, true, false);
+            case USUARIOS_COLLECTION -> snapshotToUsuario(snapshot, returnMinDTO, false);
             default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
         };
     }
@@ -90,5 +90,12 @@ public class FirestoreService extends BaseRepository {
         for (var id : ids) {
             firestore.collection(collectionName).document(id).delete();
         }
+    }
+
+    public Object getDocumentById(String collectionName, String id) throws Exception {
+        DocumentReference document = firestore.collection(collectionName).document(id);
+        DocumentSnapshot snapshot = document.get().get();
+        if (!snapshot.exists()) return null;
+        return convertSnapshot(collectionName, snapshot, false);
     }
 }

@@ -30,6 +30,14 @@ public class FirestoreController {
         return service.getDocuments(collection, startAfter, pageSize, queryFilter);
     }
 
+    @GetMapping("/{collectionName}/{id}")
+    public ResponseEntity<Object> getDocumentById(
+            @PathVariable String collectionName,
+            @PathVariable String id) throws Exception {
+        var result = service.getDocumentById(collectionName,id);
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping
     public ResponseEntity<?> deleteDocuments(@RequestBody DeleteBodyDTO payload) {
         service.deleteDocuments(payload);
