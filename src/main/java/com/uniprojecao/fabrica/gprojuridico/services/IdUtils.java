@@ -1,9 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.listToString;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.stringToList;
 
@@ -84,5 +91,25 @@ public class IdUtils {
         numbers.add(length, String.valueOf(sum)); // Adds the number as is.
 
         return numbers;
+    }
+
+    public static Object defineId(Object data, String collectionName, String prefix) {
+        DocumentSnapshot doc = new BaseRepository().findLast(collectionName); // Obtém o último documento
+        String id = (doc != null) ? doc.getId() : null; // Armazena o id
+        String newId = (id != null) ? incrementId(id) : generateId(prefix); // Incrementa o id ou gera um novo, caso se não houver um documento criado no banco de dados
+
+        return switch (collectionName) {
+            case ATENDIMENTOS_COLLECTION -> {
+                var model = (Atendimento) data;
+                model.setId(newId);
+                yield data;
+            }
+            case MEDIDAS_JURIDICAS_COLLECTION -> {
+                var model = (MedidaJuridicaModel) data;
+                model.setId(newId);
+                yield data;
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + collectionName);
+        };
     }
 }

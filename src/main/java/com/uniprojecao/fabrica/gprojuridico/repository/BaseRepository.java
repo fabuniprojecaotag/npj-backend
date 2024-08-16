@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 
 @Repository
@@ -71,6 +72,21 @@ public class BaseRepository {
             if (!snapshot.exists()) return null;
             if (type != null) return snapshot.toObject(type);
             return snapshot;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DocumentSnapshot findLast(String collectionName) {
+        try {
+            var list = firestore
+                    .collection(collectionName)
+                    .orderBy(FieldPath.documentId(), DESCENDING)
+                    .limit(1)
+                    .get()
+                    .get()
+                    .getDocuments();
+            return (!list.isEmpty()) ? list.get(0) : null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

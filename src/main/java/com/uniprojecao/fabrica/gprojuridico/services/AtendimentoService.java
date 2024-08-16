@@ -1,7 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabalhista;
@@ -13,8 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.generateId;
-import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.incrementId;
+import static com.uniprojecao.fabrica.gprojuridico.services.IdUtils.defineId;
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
@@ -30,30 +27,14 @@ public class AtendimentoService extends BaseService {
         super(collectionName);
     }
 
-    private String defineId(Atendimento dto) {
-        DocumentSnapshot doc = repository.findLast(); // Obtém o último documento
-        String id = (doc != null) ? doc.getId() : null; // Armazena o id
-        String newId = (id != null) ? incrementId(id) : generateId("ATE"); // Incrementa o id
-        dto.setId(newId);
-        return newId;
-    }
-
     public Atendimento insert(Atendimento data) {
-        String customId = defineId(data);
-        BaseRepository.save(collectionName, customId, data);
+        data = (Atendimento) defineId(data, collectionName, "ATE");
+        BaseRepository.save(collectionName, data.getId(), data);
         return data;
-    }
-
-    public List<AtendimentoMinDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
     }
 
     public List<AtendimentoAutocomplete> findAllMin(String limit, String field, String filter, String value) {
         return repository.findAllMin(parseInt(limit), getFilter(field, filter, value));
-    }
-
-    public Atendimento findById(String id) {
-        return repository.findById(id);
     }
 
     public void update(String id, Map<String, Object> data, String clazz) {

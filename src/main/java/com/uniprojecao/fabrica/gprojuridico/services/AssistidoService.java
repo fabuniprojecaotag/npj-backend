@@ -1,12 +1,11 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
 import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
@@ -36,10 +35,6 @@ public class AssistidoService extends BaseService {
         return data;
     }
 
-    public List<AssistidoMinDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
-    }
-
     public List<AssistidoAutocomplete> findAllMin(String limit, String field, String filter, String value) {
         return repository.findAllMin(parseInt(limit), getFilter(field, filter, value));
     }
@@ -54,10 +49,6 @@ public class AssistidoService extends BaseService {
         var processoRepository = new ProcessoRepository();
         return processoRepository.findAllToAssistido(parseInt(limit),
                 getFilter("assistidoId", "EQUAL", id));
-    }
-
-    public Assistido findById(String id) {
-        return repository.findById(id);
     }
 
     public void update(String id, Map<String, Object> data, String clazz) {

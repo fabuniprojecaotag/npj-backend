@@ -1,0 +1,27 @@
+{
+  "collectionName": "assistidos",
+  "body": {
+    "@type": "Civil",
+    "nome": "Amanda Cordeiro Silva",
+    "rg": "1.010.144",
+    "cpf": "300.223.121-09",
+    "nacionalidade": "Brasileira",
+    "escolaridade": "Superior",
+    "estadoCivil": "Casada",
+    "profissao": "Juiza",
+    "telefone": "(61) 99833-2021",
+    "email": "amanda@example.com",
+    "filiacao": {
+      "mae": "Joana Santos Oliveira de Sá",
+      "pai": "Henrique Silva Cardoso"
+    },
+    "remuneracao": "R$ 3.000",
+    "endereco": {
+      "logradouro": "",
+      "numero": ""
+    },
+    "naturalidade": "Brasiliense",
+    "dataNascimento": "1992-01-27",
+    "dependentes": 4
+  }
+}

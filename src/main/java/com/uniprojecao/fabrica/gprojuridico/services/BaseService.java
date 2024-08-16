@@ -4,9 +4,6 @@ import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
-import static java.lang.Integer.parseInt;
-
 public class BaseService {
 
     private final String collectionName;
@@ -18,14 +15,4 @@ public class BaseService {
     public void update(String id, Map<String, Object> data) {
         BaseRepository.update(collectionName, id, data);
     }
-
-    public void delete(String id) {
-        BaseRepository.delete(collectionName, id);
-    }
-
-    public void deleteAll(String limit, String field, String filter, String value) {
-        BaseRepository.deleteAll(collectionName, null, parseInt(limit), getFilter(field, filter, value));
-    }
-
-
 }

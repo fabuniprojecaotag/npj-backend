@@ -9,9 +9,7 @@ import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabalhista;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
@@ -21,9 +19,9 @@ import com.uniprojecao.fabrica.gprojuridico.services.exceptions.NullPropertyExce
 import jakarta.validation.*;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.snapshotToAssistido;
@@ -40,7 +38,8 @@ public class FirestoreService extends BaseRepository {
             int pageSize,
             Filter filter
     )
-            throws Exception {
+            throws Exception
+    {
         CollectionReference collection = firestore.collection(collectionName);
         String[] fieldNames = getFieldNames(collectionName);
 
@@ -121,65 +120,95 @@ public class FirestoreService extends BaseRepository {
         var body = payload.body();
 
         return switch (collectionName) {
-            case ASSISTIDOS_COLLECTION -> insertSpecifiedData(body, Assistido.class, true, new AssistidoService());
-            case ATENDIMENTOS_COLLECTION -> insertSpecifiedData(body, Atendimento.class, true, new AtendimentoService());
-            case MEDIDAS_JURIDICAS_COLLECTION -> insertSpecifiedData(body, MedidaJuridicaModel.class, false, new MedidaJuridicaService());
-            case PROCESSOS_COLLECTION -> insertSpecifiedData(body, Processo.class, false, new ProcessoService());
-            case USUARIOS_COLLECTION -> insertSpecifiedData(body, Usuario.class, true, new UsuarioService());
+            case ASSISTIDOS_COLLECTION ->
+                    insertSpecifiedData(body, Assistido.class, new AssistidoService());
+            case ATENDIMENTOS_COLLECTION ->
+                    insertSpecifiedData(body, Atendimento.class, new AtendimentoService());
+            case MEDIDAS_JURIDICAS_COLLECTION ->
+                    insertSpecifiedData(body, MedidaJuridicaModel.class, new MedidaJuridicaService());
+            case PROCESSOS_COLLECTION ->
+                    insertSpecifiedData(body, Processo.class, new ProcessoService());
+            case USUARIOS_COLLECTION ->
+                    insertSpecifiedData(body, Usuario.class, new UsuarioService());
             default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
         };
     }
 
-    private static Object insertSpecifiedData(Object body, Class<?> type, Boolean instantiateChildClass, Object serviceInstance) throws Exception {
-        var data = convertObject(body, type, instantiateChildClass);
+    private static Object insertSpecifiedData(
+            Object body,
+            Class<?> type,
+            Object serviceInstance
+    )
+            throws Exception
+    {
+        var data = convertObject(body, type);
         validateDataConstraints(data);
 
         if (serviceInstance == null) {
             throw new IllegalArgumentException("Service instance must not be null");
         }
 
-        Method insertMethod = serviceInstance.getClass().getMethod("insert", data.getClass());
+        Method insertMethod = serviceInstance.getClass().getMethod("insert", type);
 
         return insertMethod.invoke(serviceInstance, data);
     }
 
-    public static <T> T convertObject(Object object, Class<T> clazz, Boolean instantiateChildClass) throws Exception {
-        if (object == null) {
-            return null;
-        }
-
-        if (clazz.isInstance(object)) {
-            return clazz.cast(object);
+    public static <T> T convertObject(Object object, Class<T> destinyClazz) throws Exception {
+        if (destinyClazz.isInstance(object)) {
+            return destinyClazz.cast(object);
         }
 
         if (object instanceof LinkedHashMap<?, ?> map) {
-            T instance;
 
-            if (instantiateChildClass) {
+            Class<?> childClass = destinyClazz;
+            if (map.containsKey("@type")) {
                 String childClassType = (String) map.get("@type");
-                Class<?> childClass = identifyChildClass(childClassType);
-                instance = (T) childClass.getDeclaredConstructor().newInstance();
-            } else {
-                instance = clazz.getDeclaredConstructor().newInstance();
+                childClass = identifyChildClass(destinyClazz.getSimpleName(), childClassType);
+                if (childClass == null) {
+                    throw new IllegalArgumentException("Unrecognized child class type.");
+                }
             }
+
+            T instance = (T) childClass.getDeclaredConstructor().newInstance();
+
+
+            Map<String, Field> fieldsMap = new HashMap<>();
+            while (childClass != null && childClass != Object.class) {
+                for (Field field : childClass.getDeclaredFields()) {
+                    if (!fieldsMap.containsKey(field.getName())) {
+                        fieldsMap.put(field.getName(), field);
+                    }
+                }
+                childClass = (Class<T>) childClass.getSuperclass();
+            }
+
 
             for (Map.Entry<?, ?> entry : map.entrySet()) {
                 String key = (String) entry.getKey();
                 Object value = entry.getValue();
 
                 try {
-                    Field field = clazz.getDeclaredField(key);
-                    field.setAccessible(true);
+                    if (fieldsMap.containsKey(key)) {
+                        Field field = fieldsMap.get(key);
+                        field.setAccessible(true);
+                        boolean isInteger = field.getType() == String.class;
 
-                    if (value instanceof LinkedHashMap) {
-                        // Recursivamente converte o LinkedHashMap em uma instância da classe apropriada.
-                        Class<?> fieldType = field.getType();
-                        var useChildClass = field.getName().equals("ficha"); // Campo "ficha" do model "Atendimento" possui o tipo sendo Abstract. Logo, deve-se instanciar classe filha.
-                        value = convertObject(value, fieldType, useChildClass);
-                        field.set(instance, value);
-                    } else {
-                        field.set(instance, value);
+                        if (value instanceof LinkedHashMap) {
+                            // Recursivamente converte o LinkedHashMap em uma instância da classe apropriada.
+                            var superClass = field.getType().getSuperclass();
+                            int mod;
+                            mod = Objects.requireNonNullElseGet(superClass, field::getType).getModifiers();
+                            boolean isAbstract = Modifier.isAbstract(mod);
+
+                            Class<?> fieldType = isAbstract ? field.getType().getSuperclass() : field.getType();
+                            if (fieldType != null)
+                                value = convertObject(value, fieldType);
+                            field.set(instance, getAdjustedValue(isInteger, value));
+                        } else {
+                            field.set(instance, getAdjustedValue(isInteger, value));
+                        }
                     }
+
                 } catch (NoSuchFieldException e) {
                     // Field not found, continue without fail.
                 }
@@ -188,17 +217,38 @@ public class FirestoreService extends BaseRepository {
             return instance;
         }
 
-        Constructor<T> constructor = clazz.getDeclaredConstructor(object.getClass());
-        return constructor.newInstance(object);
+        throw new IllegalArgumentException("Unsupported object type.");
     }
 
-    private static Class<?> identifyChildClass(String type) {
-        var map = Map.of(
-                "Civil", AssistidoCivil.class,
-                "Trabalhista", AssistidoTrabalhista.class
-        );
+    private static Object getAdjustedValue(boolean isString, Object value) {
+        return isString ? value.toString() : value;
+    }
+
+    private static Class<?> identifyChildClass(String className, String classType) {
+        String civil = "Civil";
+        String trabalhista = "Trabalhista";
+        var map = switch (className) {
+            case "Atendimento" -> Map.of(
+                    civil, AtendimentoCivil.class,
+                    trabalhista, AtendimentoTrabalhista.class
+            );
+            case "Assistido" -> Map.of(
+                    civil, AssistidoCivil.class,
+                    trabalhista, AssistidoTrabalhista.class
+            );
+            case "Ficha" -> Map.of(
+                    civil, FichaCivil.class,
+                    trabalhista, FichaTrabalhista.class
+            );
+            case "Usuario" -> Map.of(
+                    "Usuario", Usuario.class,
+                    "Estagiario", Estagiario.class
+            );
+            default -> throw new IllegalStateException("Unexpected value: " + className);
+        };
+
         for (var entry : map.entrySet()) {
-            if (type.equals(entry.getKey())) return entry.getValue();
+            if (classType.equals(entry.getKey())) return entry.getValue();
         }
         return null;
     }
@@ -265,7 +315,14 @@ public class FirestoreService extends BaseRepository {
         }
     }
 
-    private static Object updateSpecifiedData(String id, Object body, String model, Object serviceInstance) throws Exception {
+    private static Object updateSpecifiedData(
+            String id,
+            Object body,
+            String model,
+            Object serviceInstance
+    )
+            throws Exception
+    {
         if (serviceInstance == null) {
             throw new IllegalArgumentException("Service instance must not be null");
         }
@@ -276,15 +333,19 @@ public class FirestoreService extends BaseRepository {
         if (model == null) {
             paramTypesList = List.of(String.class, Map.class);
             args = List.of(id, body).toArray();
-        }
-        else {
+        } else {
             paramTypesList = List.of(String.class, Map.class, String.class);
             args = List.of(id, body, model).toArray();
         }
 
         Class<?>[] paramTypesArray = paramTypesList.toArray(new Class<?>[0]);
 
-        Method updateMethod = serviceInstance.getClass().getMethod("update", paramTypesArray);
+        var updateMethodName =
+                serviceInstance.getClass().getSimpleName() == MedidaJuridicaService.class.getSimpleName() ?
+                        "updateName" :
+                        "update";
+
+        Method updateMethod = serviceInstance.getClass().getMethod(updateMethodName, paramTypesArray);
 
         return updateMethod.invoke(serviceInstance, args);
     }

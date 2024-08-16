@@ -1,0 +1,9 @@
+{
+  "collectionName": "assistidos",
+  "body": {
+    "dataNascimento": "1993-01-27",
+    "dependentes": "3"
+  },
+  "id": "300.223.121-09",
+  "model": "Civil"
+}
