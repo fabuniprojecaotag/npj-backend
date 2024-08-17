@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.PROCESSOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COLLECTION;
 
 @Repository
 @DependsOn("baseRepository")

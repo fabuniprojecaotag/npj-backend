@@ -28,8 +28,8 @@ import java.util.stream.Stream;
 
 import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
 import static com.uniprojecao.fabrica.gprojuridico.services.FirestoreService.convertObject;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.convertUsingReflection;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.print;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertUsingReflection;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.print;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

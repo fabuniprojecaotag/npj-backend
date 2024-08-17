@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ATENDIMENTOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.listToString;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.stringToList;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.listToString;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.stringToList;
 
 public class IdService {
     /**

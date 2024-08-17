@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.snapshotToUsuario;
+import static com.uniprojecao.fabrica.gprojuridico.services.DocumentSnapshotService.snapshotToUsuario;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.USUARIOS_COLLECTION;
 
 @Repository
 @DependsOn("baseRepository")

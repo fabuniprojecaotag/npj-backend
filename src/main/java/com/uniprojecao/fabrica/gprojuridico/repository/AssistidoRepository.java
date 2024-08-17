@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.snapshotToAssistido;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.ASSISTIDOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
+import static com.uniprojecao.fabrica.gprojuridico.services.DocumentSnapshotService.snapshotToAssistido;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ASSISTIDOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.filterValidKeys;
 
 @Repository
 @DependsOn("baseRepository")

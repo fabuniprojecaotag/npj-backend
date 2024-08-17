@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.UsuarioAutocomplete;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
@@ -19,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.USUARIOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.UserUniqueField;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.filterValidKeys;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.USUARIOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.filterValidKeys;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -74,7 +72,7 @@ public class UsuarioService implements UserDetailsService {
             if (equalEmails && equalCpfs) {
                 throw new UserAlreadyCreatedException(userEmailFound, userCpfFound);
             } else {
-                throw new UserAlreadyCreatedException(UserUniqueField.EMAIL, userEmailFound);
+                throw new UserAlreadyCreatedException(DocumentSnapshotService.UserUniqueField.EMAIL, userEmailFound);
             }
         }
     }

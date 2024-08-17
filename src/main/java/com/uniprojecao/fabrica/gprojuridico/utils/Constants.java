@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.services.utils;
+package com.uniprojecao.fabrica.gprojuridico.utils;
 
 public class Constants {
     public static final String ASSISTIDOS_COLLECTION = "assistidos";

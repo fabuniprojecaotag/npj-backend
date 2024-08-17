@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.services.utils;
+package com.uniprojecao.fabrica.gprojuridico.utils;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

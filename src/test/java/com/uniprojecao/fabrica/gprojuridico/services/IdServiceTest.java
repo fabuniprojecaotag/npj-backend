@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.print;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.print;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IdServiceTest {

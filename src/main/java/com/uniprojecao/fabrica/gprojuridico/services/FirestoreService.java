@@ -24,10 +24,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AssistidoUtils.snapshotToAssistido;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.AtendimentoUtils.snapshotToAtendimento;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.*;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.UsuarioUtils.snapshotToUsuario;
+import static com.uniprojecao.fabrica.gprojuridico.services.DocumentSnapshotService.*;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 
 @Service
 public class FirestoreService extends BaseRepository {

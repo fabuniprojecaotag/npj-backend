@@ -5,7 +5,7 @@ import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
 import org.springframework.stereotype.Service;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.IdService.defineId;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
 
 @Service
 public class MedidaJuridicaService {
