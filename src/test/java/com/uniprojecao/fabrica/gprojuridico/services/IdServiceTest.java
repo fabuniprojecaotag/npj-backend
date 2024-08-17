@@ -7,7 +7,7 @@ import java.util.List;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.print;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class IdUtilsTest {
+class IdServiceTest {
 
     @Test
     void generateId() {
@@ -18,7 +18,7 @@ class IdUtilsTest {
         for (var id : prefixes) {
             var expected = ExpectedIds.get(i);
 
-            var res = IdUtils.generateId(id);
+            var res = IdService.generateId(id);
             print("Prefix: " + id + ", Actual: " + res + ", Expected: " + expected);
             assertEquals(expected, res);
 
@@ -33,7 +33,7 @@ class IdUtilsTest {
 
         var i = 0;
         for (var id : originalIds) {
-            var updatedValue = IdUtils.incrementId(id);
+            var updatedValue = IdService.incrementId(id);
             var expectedValue = updatedIds.get(i);
 
             print("Original: " + id + ", updated: " + updatedValue);

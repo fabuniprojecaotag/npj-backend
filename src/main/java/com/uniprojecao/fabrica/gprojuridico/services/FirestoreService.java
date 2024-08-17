@@ -13,7 +13,7 @@ import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.*;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidModelPropertyException;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.NullPropertyException;
 import jakarta.validation.*;
@@ -121,13 +121,13 @@ public class FirestoreService extends BaseRepository {
 
         return switch (collectionName) {
             case ASSISTIDOS_COLLECTION ->
-                    insertSpecifiedData(body, Assistido.class, new AssistidoService());
+                    insertSpecifiedData(body, Assistido.class, new AssistidoRepository());
             case ATENDIMENTOS_COLLECTION ->
                     insertSpecifiedData(body, Atendimento.class, new AtendimentoService());
             case MEDIDAS_JURIDICAS_COLLECTION ->
                     insertSpecifiedData(body, MedidaJuridicaModel.class, new MedidaJuridicaService());
             case PROCESSOS_COLLECTION ->
-                    insertSpecifiedData(body, Processo.class, new ProcessoService());
+                    insertSpecifiedData(body, Processo.class, new ProcessoRepository());
             case USUARIOS_COLLECTION ->
                     insertSpecifiedData(body, Usuario.class, new UsuarioService());
             default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
@@ -279,7 +279,7 @@ public class FirestoreService extends BaseRepository {
                         AssistidoTrabalhista.class.getSimpleName().substring(className.length())
                 );
                 checkModelProperty(model, className, childClasses);
-                yield updateSpecifiedData(id, body, model, new AssistidoService());
+                yield updateSpecifiedData(id, body, model, new AssistidoRepository());
             }
             case ATENDIMENTOS_COLLECTION -> {
                 var className = Atendimento.class.getSimpleName();
@@ -288,10 +288,10 @@ public class FirestoreService extends BaseRepository {
                         AtendimentoTrabalhista.class.getSimpleName().substring(className.length())
                 );
                 checkModelProperty(model, className, childClasses);
-                yield updateSpecifiedData(id, body, model, new AtendimentoService());
+                yield updateSpecifiedData(id, body, model, new AtendimentoRepository());
             }
-            case MEDIDAS_JURIDICAS_COLLECTION -> updateSpecifiedData(id, body, null, new MedidaJuridicaService());
-            case PROCESSOS_COLLECTION -> updateSpecifiedData(id, body, null, new ProcessoService());
+            case MEDIDAS_JURIDICAS_COLLECTION -> updateSpecifiedData(id, body, null, new MedidaJuridicaRepository());
+            case PROCESSOS_COLLECTION -> updateSpecifiedData(id, body, null, new ProcessoRepository());
             case USUARIOS_COLLECTION -> {
                 var className = Usuario.class.getSimpleName();
                 var childClasses = List.of(
@@ -340,12 +340,7 @@ public class FirestoreService extends BaseRepository {
 
         Class<?>[] paramTypesArray = paramTypesList.toArray(new Class<?>[0]);
 
-        var updateMethodName =
-                serviceInstance.getClass().getSimpleName() == MedidaJuridicaService.class.getSimpleName() ?
-                        "updateName" :
-                        "update";
-
-        Method updateMethod = serviceInstance.getClass().getMethod(updateMethodName, paramTypesArray);
+        Method updateMethod = serviceInstance.getClass().getMethod("update", paramTypesArray);
 
         return updateMethod.invoke(serviceInstance, args);
     }

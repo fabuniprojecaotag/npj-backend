@@ -1,50 +1,46 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculado;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
-import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
+import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
+import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.createUri;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
+import static java.lang.Integer.parseInt;
 
 @RestController
 @RequestMapping("/assistidos")
 public class AssistidoController {
 
-    @Autowired
-    private AssistidoService service;
-
-    @GetMapping("/min")
-    public ResponseEntity<List<AssistidoAutocomplete>> findAllMin(@RequestParam(defaultValue = "20") String limit,
-                                                         @RequestParam(defaultValue = "") String field,
-                                                         @RequestParam(defaultValue = "") String filter,
-                                                         @RequestParam(defaultValue = "") String value) {
-        List<AssistidoAutocomplete> list = service.findAllMin(limit, field, filter, value);
+    @GetMapping("/autocomplete")
+    public ResponseEntity<List<AssistidoAutocomplete>> findAllForAutoComplete(
+            @RequestParam(defaultValue = "20") String limit,
+            @RequestParam(defaultValue = "") String field,
+            @RequestParam(defaultValue = "") String filter,
+            @RequestParam(defaultValue = "") String value) {
+        var list = new AssistidoRepository().findAllForAutoComplete(parseInt(limit), getFilter(field, filter, value));
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}/atendimentos")
-    public ResponseEntity<List<AtendimentoVinculadoAssistidoDTO>> findAllAtendimentos(@PathVariable String id,
-                                                                                      @RequestParam(defaultValue = "20")
-                                                                                String limit) {
-        List<AtendimentoVinculadoAssistidoDTO> list = service.findAllAtendimentos(id, limit);
+    public ResponseEntity<List<AtendimentoVinculado>> findAllAtendimentos(
+            @PathVariable String id,
+            @RequestParam(defaultValue = "20") String limit) {
+        var list = new AtendimentoRepository().findAllToAssistido(parseInt(limit), id);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}/processos")
-    public ResponseEntity<List<ProcessoVinculado>> findAllProcessos(@PathVariable String id,
-                                                                    @RequestParam(defaultValue = "20")
-                                                                                      String limit) {
-        List<ProcessoVinculado> list = service.findAllProcessos(id, limit);
+    public ResponseEntity<List<ProcessoVinculado>> findAllProcessos(
+            @PathVariable String id,
+            @RequestParam(defaultValue = "20") String limit) {
+        var list = new ProcessoRepository().findAllToAssistido(parseInt(limit), id);
         return ResponseEntity.ok(list);
     }
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AtendimentoVinculadoAssistidoDTO {
+public class AtendimentoVinculado {
     private String id;
     private String area;
     private String status;

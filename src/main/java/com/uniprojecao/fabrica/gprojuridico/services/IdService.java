@@ -14,13 +14,13 @@ import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.MEDI
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.listToString;
 import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.stringToList;
 
-public class IdUtils {
+public class IdService {
     /**
      * Gera um ID de 5 casas decimais, contando a partir do 1, com base no prefixo passado.
      * @param prefix O prefixo a ser passado; OBS: O tamanho não pode exercer 6 caracteres.
      * @return O ID com o prefixo passado e o formato descrito.
      */
-    public static String generateId(String prefix) {
+    static String generateId(String prefix) {
         int prefixLimit = 6;
         int decimalPlaces = 5;
 
@@ -36,7 +36,7 @@ public class IdUtils {
      * @param id O ID a ser incrementado.
      * @return O ID incrementado com a parte numérica aumentada em 1, mantendo o mesmo número de dígitos.
      */
-    public static String incrementId(String id) {
+    static String incrementId(String id) {
         Matcher prefixMatcher = Pattern.compile("^[A-Z]+").matcher(id);
         Matcher numberMatcher = Pattern.compile("\\d+").matcher(id);
 

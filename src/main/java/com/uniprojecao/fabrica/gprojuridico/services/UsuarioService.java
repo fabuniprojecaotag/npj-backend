@@ -58,14 +58,9 @@ import static java.lang.Integer.parseInt;
  * @since 1.0
  */
 @Service
-public class UsuarioService extends BaseService implements UserDetailsService {
+public class UsuarioService implements UserDetailsService {
 
     public UsuarioRepository repository = new UsuarioRepository();
-    private static final String collectionName = USUARIOS_COLLECTION;
-
-    public UsuarioService() {
-        super(collectionName);
-    }
 
     private void checkIfExists(Usuario data, String id) {
         var result = findById(id);
@@ -99,10 +94,6 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         return BCrypt.withDefaults().hashToString(12, rawPassword.toCharArray());
     }
 
-    public List<UsuarioMinDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), getFilter(field, filter, value));
-    }
-
     public List<UsuarioAutocomplete> findAllMin(String limit, String field, String filter, String value) {
         return repository.findAllMin(parseInt(limit), getFilter(field, filter, value));
     }
@@ -125,7 +116,7 @@ public class UsuarioService extends BaseService implements UserDetailsService {
         checkIfExists(data, id);
         encryptPassword(data);
 
-        BaseRepository.save(collectionName, id, data);
+        BaseRepository.insert(USUARIOS_COLLECTION, id, data);
         return data;
     }
 
@@ -156,9 +147,9 @@ public class UsuarioService extends BaseService implements UserDetailsService {
             newData.put(senhaKey, encryptedPassword);
 
             // Salva os dados recebidos e com a senha criptografada
-            update(id, newData);
+            BaseRepository.update(USUARIOS_COLLECTION, id, newData);
         } else {
-            update(id, filteredData);
+            BaseRepository.update(USUARIOS_COLLECTION, id, filteredData);
         }
     }
 }

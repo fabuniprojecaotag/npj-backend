@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.cloud.firestore.Query.Direction.DESCENDING;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.sleep;
 
 @Repository
 @Primary
@@ -42,7 +41,7 @@ public class BaseRepository {
         return options.getService();
     }
 
-    public static void save(String collectionName, String CustomId, Object data) {
+    public static void insert(String collectionName, String CustomId, Object data) {
         try {
             firestore.collection(collectionName).document(CustomId).set(data).get();
         } catch (Exception e) {
@@ -65,18 +64,6 @@ public class BaseRepository {
         }
     }
 
-    static Object findById(String collectionName, @Nullable Class<?> type, String id) {
-        try {
-            DocumentReference document = firestore.collection(collectionName).document(id);
-            DocumentSnapshot snapshot = document.get().get();
-            if (!snapshot.exists()) return null;
-            if (type != null) return snapshot.toObject(type);
-            return snapshot;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public DocumentSnapshot findLast(String collectionName) {
         try {
             var list = firestore
@@ -94,18 +81,6 @@ public class BaseRepository {
 
     public static void update(String collectionName, String id, Map<String, Object> data) {
         firestore.collection(collectionName).document(id).update(convertMap(data));
-    }
-
-    public static void delete(String collectionName, String id) {
-        firestore.collection(collectionName).document(id).delete();
-    }
-
-    public static void deleteAll(String collectionName, String[] list, Integer limit, @Nullable Filter queryFilter) {
-        var result = getDocSnapshots(collectionName, list, limit, queryFilter);
-        for (QueryDocumentSnapshot document : result) {
-            document.getReference().delete();
-            sleep(200); // Eventualmente será necessário considerar usar programação reativa no sistema, pois a deleção assíncrona deve garantir a deleção em massa por completo.
-        }
     }
 
     private static List<QueryDocumentSnapshot> getDocSnapshots(String collectionName, @Nullable String[] list, @Nonnull Integer limit, @Nullable Filter filter) {
