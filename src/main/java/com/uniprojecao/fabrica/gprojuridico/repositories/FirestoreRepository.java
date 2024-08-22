@@ -73,7 +73,7 @@ public class FirestoreRepository {
         }
     }
 
-    public DocumentSnapshot findLast(String collectionName) {
+    public static String findLastDocumentId(String collectionName) {
         try {
             var list = firestore
                     .collection(collectionName)
@@ -82,7 +82,7 @@ public class FirestoreRepository {
                     .get()
                     .get()
                     .getDocuments();
-            return (!list.isEmpty()) ? list.get(0) : null;
+            return !list.isEmpty() ? list.get(0).getId() : null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
