@@ -116,39 +116,33 @@ public class FirestoreService extends BaseRepository {
 
         var collectionName = payload.collectionName();
         var body = payload.body();
+        Object data;
 
-        return switch (collectionName) {
-            case ASSISTIDOS_COLLECTION ->
-                    insertSpecifiedData(body, Assistido.class, new AssistidoRepository());
-            case ATENDIMENTOS_COLLECTION ->
-                    insertSpecifiedData(body, Atendimento.class, new AtendimentoService());
-            case MEDIDAS_JURIDICAS_COLLECTION ->
-                    insertSpecifiedData(body, MedidaJuridicaModel.class, new MedidaJuridicaService());
-            case PROCESSOS_COLLECTION ->
-                    insertSpecifiedData(body, Processo.class, new ProcessoRepository());
-            case USUARIOS_COLLECTION ->
-                    insertSpecifiedData(body, Usuario.class, new UsuarioService());
-            default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
-        };
+        switch (collectionName) {
+            case ASSISTIDOS_COLLECTION:
+                data = getObject(body, Assistido.class);
+                return new AssistidoRepository().insert((Assistido) data);
+            case ATENDIMENTOS_COLLECTION:
+                data = getObject(body, Atendimento.class);
+                return new AtendimentoService().insert((Atendimento) data);
+            case MEDIDAS_JURIDICAS_COLLECTION:
+                data = getObject(body, MedidaJuridicaModel.class);
+                return new MedidaJuridicaService().insert((MedidaJuridicaModel) data);
+            case PROCESSOS_COLLECTION:
+                data = getObject(body, Processo.class);
+                return new ProcessoRepository().insert((Processo) data);
+            case USUARIOS_COLLECTION:
+                data = getObject(body, Usuario.class);
+                return new UsuarioService().insert((Usuario) data);
+            default:
+                throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
+        }
     }
 
-    private static Object insertSpecifiedData(
-            Object body,
-            Class<?> type,
-            Object serviceInstance
-    )
-            throws Exception
-    {
+    private static Object getObject(Object body, Class<?> type) throws Exception {
         var data = convertObject(body, type);
         validateDataConstraints(data);
-
-        if (serviceInstance == null) {
-            throw new IllegalArgumentException("Service instance must not be null");
-        }
-
-        Method insertMethod = serviceInstance.getClass().getMethod("insert", type);
-
-        return insertMethod.invoke(serviceInstance, data);
+        return data;
     }
 
     public static <T> T convertObject(Object object, Class<T> destinyClazz) throws Exception {
@@ -177,7 +171,7 @@ public class FirestoreService extends BaseRepository {
                         fieldsMap.put(field.getName(), field);
                     }
                 }
-                childClass = (Class<T>) childClass.getSuperclass();
+                childClass = childClass.getSuperclass();
             }
 
 
@@ -201,9 +195,9 @@ public class FirestoreService extends BaseRepository {
                             Class<?> fieldType = isAbstract ? field.getType().getSuperclass() : field.getType();
                             if (fieldType != null)
                                 value = convertObject(value, fieldType);
-                            field.set(instance, getAdjustedValue(isInteger, value));
+                            field.set(instance, isInteger ? value.toString() : value);
                         } else {
-                            field.set(instance, getAdjustedValue(isInteger, value));
+                            field.set(instance, isInteger ? value.toString() : value);
                         }
                     }
 
@@ -216,10 +210,6 @@ public class FirestoreService extends BaseRepository {
         }
 
         throw new IllegalArgumentException("Unsupported object type.");
-    }
-
-    private static Object getAdjustedValue(boolean isString, Object value) {
-        return isString ? value.toString() : value;
     }
 
     private static Class<?> identifyChildClass(String className, String classType) {
