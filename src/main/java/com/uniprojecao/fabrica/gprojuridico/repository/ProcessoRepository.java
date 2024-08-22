@@ -36,8 +36,4 @@ public class ProcessoRepository extends BaseRepository {
                 (String) snapshot.get("status")
         );
     }
-
-    public void update(String id, Map<String, Object> data) {
-        BaseRepository.update(PROCESSOS_COLLECTION, id, data);
-    }
 }

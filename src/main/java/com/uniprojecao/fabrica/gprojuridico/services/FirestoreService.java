@@ -24,6 +24,7 @@ import java.util.*;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.DocumentSnapshotService.*;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.filterValidKeys;
 
 @Service
 public class FirestoreService extends BaseRepository {
@@ -210,33 +211,37 @@ public class FirestoreService extends BaseRepository {
         throw new IllegalArgumentException("Unsupported object type.");
     }
 
-    private static Class<?> identifyChildClass(String className, String classType) {
-        String civil = "Civil";
-        String trabalhista = "Trabalhista";
-        var map = switch (className) {
+    private static Class<?> identifyChildClass(String baseClass, String classType) {
+        final String CIVIL = "Civil";
+        final String TRABALHISTA = "Trabalhista";
+
+        var validTypes = switch (baseClass) {
             case "Atendimento" -> Map.of(
-                    civil, AtendimentoCivil.class,
-                    trabalhista, AtendimentoTrabalhista.class
+                    CIVIL, AtendimentoCivil.class,
+                    TRABALHISTA, AtendimentoTrabalhista.class
             );
             case "Assistido" -> Map.of(
-                    civil, AssistidoCivil.class,
-                    trabalhista, AssistidoTrabalhista.class
+                    CIVIL, AssistidoCivil.class,
+                    TRABALHISTA, AssistidoTrabalhista.class
             );
             case "Ficha" -> Map.of(
-                    civil, FichaCivil.class,
-                    trabalhista, FichaTrabalhista.class
+                    CIVIL, FichaCivil.class,
+                    TRABALHISTA, FichaTrabalhista.class
             );
             case "Usuario" -> Map.of(
                     "Usuario", Usuario.class,
                     "Estagiario", Estagiario.class
             );
-            default -> throw new IllegalStateException("Unexpected value: " + className);
+            default -> throw new IllegalStateException("Unexpected baseClass: " + baseClass);
         };
 
-        for (var entry : map.entrySet()) {
-            if (classType.equals(entry.getKey())) return entry.getValue();
+        for (var entry : validTypes.entrySet()) {
+            if (classType.equals(entry.getKey())) {
+                return entry.getValue();
+            }
         }
-        return null;
+
+        throw new IllegalStateException("Unexpected classType: " + classType);
     }
 
     private static void validateDataConstraints(Object data) {
@@ -257,59 +262,29 @@ public class FirestoreService extends BaseRepository {
         var model = payload.model();
         var id = payload.id();
 
+        Class<?> clazz;
+
         switch (collectionName) {
             case ASSISTIDOS_COLLECTION:
-                checkModelProperty(model, Assistido.class.getSimpleName());
-                new AssistidoRepository().update(id, body, model);
+                clazz = identifyChildClass(Assistido.class.getSimpleName(), model);
+                BaseRepository.update(ASSISTIDOS_COLLECTION, id, filterValidKeys(body, clazz));
                 break;
             case ATENDIMENTOS_COLLECTION:
-                checkModelProperty(model, Atendimento.class.getSimpleName());
-                new AtendimentoRepository().update(id, body, model);
+                clazz = identifyChildClass(Atendimento.class.getSimpleName(), model);
+                BaseRepository.update(ATENDIMENTOS_COLLECTION, id, filterValidKeys(body, clazz));
                 break;
             case MEDIDAS_JURIDICAS_COLLECTION:
-                new MedidaJuridicaRepository().update(id, body);
+                BaseRepository.update(MEDIDAS_JURIDICAS_COLLECTION, id, filterValidKeys(body, MedidaJuridicaModel.class));
                 break;
             case PROCESSOS_COLLECTION:
-                new ProcessoRepository().update(id, body);
+                BaseRepository.update(PROCESSOS_COLLECTION, id, filterValidKeys(body, Processo.class));
                 break;
             case USUARIOS_COLLECTION:
-                checkModelProperty(model, Usuario.class.getSimpleName());
+                identifyChildClass(Usuario.class.getSimpleName(), model);
                 new UsuarioService().update(id, body, model);
                 break;
             default:
                 throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
         }
-    }
-
-    private static void checkModelProperty(String modelProperty, String classModel) {
-        final String atendimentoClass = "Atendimento";
-        final String assistidoClass = "Assistido";
-        final String usuarioClass = "Usuario";
-
-        List<String> childClasses = List.of();
-
-        switch (classModel) {
-            case assistidoClass:
-                childClasses = List.of(
-                        AssistidoCivil.class.getSimpleName().substring(assistidoClass.length()),
-                        AssistidoTrabalhista.class.getSimpleName().substring(assistidoClass.length())
-                );
-                break;
-            case atendimentoClass:
-                childClasses = List.of(
-                        AtendimentoCivil.class.getSimpleName().substring(atendimentoClass.length()),
-                        AtendimentoTrabalhista.class.getSimpleName().substring(atendimentoClass.length())
-                );
-                break;
-            case usuarioClass:
-                childClasses = List.of(
-                        Usuario.class.getSimpleName(),
-                        Estagiario.class.getSimpleName()
-                );
-                break;
-        }
-
-        if (!childClasses.isEmpty() && !childClasses.contains(modelProperty))
-            throw new InvalidModelPropertyException(modelProperty, classModel, childClasses);
     }
 }

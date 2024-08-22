@@ -54,7 +54,7 @@ public class FirestoreController {
 
     @PutMapping
     public ResponseEntity<?> update(@RequestBody UpdateBodyDTO payload) throws Exception {
-        var result = service.updateDocument(payload);
-        return ResponseEntity.ok().body(result);
+        service.updateDocument(payload);
+        return ResponseEntity.ok().build();
     }
 }

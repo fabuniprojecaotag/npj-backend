@@ -3,19 +3,15 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculado;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoCivil;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AtendimentoAutocomplete;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.DocumentSnapshotService.snapshotToAtendimento;
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.filterValidKeys;
 
 @Repository
 @DependsOn("baseRepository")
@@ -42,17 +38,5 @@ public class AtendimentoRepository extends BaseRepository {
                 .stream()
                 .map(o -> (AtendimentoVinculado) snapshotToAtendimento((DocumentSnapshot) o, false, false, true))
                 .toList();
-    }
-
-    public void update(String id, Map<String, Object> data, String clazz) {
-        var validClazz = switch(clazz) {
-            case "Trabalhista" -> AtendimentoTrabalhista.class;
-            case "Civil" -> AtendimentoCivil.class;
-            default -> throw new IllegalStateException("Unexpected value: " + clazz);
-        };
-
-        var filteredData = filterValidKeys(data, validClazz);
-
-        BaseRepository.update(ATENDIMENTOS_COLLECTION, id, filteredData);
     }
 }

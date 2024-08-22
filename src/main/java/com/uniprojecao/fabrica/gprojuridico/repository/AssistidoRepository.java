@@ -3,18 +3,14 @@ package com.uniprojecao.fabrica.gprojuridico.repository;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
-import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.DocumentSnapshotService.snapshotToAssistido;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ASSISTIDOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.filterValidKeys;
 
 @Repository
 @DependsOn("baseRepository")
@@ -33,17 +29,5 @@ public class AssistidoRepository extends BaseRepository {
                 .stream()
                 .map(o -> (AssistidoAutocomplete) snapshotToAssistido((DocumentSnapshot) o, false, true))
                 .toList();
-    }
-
-    public void update(String id, Map<String, Object> data, String clazz) {
-        var validClazz = switch(clazz) {
-            case "Trabalhista" -> AssistidoTrabalhista.class;
-            case "Civil" -> AssistidoCivil.class;
-            default -> throw new IllegalStateException("Unexpected value: " + clazz);
-        };
-
-        var filteredData = filterValidKeys(data, validClazz);
-
-        BaseRepository.update(ASSISTIDOS_COLLECTION, id, filteredData);
     }
 }
