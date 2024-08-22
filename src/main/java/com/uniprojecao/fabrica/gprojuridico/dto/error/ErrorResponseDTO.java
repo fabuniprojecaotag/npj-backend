@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.dto;
+package com.uniprojecao.fabrica.gprojuridico.dto.error;
 
 import lombok.Getter;
 
@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class ErrorResponse {
+public class ErrorResponseDTO {
 
     private final String time;
     private final Integer status;
     private final String message;
     private final List<FieldMessage> errors = new ArrayList<>();
 
-    public ErrorResponse(Integer status, String message) {
+    public ErrorResponseDTO(Integer status, String message) {
 
         Instant instant = Instant.now().with(ChronoField.NANO_OF_SECOND , 0);
         ZonedDateTime zdt = instant.atZone(ZoneId.of("America/Sao_Paulo"));

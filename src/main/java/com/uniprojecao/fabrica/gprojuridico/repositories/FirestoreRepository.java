@@ -2,10 +2,11 @@ package com.uniprojecao.fabrica.gprojuridico.repositories;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.uniprojecao.fabrica.gprojuridico.dto.DeleteBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.InsertBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.UpdateBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.DeleteBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.*;
+import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.AtendimentoVinculadoDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.ProcessoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
@@ -210,8 +211,7 @@ public class FirestoreRepository {
         };
     }
 
-    public static void deleteDocuments(DeleteBodyDTO payload) {
-        var collectionName = payload.collectionName();
+    public static void deleteDocuments(String collectionName, DeleteBodyDTO payload) {
         var ids = payload.ids();
 
         for (var id : ids) {
@@ -226,31 +226,28 @@ public class FirestoreRepository {
         return convertSnapshot(collectionName, snapshot, null);
     }
 
-    public static Object insertDocument(InsertBodyDTO payload) throws Exception {
-
-        var collectionName = payload.collectionName();
-        var body = payload.body();
+    public static Object insertDocument(String collectionName, Object payload) throws Exception {
         Object data;
 
         switch (collectionName) {
             case ASSISTIDOS_COLLECTION:
-                data = getObject(body, Assistido.class);
+                data = getObject(payload, Assistido.class);
                 var assistido = (Assistido) data;
                 FirestoreRepository.insert(ASSISTIDOS_COLLECTION, assistido.getCpf(), assistido);
                 return assistido;
             case ATENDIMENTOS_COLLECTION:
-                data = getObject(body, Atendimento.class);
+                data = getObject(payload, Atendimento.class);
                 return new AtendimentoService().insert((Atendimento) data);
             case MEDIDAS_JURIDICAS_COLLECTION:
-                data = getObject(body, MedidaJuridicaModel.class);
+                data = getObject(payload, MedidaJuridicaModel.class);
                 return new MedidaJuridicaService().insert((MedidaJuridicaModel) data);
             case PROCESSOS_COLLECTION:
-                data = getObject(body, Processo.class);
+                data = getObject(payload, Processo.class);
                 var processo = (Processo) data;
                 FirestoreRepository.insert(PROCESSOS_COLLECTION, processo.getNumero(), processo);
                 return processo;
             case USUARIOS_COLLECTION:
-                data = getObject(body, Usuario.class);
+                data = getObject(payload, Usuario.class);
                 return new UsuarioService().insert((Usuario) data);
             default:
                 throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
@@ -375,21 +372,20 @@ public class FirestoreRepository {
         }
     }
 
-    public static void updateDocument(UpdateBodyDTO payload) {
-        var collectionName = payload.collectionName();
+    public static void updateDocument(String collectionName, UpdateBodyDTO payload) {
         var body = (Map<String, Object>) payload.body();
-        var model = payload.model();
+        var classType = payload.classType();
         var id = payload.id();
 
         Class<?> clazz;
 
         switch (collectionName) {
             case ASSISTIDOS_COLLECTION:
-                clazz = identifyChildClass(Assistido.class.getSimpleName(), model);
+                clazz = identifyChildClass(Assistido.class.getSimpleName(), classType);
                 FirestoreRepository.update(ASSISTIDOS_COLLECTION, id, filterValidKeys(body, clazz));
                 break;
             case ATENDIMENTOS_COLLECTION:
-                clazz = identifyChildClass(Atendimento.class.getSimpleName(), model);
+                clazz = identifyChildClass(Atendimento.class.getSimpleName(), classType);
                 FirestoreRepository.update(ATENDIMENTOS_COLLECTION, id, filterValidKeys(body, clazz));
                 break;
             case MEDIDAS_JURIDICAS_COLLECTION:
@@ -399,8 +395,8 @@ public class FirestoreRepository {
                 FirestoreRepository.update(PROCESSOS_COLLECTION, id, filterValidKeys(body, Processo.class));
                 break;
             case USUARIOS_COLLECTION:
-                identifyChildClass(Usuario.class.getSimpleName(), model);
-                new UsuarioService().update(id, body, model);
+                identifyChildClass(Usuario.class.getSimpleName(), classType);
+                new UsuarioService().update(id, body, classType);
                 break;
             default:
                 throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
@@ -491,7 +487,7 @@ public class FirestoreRepository {
                                 (String) estagiarioMap.get("id"),
                                 (String) estagiarioMap.get("nome"));
 
-                return new AtendimentoVinculado(
+                return new AtendimentoVinculadoDTO(
                         snapshot.getId(),
                         (String) snapshot.get("area"),
                         (String) snapshot.get("status"),
@@ -537,8 +533,8 @@ public class FirestoreRepository {
             return (dadosEstagiario) ? snapshot.toObject(Estagiario.class) : snapshot.toObject(Usuario.class);
         }
 
-        public static ProcessoVinculado snapshotToProcessoVinculado(DocumentSnapshot snapshot) {
-            return new ProcessoVinculado(
+        public static ProcessoVinculadoDTO snapshotToProcessoVinculado(DocumentSnapshot snapshot) {
+            return new ProcessoVinculadoDTO(
                     snapshot.getId(),
                     (String) snapshot.get("vara"),
                     (String) snapshot.get("status")

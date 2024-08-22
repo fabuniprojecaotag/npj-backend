@@ -11,7 +11,7 @@ import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.g
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 
 @RestController
-@RequestMapping("/assistidos")
+@RequestMapping("/api/assistidos")
 public class AssistidoController {
 
     @GetMapping("/{id}/atendimentos")

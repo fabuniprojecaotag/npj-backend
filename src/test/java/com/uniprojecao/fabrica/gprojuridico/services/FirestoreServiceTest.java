@@ -1,8 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uniprojecao.fabrica.gprojuridico.dto.InsertBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.UpdateBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
@@ -52,10 +51,9 @@ class FirestoreServiceTest {
         var collectionName = (String) fileObject.get("collectionName");
         var body = fileObject.get("body");
 
-        var payload = new InsertBodyDTO(collectionName, body);
-
         try {
-            var insertedPayload = new FirestoreService().insertDocument(payload);
+            new FirestoreService();
+            var insertedPayload = FirestoreRepository.insertDocument(collectionName, body);
             assertNotNull(insertedPayload);
         } catch (Exception e) {
             // continue the test if some exception occur
@@ -140,16 +138,14 @@ class FirestoreServiceTest {
         var collectionName = (String) fileObject.get("collectionName");
         var body = (Map<String, Object>) fileObject.get("body");
         var id = (String) fileObject.get("id");
-        var model = (String) fileObject.get("model");
+        var model = (String) fileObject.get("classType");
 
-        var payload = new UpdateBodyDTO(collectionName, body, id, model);
+        var payload = new UpdateBodyDTO(body, id, model);
 
-        var firestoreService = new FirestoreService();
-
-        firestoreService.updateDocument(payload);
+        FirestoreRepository.updateDocument(collectionName, payload);
 
         // Obtém o objeto para verificar se o registro foi atualizado através do método de atualizar.
-        var foundObject = firestoreService.getDocumentById(collectionName, id);
+        var foundObject = FirestoreRepository.getDocumentById(collectionName, id);
 
         Boolean useSuperClass =
                 foundObject.getClass() == AssistidoCivil.class ||
