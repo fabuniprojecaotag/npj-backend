@@ -1,46 +1,36 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculado;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.ProcessoVinculado;
-import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.AssistidoAutocomplete;
-import com.uniprojecao.fabrica.gprojuridico.repository.AssistidoRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.AtendimentoRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
+import com.google.cloud.firestore.Filter;
+import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
-import static java.lang.Integer.parseInt;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 
 @RestController
 @RequestMapping("/assistidos")
 public class AssistidoController {
 
-    @GetMapping("/autocomplete")
-    public ResponseEntity<List<AssistidoAutocomplete>> findAllForAutoComplete(
-            @RequestParam(defaultValue = "20") String limit,
-            @RequestParam(defaultValue = "") String field,
-            @RequestParam(defaultValue = "") String filter,
-            @RequestParam(defaultValue = "") String value) {
-        var list = new AssistidoRepository().findAllForAutoComplete(parseInt(limit), getFilter(field, filter, value));
-        return ResponseEntity.ok(list);
-    }
-
     @GetMapping("/{id}/atendimentos")
-    public ResponseEntity<List<AtendimentoVinculado>> findAllAtendimentos(
+    public ResponseEntity<Map<String, Object>> findAllAtendimentos(
             @PathVariable String id,
-            @RequestParam(defaultValue = "20") String limit) {
-        var list = new AtendimentoRepository().findAllToAssistido(parseInt(limit), id);
-        return ResponseEntity.ok(list);
+            @RequestParam(required = false) String startAfter,
+            @RequestParam(defaultValue = "10") int pageSize) throws Exception {
+        Filter queryFilter = getFilter("envolvidos.assistido.id", "EQUAL", id);
+        var docs = FirestoreRepository.getDocuments(ATENDIMENTOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
+        return ResponseEntity.ok(docs);
     }
 
     @GetMapping("/{id}/processos")
-    public ResponseEntity<List<ProcessoVinculado>> findAllProcessos(
+    public ResponseEntity<Map<String, Object>> findAllProcessos(
             @PathVariable String id,
-            @RequestParam(defaultValue = "20") String limit) {
-        var list = new ProcessoRepository().findAllToAssistido(parseInt(limit), id);
-        return ResponseEntity.ok(list);
+            @RequestParam(required = false) String startAfter,
+            @RequestParam(defaultValue = "10") int pageSize) throws Exception {
+        Filter queryFilter = getFilter("assistidoId", "EQUAL", id);
+        var docs = FirestoreRepository.getDocuments(PROCESSOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
+        return ResponseEntity.ok(docs);
     }
 }

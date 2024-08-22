@@ -11,7 +11,7 @@ import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabal
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -40,7 +40,7 @@ class FirestoreServiceTest {
 
     @BeforeAll
     static void beforeAll() {
-        BaseRepository.firestore = getFirestore();
+        FirestoreRepository.firestore = getFirestore();
     }
 
     @ParameterizedTest

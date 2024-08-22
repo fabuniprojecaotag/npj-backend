@@ -3,7 +3,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
+import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -94,7 +94,7 @@ public class IdService {
     }
 
     public static Object defineId(Object data, String collectionName, String prefix) {
-        DocumentSnapshot doc = new BaseRepository().findLast(collectionName); // Obtém o último documento
+        DocumentSnapshot doc = new FirestoreRepository().findLast(collectionName); // Obtém o último documento
         String id = (doc != null) ? doc.getId() : null; // Armazena o id
         String newId = (id != null) ? incrementId(id) : generateId(prefix); // Incrementa o id ou gera um novo, caso se não houver um documento criado no banco de dados
 

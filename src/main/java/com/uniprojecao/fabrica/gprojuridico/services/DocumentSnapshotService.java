@@ -152,4 +152,12 @@ public class DocumentSnapshotService {
 
         return (dadosEstagiario) ? snapshot.toObject(Estagiario.class) : snapshot.toObject(Usuario.class);
     }
+
+    public static ProcessoVinculado snapshotToProcessoVinculado(DocumentSnapshot snapshot) {
+        return new ProcessoVinculado(
+                snapshot.getId(),
+                (String) snapshot.get("vara"),
+                (String) snapshot.get("status")
+        );
+    }
 }
