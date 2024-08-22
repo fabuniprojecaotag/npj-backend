@@ -15,12 +15,10 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repository.*;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidModelPropertyException;
-import com.uniprojecao.fabrica.gprojuridico.services.exceptions.NullPropertyException;
 import jakarta.validation.*;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
@@ -253,83 +251,65 @@ public class FirestoreService extends BaseRepository {
         }
     }
 
-    public Object updateDocument(UpdateBodyDTO payload) throws Exception {
+    public void updateDocument(UpdateBodyDTO payload) {
         var collectionName = payload.collectionName();
-        var body = payload.body();
+        var body = (Map<String, Object>) payload.body();
         var model = payload.model();
         var id = payload.id();
 
-        return switch (collectionName) {
-            case ASSISTIDOS_COLLECTION -> {
-                var className = Assistido.class.getSimpleName();
-                var childClasses = List.of(
-                        AssistidoCivil.class.getSimpleName().substring(className.length()),
-                        AssistidoTrabalhista.class.getSimpleName().substring(className.length())
+        switch (collectionName) {
+            case ASSISTIDOS_COLLECTION:
+                checkModelProperty(model, Assistido.class.getSimpleName());
+                new AssistidoRepository().update(id, body, model);
+                break;
+            case ATENDIMENTOS_COLLECTION:
+                checkModelProperty(model, Atendimento.class.getSimpleName());
+                new AtendimentoRepository().update(id, body, model);
+                break;
+            case MEDIDAS_JURIDICAS_COLLECTION:
+                new MedidaJuridicaRepository().update(id, body);
+                break;
+            case PROCESSOS_COLLECTION:
+                new ProcessoRepository().update(id, body);
+                break;
+            case USUARIOS_COLLECTION:
+                checkModelProperty(model, Usuario.class.getSimpleName());
+                new UsuarioService().update(id, body, model);
+                break;
+            default:
+                throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
+        }
+    }
+
+    private static void checkModelProperty(String modelProperty, String classModel) {
+        final String atendimentoClass = "Atendimento";
+        final String assistidoClass = "Assistido";
+        final String usuarioClass = "Usuario";
+
+        List<String> childClasses = List.of();
+
+        switch (classModel) {
+            case assistidoClass:
+                childClasses = List.of(
+                        AssistidoCivil.class.getSimpleName().substring(assistidoClass.length()),
+                        AssistidoTrabalhista.class.getSimpleName().substring(assistidoClass.length())
                 );
-                checkModelProperty(model, className, childClasses);
-                yield updateSpecifiedData(id, body, model, new AssistidoRepository());
-            }
-            case ATENDIMENTOS_COLLECTION -> {
-                var className = Atendimento.class.getSimpleName();
-                var childClasses = List.of(
-                        AtendimentoCivil.class.getSimpleName().substring(className.length()),
-                        AtendimentoTrabalhista.class.getSimpleName().substring(className.length())
+                break;
+            case atendimentoClass:
+                childClasses = List.of(
+                        AtendimentoCivil.class.getSimpleName().substring(atendimentoClass.length()),
+                        AtendimentoTrabalhista.class.getSimpleName().substring(atendimentoClass.length())
                 );
-                checkModelProperty(model, className, childClasses);
-                yield updateSpecifiedData(id, body, model, new AtendimentoRepository());
-            }
-            case MEDIDAS_JURIDICAS_COLLECTION -> updateSpecifiedData(id, body, null, new MedidaJuridicaRepository());
-            case PROCESSOS_COLLECTION -> updateSpecifiedData(id, body, null, new ProcessoRepository());
-            case USUARIOS_COLLECTION -> {
-                var className = Usuario.class.getSimpleName();
-                var childClasses = List.of(
+                break;
+            case usuarioClass:
+                childClasses = List.of(
                         Usuario.class.getSimpleName(),
                         Estagiario.class.getSimpleName()
                 );
-                checkModelProperty(model, className, childClasses);
-                yield updateSpecifiedData(id, body, model, new UsuarioService());
-            }
-            default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
-        };
-    }
-
-    private static void checkModelProperty(String modelProperty, String classModel, List<String> allowedTypes) {
-        if (modelProperty != null) {
-            var validModel = allowedTypes.contains(modelProperty);
-            if (!validModel)
-                throw new InvalidModelPropertyException(modelProperty, classModel, allowedTypes);
-        } else {
-            throw new NullPropertyException("model", classModel);
-        }
-    }
-
-    private static Object updateSpecifiedData(
-            String id,
-            Object body,
-            String model,
-            Object serviceInstance
-    )
-            throws Exception
-    {
-        if (serviceInstance == null) {
-            throw new IllegalArgumentException("Service instance must not be null");
+                break;
         }
 
-        List<Class<?>> paramTypesList;
-        Object[] args;
-
-        if (model == null) {
-            paramTypesList = List.of(String.class, Map.class);
-            args = List.of(id, body).toArray();
-        } else {
-            paramTypesList = List.of(String.class, Map.class, String.class);
-            args = List.of(id, body, model).toArray();
-        }
-
-        Class<?>[] paramTypesArray = paramTypesList.toArray(new Class<?>[0]);
-
-        Method updateMethod = serviceInstance.getClass().getMethod("update", paramTypesArray);
-
-        return updateMethod.invoke(serviceInstance, args);
+        if (!childClasses.isEmpty() && !childClasses.contains(modelProperty))
+            throw new InvalidModelPropertyException(modelProperty, classModel, childClasses);
     }
 }
