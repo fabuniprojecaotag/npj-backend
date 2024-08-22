@@ -1,18 +1,13 @@
 package com.uniprojecao.fabrica.gprojuridico.utils;
 
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Utils {
     public static <T> Map<String, Object> convertUsingReflection(T object, Boolean useSuperClass) {
         if (object instanceof Map<?, ?>) {
-            @SuppressWarnings("unchecked") // Suppress warning as it's safe due to the instanceof check
+            @SuppressWarnings("unchecked")
             Map<String, Object> castedMap = (Map<String, Object>) object;
             return castedMap;
         }
@@ -55,9 +50,6 @@ public class Utils {
 
     public static <T> Map<String, Object> filterValidKeys(Map<String, Object> inputMap, Class<T> clazz) {
         Map<String, Object> filteredMap = new HashMap<>();
-
-        // Gets all fields of the class passed as a parameter
-        Field[] fields = clazz.getDeclaredFields();
 
         // Creates a Set with the names of the fields in the class passed as parameters
         Set<String> validKeys = getAllFields2(clazz).stream()
@@ -111,25 +103,6 @@ public class Utils {
             }
         }
         return null;
-    }
-
-    public static void sleep(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Boolean validateText(String regex, String text) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        return matcher.matches();
-    }
-
-    public static URI createUri(String id) {
-        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(id).toUri();
     }
 
     /**
