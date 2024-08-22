@@ -32,7 +32,7 @@ public class UsuarioService implements UserDetailsService {
             if (equalEmails && equalCpfs) {
                 throw new UserAlreadyCreatedException(userEmailFound, userCpfFound);
             } else {
-                throw new UserAlreadyCreatedException(DocumentSnapshotService.UserUniqueField.EMAIL, userEmailFound);
+                throw new RuntimeException("Usuário com o email \"" + userEmailFound + "\" já existe.");
             }
         }
     }
