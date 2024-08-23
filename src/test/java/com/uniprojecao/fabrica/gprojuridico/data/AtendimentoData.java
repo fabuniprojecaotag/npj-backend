@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.EntradaHistorico;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 
@@ -12,12 +11,6 @@ import java.util.Map;
 
 public class AtendimentoData {
     public static List<Atendimento> seedWithAtendimento() {
-        // Para o atributo "historico"
-        var usuario = new EntradaHistorico
-                .UsuarioMin("leticia.alves@projecao.br", "Letícia Alves Martins", "PROFESSOR");
-        var entrada = new EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
-        List<EntradaHistorico> historico = new ArrayList<>();
-        historico.add(entrada);
 
         // Para o atributo "envolvidos"
         var estagiario = new Envolvido("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
@@ -43,18 +36,12 @@ public class AtendimentoData {
         var fichaTrabalhista = new FichaTrabalhista(null, false, "Reclamação trabalhista", new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
 
         return List.of(
-                new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, historico, envolvidos, fichaCivil),
-                new AtendimentoTrabalhista("ATE00071", "Aguardando documentos", "Trabalhista", null, historico, envolvidos, fichaTrabalhista)
+                new AtendimentoCivil("ATE00052", "Processo ativo", "Civil", null, null, envolvidos, fichaCivil),
+                new AtendimentoTrabalhista("ATE00071", "Aguardando documentos", "Trabalhista", null, null, envolvidos, fichaTrabalhista)
         );
     }
 
     public static Atendimento seedWithOneAtendimento() {
-        // Para o atributo "historico"
-        var usuario = new EntradaHistorico.UsuarioMin("leticia.alves@projecao.br", "Letícia Alves Martins", "PROFESSOR");
-        var entrada = new EntradaHistorico(null, "Elaborada a petição inicial", null, null, usuario);
-        List<EntradaHistorico> historico = new ArrayList<>();
-        historico.add(entrada);
-
         // Para o atributo "envolvidos"
         var estagiario = new Envolvido("202101055@projecao.edu.br", "Emilly Letícia Cordeiro");
         var professor = new Envolvido("rebeca.lopes@projecao.br", "Rebeca Lopes Silva");
@@ -74,6 +61,6 @@ public class AtendimentoData {
         var fichaTrabalhista = new FichaTrabalhista(null, false, "Reclamação trabalhista", new ArrayList<>(), reclamado, relacaoEmpregaticia, docDepositadosNpj, null);
 
 
-        return new AtendimentoTrabalhista("ATE00071", "Aguardando documentos", "Trabalhista", null, historico, envolvidos, fichaTrabalhista);
+        return new AtendimentoTrabalhista("ATE00071", "Aguardando documentos", "Trabalhista", null, null, envolvidos, fichaTrabalhista);
     }
 }

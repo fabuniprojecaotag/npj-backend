@@ -1,16 +1,14 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.EntradaHistorico;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
 import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AtendimentoAggregator implements ArgumentsAggregator {
@@ -20,15 +18,6 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             ParameterContext context
     ) {
         int accessorSize = accessor.size();
-
-        // Para o atributo "historico"
-        var usuario = new EntradaHistorico.UsuarioMin(
-                accessor.getString(4),
-                accessor.getString(5),
-                accessor.getString(6));
-        var entrada = new EntradaHistorico(null, accessor.getString(3), null, null, usuario);
-        List<EntradaHistorico> historico = new ArrayList<>();
-        historico.add(entrada);
 
         // Para o atributo "envolvidos"
         var estagiario = new Envolvido(accessor.getString(7), accessor.getString(8));
@@ -48,7 +37,7 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             atendimento.setStatus(accessor.getString(1));
             atendimento.setArea(accessor.getString(2));
             // instante ignorado
-            atendimento.setHistorico(historico);
+            atendimento.setHistorico(null);
             atendimento.setEnvolvidos(envolvidos);
 
             // Para o atributo "ficha"
@@ -80,7 +69,7 @@ public class AtendimentoAggregator implements ArgumentsAggregator {
             atendimento.setStatus(accessor.getString(1));
             atendimento.setArea(accessor.getString(2));
             // instante ignorado
-            atendimento.setHistorico(historico);
+            atendimento.setHistorico(null);
             atendimento.setEnvolvidos(envolvidos);
 
             var ficha = new FichaTrabalhista(

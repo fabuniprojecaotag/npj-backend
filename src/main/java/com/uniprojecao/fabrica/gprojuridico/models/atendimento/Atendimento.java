@@ -3,16 +3,13 @@ package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.DocumentId;
-import com.uniprojecao.fabrica.gprojuridico.models.EntradaHistorico;
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import com.uniprojecao.fabrica.gprojuridico.enums.AreaAtendimento;
 import com.uniprojecao.fabrica.gprojuridico.enums.StatusAtendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -31,15 +28,15 @@ public abstract class Atendimento {
 
     private String instante;
 
-    private List<EntradaHistorico> historico = new ArrayList<>();
+    private String historico;
     private Map<String, Envolvido> envolvidos = new HashMap<>();
 
-    public Atendimento(String id, String status, String area, String instante, List<EntradaHistorico> historico, Map<String, Envolvido> envolvidos) {
+    public Atendimento(String id, String status, String area, String instante, String historico, Map<String, Envolvido> envolvidos) {
         this.id = id;
         setStatus(status);
         setArea(area);
         this.instante = instante;
-        setHistorico(historico);
+        this.historico = historico;
         setEnvolvidos(envolvidos);
     }
 
@@ -49,10 +46,6 @@ public abstract class Atendimento {
 
     public void setArea(String area) {
         this.area = AreaAtendimento.valueOf(area.toUpperCase()).getValue(); // Ex. "Trabalhista" → "TRABALHISTA" → "Trabalhista". É necessária esta transformação para o armazenamento customizado de constantes.
-    }
-
-    public void setHistorico(List<EntradaHistorico> entradas) {
-        this.historico.addAll(entradas);
     }
 
     public void setEnvolvidos(Map<String, Envolvido> envolvidos) {
