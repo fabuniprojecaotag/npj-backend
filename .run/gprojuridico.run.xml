@@ -7,7 +7,7 @@
         <option name="ENABLED" value="true" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.uniprojecao.fabrica.gprojuridico.services.*" />
+        <option name="PATTERN" value="com.uniprojecao.fabrica.gprojuridico.repositories.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

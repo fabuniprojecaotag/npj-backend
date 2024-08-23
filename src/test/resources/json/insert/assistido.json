@@ -17,8 +17,10 @@
     },
     "remuneracao": "R$ 3.000",
     "endereco": {
-      "logradouro": "",
-      "numero": ""
+      "residencial": {
+        "logradouro": "QNA 6 Conjunto C",
+        "cep": "72918-999"
+      }
     },
     "naturalidade": "Brasiliense",
     "dataNascimento": "1992-01-27",

@@ -190,13 +190,13 @@ public class FirestoreRepository {
             case ASSISTIDOS_COLLECTION -> {
                     if (returnType == "min") yield snapshotToAssistido(snapshot, true, false);
                     if (returnType == "autoComplete") yield snapshotToAssistido(snapshot, false, true);
-                    throw new RuntimeException("returnType invalid. Checks if the returnType is correct.");
+                    yield snapshotToAssistido(snapshot, false, false);
             }
             case ATENDIMENTOS_COLLECTION -> {
                 if (returnType == "min") yield snapshotToAtendimento(snapshot, true, false, false);
                 if (returnType == "autoComplete") yield snapshotToAtendimento(snapshot, false, true, false);
                 if (returnType == "forAssistido") yield snapshotToAtendimento(snapshot, false, false, true);
-                throw new RuntimeException("returnType invalid. Checks if the returnType is correct.");
+                yield snapshotToAtendimento(snapshot, false, false, false);
             }
             case MEDIDAS_JURIDICAS_COLLECTION -> snapshot.toObject(MedidaJuridica.class);
             case PROCESSOS_COLLECTION -> {

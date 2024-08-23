@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.services;
+package com.uniprojecao.fabrica.gprojuridico.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
@@ -10,7 +10,7 @@ import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabal
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository;
+import com.uniprojecao.fabrica.gprojuridico.services.FirestoreService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
+import static com.uniprojecao.fabrica.gprojuridico.Utils.sleep;
 import static com.uniprojecao.fabrica.gprojuridico.services.FirestoreService.convertObject;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertUsingReflection;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.print;
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @TestMethodOrder(MethodOrderer.class)
-class FirestoreServiceTest {
+class FirestoreRepositoryTest {
 
     Map<String, Boolean> usedMethods = new HashMap<>();
 
@@ -138,12 +139,14 @@ class FirestoreServiceTest {
         var collectionName = (String) fileObject.get("collectionName");
         var body = (Map<String, Object>) fileObject.get("body");
         var id = (String) fileObject.get("id");
-        var model = (String) fileObject.get("classType");
+        var classType = (String) fileObject.get("classType");
 
-        var payload = new UpdateBodyDTO(body, id, model);
+        var payload = new UpdateBodyDTO(body, id, classType);
 
         FirestoreRepository.updateDocument(collectionName, payload);
 
+        // Para garantir que o registro a ser obtido foi atualizado
+        sleep(500);
         // Obtém o objeto para verificar se o registro foi atualizado através do método de atualizar.
         var foundObject = FirestoreRepository.getDocumentById(collectionName, id);
 
