@@ -1,8 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.models.assistido;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Ctps;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Ctps;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

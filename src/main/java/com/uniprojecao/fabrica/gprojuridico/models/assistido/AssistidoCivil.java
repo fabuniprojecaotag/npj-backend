@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.models.assistido;
 
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;

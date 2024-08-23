@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

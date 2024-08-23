@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Ctps;
-import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Ctps;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Filiacao;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;
 import org.junit.jupiter.api.extension.ParameterContext;

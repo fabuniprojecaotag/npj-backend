@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.uniprojecao.fabrica.gprojuridico.enums.AreaAtendimento;
 import com.uniprojecao.fabrica.gprojuridico.enums.StatusAtendimento;
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

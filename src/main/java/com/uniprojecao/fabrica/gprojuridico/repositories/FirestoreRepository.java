@@ -7,7 +7,7 @@ import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.AtendimentoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.ProcessoVinculadoDTO;
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Envolvido;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;

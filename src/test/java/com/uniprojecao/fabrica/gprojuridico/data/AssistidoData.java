@@ -1,8 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.data;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Ctps;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Ctps;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.Filiacao;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Filiacao;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoTrabalhista;

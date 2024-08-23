@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.aggregators;
 
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Envolvido;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.*;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;

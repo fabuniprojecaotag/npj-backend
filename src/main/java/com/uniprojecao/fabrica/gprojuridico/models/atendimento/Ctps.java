@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.models;
+package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

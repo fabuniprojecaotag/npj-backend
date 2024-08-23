@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.vinculados;
 
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Envolvido;
 
 public record AtendimentoVinculadoDTO(
         String id,
