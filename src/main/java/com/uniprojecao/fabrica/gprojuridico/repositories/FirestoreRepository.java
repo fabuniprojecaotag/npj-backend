@@ -8,7 +8,7 @@ import com.uniprojecao.fabrica.gprojuridico.dto.min.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.AtendimentoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.ProcessoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
-import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoFull;
@@ -198,7 +198,7 @@ public class FirestoreRepository {
                 if (returnType == "forAssistido") yield snapshotToAtendimento(snapshot, false, false, true);
                 throw new RuntimeException("returnType invalid. Checks if the returnType is correct.");
             }
-            case MEDIDAS_JURIDICAS_COLLECTION -> snapshot.toObject(MedidaJuridicaModel.class);
+            case MEDIDAS_JURIDICAS_COLLECTION -> snapshot.toObject(MedidaJuridica.class);
             case PROCESSOS_COLLECTION -> {
                 if (returnType == "forAssistido") yield snapshotToProcessoVinculado(snapshot);
                 yield snapshot.toObject(Processo.class);
@@ -239,8 +239,8 @@ public class FirestoreRepository {
                 data = getObject(payload, Atendimento.class);
                 return new AtendimentoService().insert((Atendimento) data);
             case MEDIDAS_JURIDICAS_COLLECTION:
-                data = getObject(payload, MedidaJuridicaModel.class);
-                return new MedidaJuridicaService().insert((MedidaJuridicaModel) data);
+                data = getObject(payload, MedidaJuridica.class);
+                return new MedidaJuridicaService().insert((MedidaJuridica) data);
             case PROCESSOS_COLLECTION:
                 data = getObject(payload, Processo.class);
                 var processo = (Processo) data;
@@ -389,7 +389,7 @@ public class FirestoreRepository {
                 FirestoreRepository.update(ATENDIMENTOS_COLLECTION, id, filterValidKeys(body, clazz));
                 break;
             case MEDIDAS_JURIDICAS_COLLECTION:
-                FirestoreRepository.update(MEDIDAS_JURIDICAS_COLLECTION, id, filterValidKeys(body, MedidaJuridicaModel.class));
+                FirestoreRepository.update(MEDIDAS_JURIDICAS_COLLECTION, id, filterValidKeys(body, MedidaJuridica.class));
                 break;
             case PROCESSOS_COLLECTION:
                 FirestoreRepository.update(PROCESSOS_COLLECTION, id, filterValidKeys(body, Processo.class));

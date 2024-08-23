@@ -1,6 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository;
 
@@ -103,7 +103,7 @@ public class IdService {
                 yield data;
             }
             case MEDIDAS_JURIDICAS_COLLECTION -> {
-                var model = (MedidaJuridicaModel) data;
+                var model = (MedidaJuridica) data;
                 model.setId(newId);
                 yield data;
             }

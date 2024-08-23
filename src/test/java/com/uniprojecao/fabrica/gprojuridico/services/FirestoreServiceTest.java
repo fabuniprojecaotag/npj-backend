@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridicaModel;
+import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
@@ -124,7 +124,7 @@ class FirestoreServiceTest {
             "assistido.json", Assistido.class,
             "atendimento.json", Atendimento.class,
             "estagiario.json", Usuario.class,
-            "medida juridica.json", MedidaJuridicaModel.class,
+            "medida juridica.json", MedidaJuridica.class,
             "processo.json", Processo.class,
             "usuario.json", Usuario.class
     );
