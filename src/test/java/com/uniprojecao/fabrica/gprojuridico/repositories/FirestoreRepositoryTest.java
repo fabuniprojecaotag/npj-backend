@@ -9,7 +9,9 @@ import com.uniprojecao.fabrica.gprojuridico.models.atendimento.AtendimentoTrabal
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,9 +25,7 @@ import java.util.stream.Stream;
 
 import static com.uniprojecao.fabrica.gprojuridico.Utils.getFirestore;
 import static com.uniprojecao.fabrica.gprojuridico.Utils.sleep;
-import static com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository.convertObject;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertUsingReflection;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.print;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -39,16 +39,16 @@ class FirestoreRepositoryTest {
 
     @ParameterizedTest
     @MethodSource
-    void testInsertDocument(String collectionName, Object body) {
+    void testInsert(String collectionName, Object body) {
         try {
-            var insertedPayload = FirestoreRepository.insertDocument(collectionName, body);
+            var insertedPayload = FirestoreRepository.insert(collectionName, body);
             assertNotNull(insertedPayload);
         } catch (Exception e) {
             // continue the test if some exception occur
         }
     }
 
-    static Stream<Arguments> testInsertDocument() throws IOException {
+    static Stream<Arguments> testInsert() throws IOException {
         Stream<Arguments> args = getJSONFilesAsStreamOfArgs(Path.of("src/test/resources/json/insert"));
 
         return args.map(arg -> {
@@ -63,14 +63,14 @@ class FirestoreRepositoryTest {
 
     @ParameterizedTest
     @MethodSource
-    void testUpdateDocument(String collectionName, Map<String, Object> body, String id, String classType) throws Exception {
+    void testUpdate(String collectionName, Map<String, Object> body, String id, String classType) throws Exception {
 
-        FirestoreRepository.updateDocument(collectionName, body, id, classType);
+        FirestoreRepository.update(collectionName, body, id, classType);
 
         // Para garantir que o registro a ser obtido foi atualizado
         sleep(500);
         // Obtém o objeto para verificar se o registro foi atualizado através do método de atualizar.
-        var foundObject = FirestoreRepository.getDocumentById(collectionName, id);
+        var foundObject = FirestoreRepository.findById(collectionName, id);
 
         Boolean useSuperClass = checkIfShouldUseSuperClass(foundObject);
 
@@ -87,7 +87,7 @@ class FirestoreRepositoryTest {
         }
     }
 
-    static Stream<Arguments> testUpdateDocument() throws IOException {
+    static Stream<Arguments> testUpdate() throws IOException {
         Stream<Arguments> args = getJSONFilesAsStreamOfArgs(Path.of("src/test/resources/json/update"));
 
         return args.map(arg -> {
@@ -104,9 +104,9 @@ class FirestoreRepositoryTest {
 
     @ParameterizedTest
     @MethodSource
-    void testConvertObject(LinkedHashMap<String, Object> object, Class<?> type) throws Exception {
+    void testConvertGenericObjectToClassInstance(LinkedHashMap<String, Object> object, Class<?> type) throws Exception {
 
-        var convertedObject = convertObject(object.get("body"), type);
+        var convertedObject = convertGenericObjectToClassInstance(object.get("body"), type);
 
         print("type: " + type.getSimpleName());
 
@@ -131,7 +131,7 @@ class FirestoreRepositoryTest {
         }
     }
 
-    static Stream<Arguments> testConvertObject() throws IOException {
+    static Stream<Arguments> testConvertGenericObjectToClassInstance() throws IOException {
         return getJSONFilesAsStreamOfArgs(Path.of("src/test/resources/json/insert"));
     }
 

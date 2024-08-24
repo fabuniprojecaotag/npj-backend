@@ -10,9 +10,8 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_
 @Service
 public class AtendimentoService {
 
-    public Atendimento insert(Atendimento data) {
+    public Atendimento insert(Atendimento data) throws Exception {
         data = (Atendimento) defineId(data, ATENDIMENTOS_COLLECTION, "ATE");
-        FirestoreRepository.insert(ATENDIMENTOS_COLLECTION, data.getId(), data);
-        return data;
+        return (Atendimento) FirestoreRepository.insert(ATENDIMENTOS_COLLECTION, data);
     }
 }

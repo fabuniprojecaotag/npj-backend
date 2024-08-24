@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.USUARIOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.filterValidKeys;
 
 @Service
 public class UsuarioService implements UserDetailsService {
@@ -53,7 +52,7 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario findById(String id) throws Exception {
-        return (Usuario) FirestoreRepository.getDocumentById(USUARIOS_COLLECTION, id);
+        return (Usuario) FirestoreRepository.findById(USUARIOS_COLLECTION, id);
     }
 
     public Usuario findMe() throws Exception {
@@ -70,44 +69,36 @@ public class UsuarioService implements UserDetailsService {
         checkIfExists(data, id);
         encryptPassword(data);
 
-        FirestoreRepository.insert(USUARIOS_COLLECTION, id, data);
+        FirestoreRepository.insert(USUARIOS_COLLECTION, data);
         return data;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
         try {
-            return (UserDetails) FirestoreRepository.getDocumentById(USUARIOS_COLLECTION, username);
+            return (UserDetails) FirestoreRepository.findById(USUARIOS_COLLECTION, username);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public void update(String id, Map<String, Object> data, String clazz) {
-        var validClazz = switch(clazz) {
-            case "Usuario" -> Usuario.class;
-            case "Estagiario" -> Estagiario.class;
-            default -> throw new IllegalStateException("Unexpected value: " + clazz);
-        };
-
-        var filteredData = filterValidKeys(data, validClazz);
-
         String senhaKey = "senha";
-        if (filteredData.containsKey(senhaKey)) {
-            var rawPassword = (String) filteredData.get(senhaKey);
+        if (data.containsKey(senhaKey)) {
+            var rawPassword = (String) data.get(senhaKey);
             var encryptedPassword = encryptPassword(rawPassword);
-
-            // Dados em mapas Java são imutáveis; logo, uma alternativa é criar um novo map de pares chave-valor
             Map<String, Object> newData = new HashMap<>();
-            for (var entry : filteredData.entrySet()) {
+
+            for (var entry : data.entrySet()) {
                 if (entry.getKey() != senhaKey) newData.put(entry.getKey(), entry.getValue());
             }
+
             newData.put(senhaKey, encryptedPassword);
 
             // Salva os dados recebidos e com a senha criptografada
-            FirestoreRepository.update(USUARIOS_COLLECTION, id, newData);
+            FirestoreRepository.update(USUARIOS_COLLECTION, newData, id, clazz);
         } else {
-            FirestoreRepository.update(USUARIOS_COLLECTION, id, filteredData);
+            FirestoreRepository.update(USUARIOS_COLLECTION, data, id, clazz);
         }
     }
 }

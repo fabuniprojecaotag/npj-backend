@@ -20,7 +20,7 @@ public class AssistidoController {
             @RequestParam(required = false) String startAfter,
             @RequestParam(defaultValue = "10") int pageSize) throws Exception {
         Filter queryFilter = getFilter("envolvidos.assistido.id", "EQUAL", id);
-        var docs = FirestoreRepository.getDocuments(ATENDIMENTOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
+        var docs = FirestoreRepository.findAll(ATENDIMENTOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
         return ResponseEntity.ok(docs);
     }
 
@@ -30,7 +30,7 @@ public class AssistidoController {
             @RequestParam(required = false) String startAfter,
             @RequestParam(defaultValue = "10") int pageSize) throws Exception {
         Filter queryFilter = getFilter("assistidoId", "EQUAL", id);
-        var docs = FirestoreRepository.getDocuments(PROCESSOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
+        var docs = FirestoreRepository.findAll(PROCESSOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
         return ResponseEntity.ok(docs);
     }
 }

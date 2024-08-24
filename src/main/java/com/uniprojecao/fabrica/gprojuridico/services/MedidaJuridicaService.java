@@ -10,9 +10,8 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.MEDIDAS_JURID
 @Service
 public class MedidaJuridicaService {
 
-    public MedidaJuridica insert(MedidaJuridica model) {
-        model = (MedidaJuridica) defineId(model, MEDIDAS_JURIDICAS_COLLECTION, "MEDJUR");
-        FirestoreRepository.insert(MEDIDAS_JURIDICAS_COLLECTION, model.getId(), model);
-        return model;
+    public MedidaJuridica insert(MedidaJuridica data) throws Exception {
+        data = (MedidaJuridica) defineId(data, MEDIDAS_JURIDICAS_COLLECTION, "MEDJUR");
+        return (MedidaJuridica) FirestoreRepository.insert(MEDIDAS_JURIDICAS_COLLECTION, data);
     }
 }
