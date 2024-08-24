@@ -4,16 +4,7 @@
     "@type": "Trabalhista",
     "status": "Processo ativo",
     "area": "Trabalhista",
-    "historico": [
-      {
-        "titulo": "Elaborada a petição inicial",
-        "criadoPor": {
-          "email": "leticia.alves@projecao.br",
-          "nome": "Letícia Alves Martins",
-          "role": "PROFESSOR"
-        }
-      }
-    ],
+    "historico": "Elaborada a petição inicial",
     "envolvidos": {
       "secretaria": {
         "id": "flavia.gomes@projecao.br",

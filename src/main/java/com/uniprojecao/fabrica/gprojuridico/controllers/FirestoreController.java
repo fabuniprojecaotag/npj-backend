@@ -58,7 +58,12 @@ public class FirestoreController {
     public ResponseEntity<?> update(
             @PathVariable String collectionName,
             @RequestBody UpdateBodyDTO payload) {
-        FirestoreRepository.updateDocument(collectionName, payload);
+        FirestoreRepository.updateDocument(
+                collectionName,
+                (Map<String, Object>) payload.body(),
+                payload.id(),
+                payload.classType()
+        );
         return ResponseEntity.ok().build();
     }
 }

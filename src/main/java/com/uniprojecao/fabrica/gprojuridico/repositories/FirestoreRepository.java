@@ -372,31 +372,27 @@ public class FirestoreRepository {
         }
     }
 
-    public static void updateDocument(String collectionName, UpdateBodyDTO payload) {
-        var body = (Map<String, Object>) payload.body();
-        var classType = payload.classType();
-        var id = payload.id();
-
+    public static void updateDocument(String collectionName, Map<String, Object> data, String recordId, String classType) {
         Class<?> clazz;
 
         switch (collectionName) {
             case ASSISTIDOS_COLLECTION:
                 clazz = identifyChildClass(Assistido.class.getSimpleName(), classType);
-                FirestoreRepository.update(ASSISTIDOS_COLLECTION, id, filterValidKeys(body, clazz));
+                FirestoreRepository.update(ASSISTIDOS_COLLECTION, recordId, filterValidKeys(data, clazz));
                 break;
             case ATENDIMENTOS_COLLECTION:
                 clazz = identifyChildClass(Atendimento.class.getSimpleName(), classType);
-                FirestoreRepository.update(ATENDIMENTOS_COLLECTION, id, filterValidKeys(body, clazz));
+                FirestoreRepository.update(ATENDIMENTOS_COLLECTION, recordId, filterValidKeys(data, clazz));
                 break;
             case MEDIDAS_JURIDICAS_COLLECTION:
-                FirestoreRepository.update(MEDIDAS_JURIDICAS_COLLECTION, id, filterValidKeys(body, MedidaJuridica.class));
+                FirestoreRepository.update(MEDIDAS_JURIDICAS_COLLECTION, recordId, filterValidKeys(data, MedidaJuridica.class));
                 break;
             case PROCESSOS_COLLECTION:
-                FirestoreRepository.update(PROCESSOS_COLLECTION, id, filterValidKeys(body, Processo.class));
+                FirestoreRepository.update(PROCESSOS_COLLECTION, recordId, filterValidKeys(data, Processo.class));
                 break;
             case USUARIOS_COLLECTION:
                 identifyChildClass(Usuario.class.getSimpleName(), classType);
-                new UsuarioService().update(id, body, classType);
+                new UsuarioService().update(recordId, data, classType);
                 break;
             default:
                 throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
