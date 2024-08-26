@@ -1,14 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.google.cloud.firestore.Filter;
-import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepository;
+import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COLLECTION;
 
 @RestController
 @RequestMapping("/api/assistidos")
@@ -18,9 +19,11 @@ public class AssistidoController {
     public ResponseEntity<Map<String, Object>> findAllAtendimentos(
             @PathVariable String id,
             @RequestParam(required = false) String startAfter,
-            @RequestParam(defaultValue = "10") int pageSize) throws Exception {
+            @RequestParam(defaultValue = "10") int pageSize)
+            throws Exception {
+
         Filter queryFilter = getFilter("envolvidos.assistido.id", "EQUAL", id);
-        var docs = FirestoreRepository.findAll(ATENDIMENTOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
+        var docs = new FirestoreRepositoryImpl(ATENDIMENTOS_COLLECTION).findAll(startAfter, pageSize, queryFilter, "forAssistido");
         return ResponseEntity.ok(docs);
     }
 
@@ -28,9 +31,11 @@ public class AssistidoController {
     public ResponseEntity<Map<String, Object>> findAllProcessos(
             @PathVariable String id,
             @RequestParam(required = false) String startAfter,
-            @RequestParam(defaultValue = "10") int pageSize) throws Exception {
+            @RequestParam(defaultValue = "10") int pageSize)
+            throws Exception {
+
         Filter queryFilter = getFilter("assistidoId", "EQUAL", id);
-        var docs = FirestoreRepository.findAll(PROCESSOS_COLLECTION, startAfter, pageSize, queryFilter, "forAssistido");
+        var docs = new FirestoreRepositoryImpl(PROCESSOS_COLLECTION).findAll(startAfter, pageSize, queryFilter, "forAssistido");
         return ResponseEntity.ok(docs);
     }
 }

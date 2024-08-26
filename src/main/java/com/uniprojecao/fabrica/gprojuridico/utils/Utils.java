@@ -8,6 +8,8 @@ import com.uniprojecao.fabrica.gprojuridico.models.atendimento.FichaCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.FichaTrabalhista;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
+import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidCollectionNameException;
+import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidReturnTypeException;
 import jakarta.validation.*;
 
 import java.lang.reflect.Field;
@@ -269,7 +271,7 @@ public class Utils {
         }
     }
 
-    public static Map<String, Object> processNestedKeysIntoOne(Map<String, Object> inputMap) {
+    private static Map<String, Object> processNestedKeysIntoOne(Map<String, Object> inputMap) {
         Map<String, Object> outputMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
             processMapEntry(entry.getKey(), entry.getValue(), outputMap, "");
@@ -290,31 +292,48 @@ public class Utils {
         }
     }
 
+    public static Map<String, Object> getProcessedAndValidDataToInsertAsMap(Map<String, Object> data, Class<?> clazz) {
+        Map<String, Object> filteredData = filterValidKeys(data, clazz);
+        Map<String, Object> processedData = processNestedKeysIntoOne(filteredData);
+        return processedData;
+    }
+
     public static String[] getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {
+        boolean isReturnTypeNull = returnType == null;
+        boolean isReturnTypeEqualsToMin = false;
+        boolean isReturnTypeEqualsToAutoComplete = false;
+        boolean isReturnTypeEqualsToForAssistido = false;
+
+        if (!isReturnTypeNull) {
+            isReturnTypeEqualsToMin = returnType.equals("min");
+            isReturnTypeEqualsToAutoComplete = returnType.equals("autoComplete");
+            isReturnTypeEqualsToForAssistido = returnType.equals("forAssistido");
+        }
+
         return switch (collection) {
             case ASSISTIDOS_COLLECTION -> {
-                if (returnType == "min") yield new String[]{"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
-                if (returnType == "autoComplete") yield new String[]{"nome"};
-                throw new RuntimeException("returnType invalid. Checks if the returnType is correct.");
+                if (isReturnTypeEqualsToMin) yield new String[]{"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
+                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"nome"};
+                throw new InvalidReturnTypeException(returnType);
             }
             case ATENDIMENTOS_COLLECTION -> {
-                if (returnType == "min") yield new String[]{"area", "status", "envolvidos.assistido"};
-                if (returnType == "autoComplete") yield new String[]{"id"};
-                if (returnType == "forAssistido") yield new String[]{"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
-                throw new RuntimeException("returnType invalid. Checks if the returnType is correct.");
+                if (isReturnTypeEqualsToMin) yield new String[]{"area", "status", "envolvidos.assistido"};
+                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"id"};
+                if (isReturnTypeEqualsToForAssistido) yield new String[]{"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
+                throw new InvalidReturnTypeException(returnType);
             }
             case MEDIDAS_JURIDICAS_COLLECTION -> new String[]{"area", "descricao"};
             case PROCESSOS_COLLECTION -> {
-                if (returnType == "forAssistido") yield new String[]{"vara", "status"};
+                if (isReturnTypeEqualsToForAssistido) yield new String[]{"vara", "status"};
                 yield new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
             }
             case USUARIOS_COLLECTION -> {
-                if (returnType == "min") yield new String[]{"nome", "email", "role", "status", "matricula", "semestre"};
-                if (returnType == "autoComplete") yield new String[]{"nome", "role"};
-                throw new RuntimeException("returnType invalid. Checks if the returnType is correct.");
+                if (isReturnTypeEqualsToMin) yield new String[]{"nome", "email", "role", "status", "matricula", "semestre"};
+                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"nome", "role"};
+                throw new InvalidReturnTypeException(returnType);
             }
 
-            default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
+            default -> throw new InvalidCollectionNameException();
         };
     }
 }

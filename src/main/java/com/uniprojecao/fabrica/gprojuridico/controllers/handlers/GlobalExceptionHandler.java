@@ -1,6 +1,5 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers.handlers;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.uniprojecao.fabrica.gprojuridico.dto.error.ErrorResponseDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
@@ -13,6 +12,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(InvalidCollectionNameException.class)
+    public ResponseEntity<?> handleInvalidCollectionNameException(InvalidCollectionNameException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidReturnTypeException.class)
+    public ResponseEntity<?> handleInvalidReturnTypeException(InvalidReturnTypeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 
     @ExceptionHandler(InstantiationException.class)
     public ResponseEntity<ErrorResponseDTO> handleInstantiationException(InstantiationException e) {
@@ -40,15 +49,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleReflectionOperationException(ReflectionOperationException e) {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorResponseDTO error = new ErrorResponseDTO(status.value(), e.getMessage());
-
-        return ResponseEntity.status(status).body(error);
-    }
-
-    @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<ErrorResponseDTO> tokenExpiredException(TokenExpiredException e) {
-
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
         ErrorResponseDTO error = new ErrorResponseDTO(status.value(), e.getMessage());
 
         return ResponseEntity.status(status).body(error);
