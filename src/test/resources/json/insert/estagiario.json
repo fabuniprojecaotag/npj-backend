@@ -1,0 +1,16 @@
+{
+  "@type": "Estagiario",
+  "email": "202101333@projecao.edu.br",
+  "nome": "Carlos Eduardo",
+  "cpf": "345.562.700-60",
+  "unidadeInstitucional": "Taguatinga",
+  "senha": "carlos-eduardo",
+  "status": true,
+  "role": "ESTAGIARIO",
+  "matricula": "202101333",
+  "semestre": "8",
+  "supervisor": {
+    "id": "marcos.silva",
+    "nome": "Marcos Silva"
+  }
+}

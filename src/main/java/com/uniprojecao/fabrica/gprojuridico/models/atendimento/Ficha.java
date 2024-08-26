@@ -2,7 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.uniprojecao.fabrica.gprojuridico.models.Testemunha;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -3,7 +3,7 @@
     <module name="gprojuridico" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.uniprojecao.fabrica.gprojuridico.services.*" />
+        <option name="PATTERN" value="com.uniprojecao.fabrica.gprojuridico.repositories.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

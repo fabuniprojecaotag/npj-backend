@@ -44,16 +44,16 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**", "**/**").permitAll() // pre-flight
 
-                        .requestMatchers(POST, "/login").permitAll()
+                        .requestMatchers(POST, "api/auth").permitAll()
 
-                        .requestMatchers(POST, "/usuarios").hasRole(secretariaRole)
-                        .requestMatchers(POST, "/processos").hasRole(professorRole)
-                        .requestMatchers(POST, "/medidas-juridicas/demo-data").hasRole(coordenadorRole)
+                        .requestMatchers(POST, "api/usuarios").hasRole(secretariaRole)
+                        .requestMatchers(POST, "api/processos").hasRole(professorRole)
+                        .requestMatchers(POST, "api/medidas juridicas").hasRole(coordenadorRole)
 
-                        .requestMatchers(PUT, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**", "/medidas-juridicas/**").hasRole(secretariaRole)
+                        .requestMatchers(PUT, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(secretariaRole)
 
-                        .requestMatchers(DELETE, "/usuarios", "/assistidos", "/atendimentos", "/processos", "/medidas-juridicas").hasRole(coordenadorRole)
-                        .requestMatchers(DELETE, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**", "/medidas-juridicas/**").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "api/usuarios", "api/assistidos", "api/atendimentos", "api/processos", "api/medidas juridicas").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(coordenadorRole)
 
                         .anyRequest().authenticated()
                 )

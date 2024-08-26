@@ -1,11 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
-import com.uniprojecao.fabrica.gprojuridico.models.EntradaHistorico;
-import com.uniprojecao.fabrica.gprojuridico.models.Envolvido;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -18,7 +15,7 @@ public class AtendimentoTrabalhista extends Atendimento {
             String status,
             String area,
             String instante,
-            List<EntradaHistorico> historico,
+            String historico,
             Map<String, Envolvido> envolvidos,
             FichaTrabalhista ficha
     ) {

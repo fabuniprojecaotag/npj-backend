@@ -1,0 +1,105 @@
+{
+  "@type": "Trabalhista",
+  "status": "Processo ativo",
+  "area": "Trabalhista",
+  "historico": "Elaborada a petição inicial",
+  "envolvidos": {
+    "secretaria": {
+      "id": "flavia.gomes@projecao.br",
+      "nome": "Flávia Gomes"
+    },
+    "professor": {
+      "id": "alberto.felisola@projecao.br",
+      "nome": "Alberto Felisola"
+    },
+    "estagiario": {
+      "id": "202101390@projecao.edu.br",
+      "nome": "Hugo Santos"
+    },
+    "assistido": {
+      "id": "923.923.321-23",
+      "nome": "Marcelo Avantes"
+    }
+  },
+  "ficha": {
+    "@type": "Trabalhista",
+    "dadosSensiveis": false,
+    "testemunhas": [
+      {
+        "nome": "José Silva Pereira Santos",
+        "qualificacao": "Professor",
+        "endereco": {
+          "cep": "70040-010",
+          "logradouro": "SBN Quadra 1, Asa Norte - DF"
+        }
+      },
+      {
+        "nome": "Joana Alencar Bezerra Freitas",
+        "qualificacao": "Nutricionista",
+        "endereco": {
+          "cep": "70040-010",
+          "logradouro": "SBN Quadra 1, Asa Norte - DF"
+        }
+      },
+      {
+        "nome": "Sérgio Moura Pinheiro",
+        "qualificacao": "Engenheiro Civil",
+        "endereco": {
+          "cep": "70040-010",
+          "logradouro": "SBN Quadra 1, Asa Norte - DF"
+        }
+      }
+    ],
+    "reclamado": {
+      "nome": "Breno Alves Ferreira",
+      "tipoPessoa": "Fisica",
+      "numCadastro": "109.284.749-21"
+    },
+    "documentosDepositadosNpj": {
+      "procuracao": true,
+      "declaracaoPobreza": true,
+      "ctps": true,
+      "identidade": true,
+      "cpf": true,
+      "pis": true,
+      "contrachequeUltimos3Meses": true,
+      "extratoAnaliticoContaFgts": true,
+      "trct": true,
+      "comprovanteRecAntecip13": true,
+      "acordoColetivoTrabalho": true,
+      "outrosDocumentos": ""
+    },
+    "relacaoEmpregaticia": {
+      "dataAdmissao": "",
+      "dataSaida": "",
+      "funcaoExercida": "",
+      "valorSalarioCtps": 4000,
+      "salarioAnotadoCtps": true,
+      "valorUltimaRemuneracao": 4000,
+      "ctpsAssinadaCerto": false,
+      "dispensa": "",
+      "jornadaTrabalho": "",
+      "tempoAlmoco": "",
+      "faziaHorasExtras": false,
+      "horarioHorasExtras": "",
+      "trabalhavaDomingosFeriados": "",
+      "recebiaGratificacoes": true,
+      "cumpriuAvisoPrevio": true,
+      "temFeriasVencidasGozar": true,
+      "recebeu13SalarioAnoAnterior": true,
+      "fgtsDepositado": true,
+      "recebeuGuiasSaqueFgts": false,
+      "recebeuFormSeguroDesemprego": false,
+      "inssRecolhido": false,
+      "pagaAlgumaVerba": "",
+      "saldoSalario": 7000,
+      "avisoPrevioIndenizado": "",
+      "_13SalarioProporcional": "",
+      "feriasVencidas": "",
+      "feriasProporcionais": "",
+      "umTercoConstitucionalFerias": 2400,
+      "comissoes": "",
+      "outrasInformacoes": ""
+    }
+  }
+}
