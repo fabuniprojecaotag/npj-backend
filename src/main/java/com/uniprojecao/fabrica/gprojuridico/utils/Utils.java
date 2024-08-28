@@ -322,7 +322,7 @@ public class Utils {
                 if (isReturnTypeEqualsToForAssistido) yield new String[]{"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
                 throw new InvalidReturnTypeException(returnType);
             }
-            case MEDIDAS_JURIDICAS_COLLECTION -> new String[]{"area", "descricao"};
+            case MEDIDAS_JURIDICAS_COLLECTION -> new String[]{"area", "nome", "descricao"};
             case PROCESSOS_COLLECTION -> {
                 if (isReturnTypeEqualsToForAssistido) yield new String[]{"vara", "status"};
                 yield new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
