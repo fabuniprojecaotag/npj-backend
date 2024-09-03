@@ -91,21 +91,31 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
         }
 
         ApiFuture<QuerySnapshot> future = query.get();
+        int totalSize = collection.get().get().size();
 
-        List<Object> list = new ArrayList<>();
+        List<Object> docPage = new ArrayList<>();
 
         for (QueryDocumentSnapshot snapshot : future.get()) {
             var document = convertSnapshot(collectionName, snapshot, returnType);
-            list.add(document);
+            docPage.add(document);
         }
 
-        Object lastDoc = list.get(list.size() - 1);
+        Object firstDoc = "Not available";
+        Object lastDoc = "Not available";
+
+        if (docPage.size() != 0) {
+            firstDoc = docPage.get(0);
+            lastDoc = docPage.get(docPage.size() - 1);
+        }
+
         int collectionSize = future.get().size();
 
         return Map.of(
-                "list", list,
+                "list", docPage,
+                "firstDoc", firstDoc,
                 "lastDoc", lastDoc,
-                "count", collectionSize);
+                "pageSize", collectionSize,
+                "totalSize", totalSize);
     }
 
     @Override
