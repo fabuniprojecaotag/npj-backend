@@ -1,0 +1,10 @@
+{
+  "@type": "Usuario",
+  "email": "vinicius.almeida@projecao.br",
+  "nome": "Vinícius Almeida",
+  "cpf": "260.736.120-60",
+  "unidadeInstitucional": "Taguatinga",
+  "senha": "vinicius-professor",
+  "status": true,
+  "role": "PROFESSOR"
+}

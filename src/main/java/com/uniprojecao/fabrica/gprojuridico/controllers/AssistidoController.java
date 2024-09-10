@@ -1,74 +1,41 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.uniprojecao.fabrica.gprojuridico.dto.assistido.AssistidoDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoVinculadoAssistidoDTO;
-import com.uniprojecao.fabrica.gprojuridico.services.AssistidoService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.cloud.firestore.Filter;
+import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.createUri;
+import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COLLECTION;
 
 @RestController
-@RequestMapping("/assistidos")
+@RequestMapping("/api/assistidos")
 public class AssistidoController {
 
-    @Autowired
-    private AssistidoService service;
-
-    @PostMapping
-    public ResponseEntity<AssistidoDTO> insert(@RequestBody @Valid AssistidoDTO data) {
-        var result = service.insert(data);
-        var id = result.getCpf();
-        return ResponseEntity.created(createUri(id)).body(result);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<AssistidoMinDTO>> findAll(@RequestParam(defaultValue = "20") String limit,
-                                                @RequestParam(defaultValue = "") String field,
-                                                @RequestParam(defaultValue = "") String filter,
-                                                @RequestParam(defaultValue = "") String value) {
-        List<AssistidoMinDTO> list = service.findAll(limit, field, filter, value);
-        return ResponseEntity.ok(list);
-    }
-
     @GetMapping("/{id}/atendimentos")
-    public ResponseEntity<List<AtendimentoVinculadoAssistidoDTO>> findAllAtendimentos(@PathVariable String id,
-                                                                                      @RequestParam(defaultValue = "20")
-                                                                                String limit) {
-        List<AtendimentoVinculadoAssistidoDTO> list = service.findAllAtendimentos(id, limit);
-        return ResponseEntity.ok(list);
+    public ResponseEntity<Map<String, Object>> findAllAtendimentos(
+            @PathVariable String id,
+            @RequestParam(required = false) String startAfter,
+            @RequestParam(defaultValue = "10") int pageSize)
+            throws Exception {
+
+        Filter queryFilter = getFilter("envolvidos.assistido.id", "EQUAL", id);
+        var docs = new FirestoreRepositoryImpl(ATENDIMENTOS_COLLECTION).findAll(startAfter, pageSize, queryFilter, "forAssistido");
+        return ResponseEntity.ok(docs);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteAll(@RequestParam(defaultValue = "20") String limit,
-                                       @RequestParam(defaultValue = "") String field,
-                                       @RequestParam(defaultValue = "") String filter,
-                                       @RequestParam(defaultValue = "") String value) {
-        service.deleteAll(limit, field, filter, value);
-        return ResponseEntity.noContent().build();
-    }
+    @GetMapping("/{id}/processos")
+    public ResponseEntity<Map<String, Object>> findAllProcessos(
+            @PathVariable String id,
+            @RequestParam(required = false) String startAfter,
+            @RequestParam(defaultValue = "10") int pageSize)
+            throws Exception {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AssistidoDTO> findById(@PathVariable String id) {
-        AssistidoDTO result = service.findById(id);
-        return ResponseEntity.ok(result);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Map<String, Object> data) {
-        service.update(id, data);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        Filter queryFilter = getFilter("assistidoId", "EQUAL", id);
+        var docs = new FirestoreRepositoryImpl(PROCESSOS_COLLECTION).findAll(startAfter, pageSize, queryFilter, "forAssistido");
+        return ResponseEntity.ok(docs);
     }
 }

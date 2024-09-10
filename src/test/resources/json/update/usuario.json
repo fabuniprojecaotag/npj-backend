@@ -1,0 +1,9 @@
+{
+  "collectionName": "usuarios",
+  "body": {
+    "cpf": "599.500.511-54",
+    "semestre": "9"
+  },
+  "id": "202101333",
+  "classType": "Estagiario"
+}

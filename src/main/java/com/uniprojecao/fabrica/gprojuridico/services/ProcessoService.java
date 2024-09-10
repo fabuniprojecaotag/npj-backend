@@ -1,42 +1,23 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
-import com.uniprojecao.fabrica.gprojuridico.dto.ProcessoDTO;
-import com.uniprojecao.fabrica.gprojuridico.repository.BaseRepository;
-import com.uniprojecao.fabrica.gprojuridico.repository.ProcessoRepository;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Constants.PROCESSOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toDto;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.ModelMapper.toEntity;
-import static com.uniprojecao.fabrica.gprojuridico.services.utils.Utils.initFilter;
-import static java.lang.Integer.parseInt;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COLLECTION;
 
 @Service
-public class ProcessoService extends BaseService {
+public class ProcessoService {
 
-    ProcessoRepository repository = new ProcessoRepository();
-    private static final String collectionName = PROCESSOS_COLLECTION;
+    private final FirestoreRepositoryImpl firestoreRepository = new FirestoreRepositoryImpl(PROCESSOS_COLLECTION);
 
-    public ProcessoService() {
-        super(collectionName);
+    public Processo insert(Processo processo) throws Exception {
+        return (Processo) firestoreRepository.insert(processo.getNumero(), processo);
     }
 
-    public ProcessoDTO insert(ProcessoDTO dto) {
-        BaseRepository.save(collectionName, dto.getNumero(), toEntity(dto));
-        return dto;
-    }
-
-    public List<ProcessoDTO> findAll(String limit, String field, String filter, String value) {
-        return repository.findAll(parseInt(limit), initFilter(field, filter, value))
-                .stream()
-                .map(processo -> toDto(processo))
-                .toList();
-    }
-
-    public ProcessoDTO findByNumero(String numero) {
-        var processo = repository.findByNumero(numero);
-        return (processo != null) ? toDto(processo) : null;
+    public void update(String recordId, Map<String, Object> data) {
+        firestoreRepository.update(recordId, data, Processo.class);
     }
 }

@@ -42,17 +42,18 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // pre-flight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**", "**/**").permitAll() // pre-flight
 
-                        .requestMatchers(POST, "/login").permitAll()
+                        .requestMatchers(POST, "api/auth").permitAll()
 
-                        .requestMatchers(POST, "/usuarios").hasRole(secretariaRole)
-                        .requestMatchers(POST, "/processos").hasRole(professorRole)
+                        .requestMatchers(POST, "api/usuarios").hasRole(secretariaRole)
+                        .requestMatchers(POST, "api/processos").hasRole(professorRole)
+                        .requestMatchers(POST, "api/medidas juridicas").hasRole(coordenadorRole)
 
-                        .requestMatchers(PUT, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(secretariaRole)
+                        .requestMatchers(PUT, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(secretariaRole)
 
-                        .requestMatchers(DELETE, "/usuarios", "/assistidos", "/atendimentos", "/processos").hasRole(coordenadorRole)
-                        .requestMatchers(DELETE, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "api/usuarios", "api/assistidos", "api/atendimentos", "api/processos", "api/medidas juridicas").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(coordenadorRole)
 
                         .anyRequest().authenticated()
                 )

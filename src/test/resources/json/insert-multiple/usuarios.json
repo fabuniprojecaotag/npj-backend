@@ -1,0 +1,164 @@
+{
+  "list": [
+    {
+      "@type": "Usuario",
+      "email": "angela@projecao.br",
+      "nome": "Angela",
+      "cpf": "100.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "ana.livia@projecao.br",
+      "nome": "Ana Lívia",
+      "cpf": "110.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "bianca.ribeiro@projecao.br",
+      "nome": "Bianca Ribeiro",
+      "cpf": "120.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "caio.rodrigues@projecao.br",
+      "nome": "Caio Rodrigues",
+      "cpf": "130.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "vinicius.almeida@projecao.br",
+      "nome": "Vinícius Almeida",
+      "cpf": "140.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "rafael@projecao.br",
+      "nome": "Rafael",
+      "cpf": "150.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "ivonete.sousa@projecao.br",
+      "nome": "Ivonete Sousa",
+      "cpf": "160.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "jose.pereira@projecao.br",
+      "nome": "José Pereira",
+      "cpf": "170.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "washigton@projecao.br",
+      "nome": "Washigton",
+      "cpf": "190.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "zulu.tyco@projecao.br",
+      "nome": "Zulu Tyco",
+      "cpf": "200.100.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "professor",
+      "status": true,
+      "role": "PROFESSOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "alex.sandro@projecao.br",
+      "nome": "Alex Sandro",
+      "cpf": "330.300.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "coordenador",
+      "status": true,
+      "role": "COORDENADOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "jennifer@projecao.br",
+      "nome": "Jennifer",
+      "cpf": "340.300.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "coordenador",
+      "status": true,
+      "role": "COORDENADOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "karen.silva@projecao.br",
+      "nome": "Karen Silva",
+      "cpf": "340.300.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "coordenador",
+      "status": true,
+      "role": "COORDENADOR"
+    },
+    {
+      "@type": "Usuario",
+      "email": "allan.sa@projecao.br",
+      "nome": "Allan Sá",
+      "cpf": "350.300.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "secretaria",
+      "status": true,
+      "role": "secretaria"
+    },
+    {
+      "@type": "Usuario",
+      "email": "helio@projecao.br",
+      "nome": "Hélio",
+      "cpf": "360.300.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "secretaria",
+      "status": true,
+      "role": "secretaria"
+    },
+    {
+      "@type": "Usuario",
+      "email": "joyce.silva@projecao.br",
+      "nome": "Joyce Silva",
+      "cpf": "370.300.100-10",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "secretaria",
+      "status": true,
+      "role": "secretaria"
+    }
+  ]
+}

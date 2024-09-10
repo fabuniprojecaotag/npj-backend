@@ -1,0 +1,164 @@
+{
+  "list": [
+    {
+      "@type": "Estagiario",
+      "email": "202101001@projecao.edu.br",
+      "nome": "Carlos Eduardo",
+      "cpf": "500.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101001",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101002@projecao.edu.br",
+      "nome": "Adriel Santos",
+      "cpf": "510.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101002",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101003@projecao.edu.br",
+      "nome": "Bianca Ferreira",
+      "cpf": "520.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101003",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101004@projecao.edu.br",
+      "nome": "Felipe Santos Cardoso",
+      "cpf": "530.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101004",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101005@projecao.edu.br",
+      "nome": "Bia Victor",
+      "cpf": "540.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101005",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101006@projecao.edu.br",
+      "nome": "Daniel Santos",
+      "cpf": "550.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101006",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101007@projecao.edu.br",
+      "nome": "Túlio",
+      "cpf": "560.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101007",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101008@projecao.edu.br",
+      "nome": "João Noadia",
+      "cpf": "570.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101008",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101009@projecao.edu.br",
+      "nome": "Maria Célia",
+      "cpf": "580.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101009",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    },
+    {
+      "@type": "Estagiario",
+      "email": "202101010@projecao.edu.br",
+      "nome": "Carlos Eduardo",
+      "cpf": "590.500.500-60",
+      "unidadeInstitucional": "Taguatinga",
+      "senha": "estagiario",
+      "status": true,
+      "role": "ESTAGIARIO",
+      "matricula": "202101010",
+      "semestre": "8",
+      "supervisor": {
+        "id": "ana.livia",
+        "nome": "Ana Lívia"
+      }
+    }
+  ]
+}
