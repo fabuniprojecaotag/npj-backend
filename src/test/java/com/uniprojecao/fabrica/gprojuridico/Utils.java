@@ -18,6 +18,13 @@ public class Utils {
                 .getService();
     }
 
+    public static Firestore getProdFirestore() {
+        return FirestoreOptions.newBuilder()
+                .setProjectId("gprojuridico-dev")
+                .build()
+                .getService();
+    }
+
     public static void sleep(long time) {
         try {
             Thread.sleep(time);

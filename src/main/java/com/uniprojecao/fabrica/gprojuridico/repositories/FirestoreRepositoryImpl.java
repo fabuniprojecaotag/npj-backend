@@ -45,7 +45,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.*;
 @NoArgsConstructor
 public class FirestoreRepositoryImpl implements FirestoreRepository {
 
-    private static Firestore firestore;
+    public static Firestore firestore;
 
     @Value("${spring.cloud.gcp.project-id}")
     private String projectId;

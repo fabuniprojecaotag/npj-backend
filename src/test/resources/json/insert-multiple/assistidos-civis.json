@@ -1,0 +1,292 @@
+{
+  "list": [
+    {
+      "@type": "Civil",
+      "nome": "Franciele Barcelos Silveira",
+      "rg": "1.100.100",
+      "cpf": "884.513.731-78",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casada",
+      "profissao": "Atendente",
+      "telefone": "(61) 99833-2021",
+      "email": "franciele.barcelos@example.com",
+      "filiacao": {
+        "mae": "Marisa Freitas Branco Peixoto",
+        "pai": "Lucas Neves Vasgestian Bezerra"
+      },
+      "remuneracao": "R$ 3.000",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QR 109 Conjunto 5",
+          "bairro": "Samambaia Sul (Samambaia)",
+          "cep": "72301-306",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1979-02-19",
+      "dependentes": 4
+    },
+    {
+      "@type": "Civil",
+      "nome": "Gabrielly Luciana Flávia Santos",
+      "rg": "9.912.240",
+      "cpf": "095.983.911-91",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casada",
+      "profissao": "Professora",
+      "telefone": "(61) 99176-2229",
+      "email": "gabrielly.santos@example.com",
+      "filiacao": {
+        "mae": "Isabelle Daniela",
+        "pai": "Benjamin Oliver Santos"
+      },
+      "remuneracao": "R$ 4.000",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Residencial São Gabriel Rua 01",
+          "bairro": "São Gabriel (São Sebastião)",
+          "cep": "71693-251",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1971-09-05",
+      "dependentes": 2
+    },
+    {
+      "@type": "Civil",
+      "nome": "Bernardo Heitor Nunes",
+      "rg": "5.222.985",
+      "cpf": "846.613.091-89",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Solteiro",
+      "profissao": "Assistente administrativo",
+      "telefone": "(61) 98980-4632",
+      "email": "bernado.heitor@example.com",
+      "filiacao": {
+        "mae": "Nicole Lara Helena",
+        "pai": "Guilherme Felipe Nunes"
+      },
+      "remuneracao": "R$ 3.200",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QR 320 Conjunto 2",
+          "bairro": "Samambaia Sul (Samambaia)",
+          "numero": "970",
+          "cep": "72310-102",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1986-01-31",
+      "dependentes": 0
+    },
+    {
+      "@type": "Civil",
+      "nome": "Augusto Carlos Caleb Lima",
+      "rg": "0.890.417",
+      "cpf": "282.547.201-85",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Divorciado",
+      "profissao": "Eletricista",
+      "telefone": "(61) 99242-1671",
+      "email": "augusto.carlos@example.com",
+      "filiacao": {
+        "mae": "Tereza Lívia Stella",
+        "pai": "Benedito Mateus Yago Lima"
+      },
+      "remuneracao": "R$ 4.200",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QN 510",
+          "bairro": "Samambaia Sul (Samambaia)",
+          "numero": "265",
+          "cep": "72312-400",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1969-08-15",
+      "dependentes": 2
+    },
+    {
+      "@type": "Civil",
+      "nome": "Alícia Bruna Kamilly Moraes",
+      "rg": "6.744.523",
+      "cpf": "083.361.281-66",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Solteira",
+      "profissao": "Veterinária",
+      "telefone": "(61) 98447-2175",
+      "email": "alicia.bruna@example.com",
+      "filiacao": {
+        "mae": "Valentina Marlene",
+        "pai": "Giovanni Renan João Moraes"
+      },
+      "remuneracao": "R$ 4.100",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QR 609 Conjunto 4",
+          "bairro": "Samambaia Norte (Samambaia)",
+          "numero": "919",
+          "cep": "72331-404",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1963-09-03",
+      "dependentes": 1
+    },
+    {
+      "@type": "Civil",
+      "nome": "Olivia Rosângela Galvão",
+      "rg": "6.654.214",
+      "cpf": "502.097.131-60",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Viúva",
+      "profissao": "Enfermeira",
+      "telefone": "(61) 98692-6814",
+      "email": "olivia.rosangela@example.com",
+      "filiacao": {
+        "mae": "Allana Rita",
+        "pai": "Cauê Paulo Henry Galvão"
+      },
+      "remuneracao": "R$ 3.500",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra CRNW 708 Lote B",
+          "bairro": "Setor Noroeste",
+          "numero": "891",
+          "cep": "70688-470",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1981-06-02",
+      "dependentes": 3
+    },
+    {
+      "@type": "Civil",
+      "nome": "Bruno Ryan Kauê Oliveira",
+      "rg": "2.314.081",
+      "cpf": "627.940.201-02",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casado",
+      "profissao": "Dentista",
+      "telefone": "(61) 99797-9696",
+      "email": "bruno.ryan@example.com",
+      "filiacao": {
+        "mae": "Vera Larissa Aline",
+        "pai": "Yuri Enzo Oliveira"
+      },
+      "remuneracao": "R$ 4.500",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra CNH 4",
+          "bairro": "Taguatinga Norte (Taguatinga)",
+          "numero": "457",
+          "cep": "72130-545",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1982-07-01",
+      "dependentes": 4
+    },
+    {
+      "@type": "Civil",
+      "nome": "Davi Severino Ramos",
+      "rg": "5.204.971",
+      "cpf": "801.445.521-59",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Solteiro",
+      "profissao": "Programador",
+      "telefone": "(61) 98972-6886",
+      "email": "davi.severino@example.com",
+      "filiacao": {
+        "mae": "Nicole Mariane",
+        "pai": "Theo Bernardo Rodrigo Ramos"
+      },
+      "remuneracao": "R$ 3.800",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QI 11 Bloco A",
+          "bairro": "Guará I",
+          "numero": "198",
+          "cep": "71020-619",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "2000-01-16",
+      "dependentes": 0
+    },
+    {
+      "@type": "Civil",
+      "nome": "Priscila Débora Luzia Dias",
+      "rg": "0.387.469",
+      "cpf": "595.011.181-85",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casada",
+      "profissao": "Geóloga",
+      "telefone": "(61) 98710-1788",
+      "email": "priscila.debora@example.com",
+      "filiacao": {
+        "mae": "Antonella Flávia Louise",
+        "pai": "Martin Enrico Dias"
+      },
+      "remuneracao": "R$ 3.900",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QR 318 Conjunto G",
+          "bairro": "Santa Maria",
+          "numero": "821",
+          "cep": "72548-607",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1980-08-24",
+      "dependentes": 2
+    },
+    {
+      "@type": "Civil",
+      "nome": "Valentina Sabrina Figueiredo",
+      "rg": "4.095.671",
+      "cpf": "372.897.451-08",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Divorciada",
+      "profissao": "Psicóloga",
+      "telefone": "(61) 99516-7082",
+      "email": "valentina.sabrina@example.com",
+      "filiacao": {
+        "mae": "Andreia Betina",
+        "pai": "Manoel Ryan Figueiredo"
+      },
+      "remuneracao": "R$ 3.500",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra SQN 314 Bloco L",
+          "bairro": "Asa Norte",
+          "numero": "291",
+          "cep": "70767-120",
+          "cidade": "Brasília"
+        }
+      },
+      "naturalidade": "Brasiliense",
+      "dataNascimento": "1986-08-07",
+      "dependentes": 2
+    }
+  ]
+}

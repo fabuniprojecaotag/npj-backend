@@ -1,0 +1,266 @@
+{
+  "list": [
+    {
+      "@type": "Trabalhista",
+      "nome": "Rebeca Alice Amanda Baptista",
+      "rg": "7.428.953",
+      "cpf": "334.607.961-97",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casada",
+      "profissao": "Socióloga",
+      "telefone": "(61) 98806-7445",
+      "email": "rebeca.alice@example.com",
+      "filiacao": {
+        "mae": "Emilly Luna Isabel",
+        "pai": "Diego Renato Martin Baptista"
+      },
+      "remuneracao": "R$ ",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QNO 20",
+          "bairro": "Ceilândia Norte (Ceilândia)",
+          "numero": "336",
+          "cep": "72261-200",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "675.47946.56-3",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Lívia Luiza Helena Nascimento",
+      "rg": "3.053.209",
+      "cpf": "685.376.781-04",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Solteira",
+      "profissao": "Professor",
+      "telefone": "(61) 98327-4703",
+      "email": "livia.luiza@example.com",
+      "filiacao": {
+        "mae": "Nicole Vera Fátima",
+        "pai": "Levi Noah Nascimento"
+      },
+      "remuneracao": "R$ 3.800",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QN 27 Conjunto 7",
+          "bairro": "Riacho Fundo II",
+          "numero": "459",
+          "cep": "71880-647",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "870.21637.81-0",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Vitória Lavínia Mariah Vieira",
+      "rg": "0.554.066",
+      "cpf": "441.047.061-24",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Viúva",
+      "profissao": "Jornalista",
+      "telefone": "(61) 98473-5950",
+      "email": "vitoria.lavinia@example.com",
+      "filiacao": {
+        "mae": "Josefa Melissa",
+        "pai": "Rafael Juan Vieira"
+      },
+      "remuneracao": "R$ 3.100",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra Quadra 1 Área Especial 2",
+          "bairro": "Setor de Indústrias Bernardo Sayão (Núcleo Bandeirante)",
+          "numero": "249",
+          "cep": "71736-106",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "248.85424.21-0",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Daniel André Guilherme Carvalho",
+      "rg": "7.334.783",
+      "cpf": "576.032.841-71",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casado",
+      "profissao": "Analista financeiro",
+      "telefone": "(61) 98655-7969",
+      "email": "daniel.andre@example.com",
+      "filiacao": {
+        "mae": "Isabela Maria",
+        "pai": "Caleb Lorenzo Enzo Carvalho"
+      },
+      "remuneracao": "R$ 4.300",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Área AEN 14",
+          "bairro": "Setor Norte (Planaltina)",
+          "cep": "73340-140",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "642.21618.81-0",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Bryan Henry Baptista",
+      "rg": "6.114.912",
+      "cpf": "508.388.551-48",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casado",
+      "profissao": "Gerente administrativo",
+      "telefone": "(61) 98732-8188",
+      "email": "bryan.henry@example.com",
+      "filiacao": {
+        "mae": "Beatriz Heloisa",
+        "pai": "Noah Nathan Paulo Baptista"
+      },
+      "remuneracao": "R$ ",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QI 8 Bloco E",
+          "bairro": "Guará I",
+          "numero": "919",
+          "cep": "71010-055",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "667.95671.10-8",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Kaique Yuri Nunes",
+      "rg": "43.522.714-2",
+      "cpf": "812.715.961-13",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Divorciado",
+      "profissao": "Economista",
+      "telefone": "(61) 99256-6800",
+      "email": "kaique.yuri@example.com",
+      "filiacao": {
+        "mae": "Camila Sophia Mirella",
+        "pai": "Caleb Miguel Nunes"
+      },
+      "remuneracao": "R$ 4.200",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Rua 8 Chácara 179A",
+          "bairro": "Vila São José (Vicente Pires)",
+          "cep": "72003-375",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "291.48160.45-8",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Pietro Carlos Corte Real",
+      "rg": "49.772.562-9",
+      "cpf": "490.938.281-00",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "solteiro",
+      "profissao": "Publicitário",
+      "telefone": "(61) 99168-2372",
+      "email": "pietro.carlos@example.com",
+      "filiacao": {
+        "mae": "Alana Márcia",
+        "pai": "Oliver Rodrigo Sebastião Corte Real"
+      },
+      "remuneracao": "R$ 3.500",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QNN 15 Módulo F",
+          "bairro": "Ceilândia Norte (Ceilândia)",
+          "numero": "857",
+          "cep": "72225-156",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "571.30431.25-0",
+      "empregadoAtualmente": true
+    },
+    {
+      "@type": "Trabalhista",
+      "nome": "Rafaela Lorena da Mata",
+      "rg": "1.986.506",
+      "cpf": "968.807.651-14",
+      "nacionalidade": "Brasileira",
+      "escolaridade": "Superior",
+      "estadoCivil": "Casada",
+      "profissao": "Designer de interiores",
+      "telefone": "(61) 99405-5712",
+      "email": "rafaela.lorena@example.com",
+      "filiacao": {
+        "mae": "Milena Andrea Rayssa",
+        "pai": "Luan Cauã da Mata"
+      },
+      "remuneracao": "R$ 4.200",
+      "endereco": {
+        "residencial": {
+          "logradouro": "Quadra QE 30 Bloco A",
+          "bairro": "Guará II",
+          "numero": "983",
+          "cep": "71065-610",
+          "cidade": "Brasília"
+        }
+      },
+      "ctps": {
+        "numero": "0000002",
+        "serie": "003-0",
+        "uf": "DF"
+      },
+      "pis": "066.57718.22-9",
+      "empregadoAtualmente": true
+    }
+  ]
+}
