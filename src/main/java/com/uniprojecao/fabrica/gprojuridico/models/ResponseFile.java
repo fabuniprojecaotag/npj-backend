@@ -1,4 +1,4 @@
-package com.uniprojecao.fabrica.gprojuridico.domains;
+package com.uniprojecao.fabrica.gprojuridico.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
