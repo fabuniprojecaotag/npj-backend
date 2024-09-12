@@ -64,8 +64,12 @@ public class FileService {
             if (isFile) files.add(file);
         }
 
-        var lastFile = files.get(files.size() - 1);
+        Object lastFile = "";
         var pageSize = files.size();
+
+        if (files.size() != 0) {
+            lastFile = files.get(files.size() - 1);
+        }
 
         return Map.of(
                 "list", files,

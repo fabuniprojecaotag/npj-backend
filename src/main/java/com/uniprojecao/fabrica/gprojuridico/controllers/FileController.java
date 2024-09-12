@@ -56,7 +56,7 @@ public class FileController {
                                          @RequestParam String directory) {
         try {
             service.delete(fileName, directory);
-            return ResponseEntity.ok("File deleted successfully");
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Failed to delete file: " + e.getMessage());
         }
