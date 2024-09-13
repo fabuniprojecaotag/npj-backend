@@ -3,9 +3,11 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.*;
 import com.uniprojecao.fabrica.gprojuridico.models.ResponseFile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,15 @@ import java.util.Map;
 @Service
 public class FileService {
 
-    private final static String bucketName = "gprojuridico-dev.appspot.com";
+    @Value("${spring.profiles.active}")
+    private String profile;
+
+    private static String bucketName;
+
+    @PostConstruct
+    private void init() {
+        bucketName = profile == "prod" ? "gprojuridico.appspot.com": "gprojuridico-dev.appspot.com";
+    }
 
     public byte[] download(String fileName, String directory) {
         directory = checkDirectory(directory);
