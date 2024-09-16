@@ -2,12 +2,14 @@ package com.uniprojecao.fabrica.gprojuridico.dto.min;
 
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Envolvido;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class AtendimentoMinDTO {
     private String id;
     private String area;

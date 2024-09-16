@@ -3,13 +3,12 @@ package com.uniprojecao.fabrica.gprojuridico.models.assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
-
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
 public class AssistidoCivil extends Assistido {
     @NotBlank
     private String naturalidade;

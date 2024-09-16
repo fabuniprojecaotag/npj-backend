@@ -1,12 +1,14 @@
 package com.uniprojecao.fabrica.gprojuridico.dto.min;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Data
+@NoArgsConstructor
 public class AssistidoMinDTO {
     private String nome;
     private String email;
@@ -14,9 +16,9 @@ public class AssistidoMinDTO {
     private Quantidade quantidade;
     private String telefone;
 
-    @NoArgsConstructor
+    @Setter
     @AllArgsConstructor
-    @Data
+    @NoArgsConstructor
     public static class Quantidade {
         private Integer atendimentos;
         private Integer processos;

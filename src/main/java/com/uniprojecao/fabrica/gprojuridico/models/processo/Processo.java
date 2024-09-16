@@ -3,12 +3,13 @@ package com.uniprojecao.fabrica.gprojuridico.models.processo;
 import com.google.cloud.firestore.annotation.DocumentId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Processo {
     @DocumentId
     @NotBlank

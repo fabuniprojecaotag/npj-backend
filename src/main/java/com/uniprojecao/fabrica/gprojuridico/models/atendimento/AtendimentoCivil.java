@@ -1,12 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
 
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class AtendimentoCivil extends Atendimento {
     private FichaCivil ficha;
 

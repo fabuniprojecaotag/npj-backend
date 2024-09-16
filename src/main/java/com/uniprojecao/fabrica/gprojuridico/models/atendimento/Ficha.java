@@ -2,14 +2,15 @@ package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = FichaCivil.class, name = "Civil"),

@@ -2,12 +2,14 @@ package com.uniprojecao.fabrica.gprojuridico.models;
 
 import com.google.cloud.firestore.annotation.DocumentId;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
 public class MedidaJuridica {
     @DocumentId
     private String id;

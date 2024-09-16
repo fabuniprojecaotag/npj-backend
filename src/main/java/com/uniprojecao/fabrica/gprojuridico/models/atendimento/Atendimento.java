@@ -5,14 +5,16 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.uniprojecao.fabrica.gprojuridico.enums.AreaAtendimento;
 import com.uniprojecao.fabrica.gprojuridico.enums.StatusAtendimento;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AtendimentoCivil.class, name = "Civil"),

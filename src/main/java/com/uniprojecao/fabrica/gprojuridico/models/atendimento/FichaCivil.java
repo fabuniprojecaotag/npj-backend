@@ -1,12 +1,15 @@
 package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
-
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class FichaCivil extends Ficha {
     private ParteContraria parteContraria;
 

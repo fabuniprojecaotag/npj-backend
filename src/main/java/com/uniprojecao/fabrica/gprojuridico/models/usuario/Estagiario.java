@@ -1,13 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.models.usuario;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class Estagiario extends Usuario {
     @Pattern(regexp = "^[0-9]{9}$")
     private String matricula;

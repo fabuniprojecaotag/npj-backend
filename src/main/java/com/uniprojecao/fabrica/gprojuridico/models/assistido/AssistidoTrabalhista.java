@@ -1,16 +1,19 @@
 package com.uniprojecao.fabrica.gprojuridico.models.assistido;
 
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Ctps;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
+import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Ctps;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
-
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
 public class AssistidoTrabalhista extends Assistido {
     @NotNull
     private Ctps ctps;
