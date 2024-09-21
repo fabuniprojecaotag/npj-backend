@@ -1,16 +1,19 @@
 package com.uniprojecao.fabrica.gprojuridico.repositories;
 
 import com.google.cloud.firestore.Filter;
+import com.google.cloud.firestore.FirestoreException;
 
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface FirestoreRepository {
-    Object insert(String customId, Object data) throws Exception;
+    Object insert(String customId, Object data) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException;
 
-    Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws Exception;
+    Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException, InvalidPropertiesFormatException;
 
-    Object findById(String id) throws Exception;
+    Object findById(String id) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException, InvalidPropertiesFormatException;
 
     void update(String recordId, Map<String, Object> data, Class<?> clazz);
 

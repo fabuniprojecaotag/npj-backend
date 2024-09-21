@@ -21,6 +21,7 @@ import com.uniprojecao.fabrica.gprojuridico.models.autocomplete.UsuarioAutocompl
 import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -30,10 +31,8 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl.DocumentSnapshotService.convertSnapshot;
@@ -69,14 +68,13 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     }
 
     @Override
-    public Object insert(String customId, Object data) throws Exception {
+    public Object insert(String customId, Object data) throws ExecutionException, InterruptedException {
         firestore.collection(collectionName).document(customId).set(data).get();
         return data;
     }
 
     @Override
-    public Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType)
-            throws Exception {
+    public Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
 
         CollectionReference collection = firestore.collection(collectionName);
         String[] fieldNames = getSpecificFieldNamesToReturnClassInstance(collectionName, returnType);
@@ -103,7 +101,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
         Object firstDoc = "Not available";
         Object lastDoc = "Not available";
 
-        if (docPage.size() != 0) {
+        if (!docPage.isEmpty()) {
             firstDoc = docPage.get(0);
             lastDoc = docPage.get(docPage.size() - 1);
         }
@@ -119,14 +117,14 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     }
 
     @Override
-    public Object findById(String id) throws Exception {
+    public Object findById(String id) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
         DocumentReference document = firestore.collection(collectionName).document(id);
         DocumentSnapshot snapshot = document.get().get();
         if (!snapshot.exists()) return null;
         return convertSnapshot(collectionName, snapshot, null);
     }
 
-    public String findLastDocumentId() throws Exception {
+    public String findLastDocumentId() throws ExecutionException, InterruptedException, FirestoreException {
         List<QueryDocumentSnapshot> list = firestore
                 .collection(collectionName)
                 .orderBy(FieldPath.documentId(), DESCENDING)
@@ -149,9 +147,9 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
             firestore.collection(collectionName).document(id).delete();
         }
     }
-
-    static class DocumentSnapshotService {
-        static Object convertSnapshot(String collection, DocumentSnapshot snapshot, String returnType) {
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    protected static class DocumentSnapshotService {
+        static Object convertSnapshot(String collection, DocumentSnapshot snapshot, String returnType) throws InvalidPropertiesFormatException {
             boolean isReturnTypeNull = returnType == null;
             boolean isReturnTypeEqualsToMin = false;
             boolean isReturnTypeEqualsToAutoComplete = false;
@@ -185,7 +183,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                     if (isReturnTypeEqualsToAutoComplete) yield snapshotToUsuario(snapshot, false, true);
                     yield snapshotToUsuario(snapshot, false, false);
                 }
-                default -> throw new RuntimeException("Collection name invalid. Checks if the collection exists.");
+                default -> throw new InvalidPropertiesFormatException("Collection name invalid. Checks if the collection exists.");
             };
         }
 
@@ -194,13 +192,13 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
 
             if (snapshot == null) return null;
 
-            if (returnMinDTO) {
+            if (Boolean.TRUE.equals(returnMinDTO)) {
                 var object = snapshot.toObject(AssistidoMinDTO.class);
                 object.setCpf(snapshot.getId());
                 return object;
             }
 
-            if (returnAutocomplete) {
+            if (Boolean.TRUE.equals(returnAutocomplete)) {
                 return snapshot.toObject(AssistidoAutocomplete.class);
             }
 
@@ -214,15 +212,17 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                             snapshot.contains("empregadoAtualmente");
 
             if (dadosFCivil && dadosFTrabalhista) return snapshot.toObject(AssistidoFull.class);
-            else if (dadosFCivil) return snapshot.toObject(AssistidoCivil.class);
-            else if (dadosFTrabalhista) return snapshot.toObject(AssistidoTrabalhista.class);
-            else throw new RuntimeException("Error to convert snapshot into Assistido.");
+            else if (Boolean.TRUE.equals(dadosFCivil)) return snapshot.toObject(AssistidoCivil.class);
+            else if (Boolean.TRUE.equals(dadosFTrabalhista)) return snapshot.toObject(AssistidoTrabalhista.class);
+            else throw new IllegalArgumentException("Error to convert snapshot into Assistido.");
         }
 
         public static Object snapshotToAtendimento(DocumentSnapshot snapshot, Boolean returnMinDTO,
                                                    Boolean returnAutocomplete,
                                                    Boolean returnAtendimentosDeAssistidoDTO) {
-            if (returnMinDTO) {
+            final String STATUS_INPUT = "status";
+
+            if (Boolean.TRUE.equals(returnMinDTO)) {
                 var assistidoMap = convertUsingReflection(snapshot.get("envolvidos.assistido"), false);
 
                 // Defini o atributo "assistido"
@@ -231,7 +231,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                                 (String) assistidoMap.get("id"),
                                 (String) assistidoMap.get("nome"));
 
-                var date = snapshot.getCreateTime().toDate();
+                var date = Objects.requireNonNull(snapshot.getCreateTime()).toDate();
 
                 LocalDateTime localDateTime = date.toInstant()
                         .atZone(ZoneId.of("America/Sao_Paulo"))
@@ -244,19 +244,19 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                 return new AtendimentoMinDTO(
                         snapshot.getId(),
                         (String) snapshot.get("area"),
-                        (String) snapshot.get("status"),
+                        (String) snapshot.get(STATUS_INPUT),
                         assistidoEnvolvido,
                         formattedDateTime
                 );
             }
 
-            if (returnAutocomplete) {
+            if (Boolean.TRUE.equals(returnAutocomplete)) {
                 return new AtendimentoAutocomplete(
                         snapshot.getId()
                 );
             }
 
-            if (returnAtendimentosDeAssistidoDTO) {
+            if (Boolean.TRUE.equals(returnAtendimentosDeAssistidoDTO)) {
                 var assistidoMap = convertUsingReflection(snapshot.get("envolvidos.assistido"), false);
                 var estagiarioMap = convertUsingReflection(snapshot.get("envolvidos.estagiario"), false);
 
@@ -275,7 +275,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                 return new AtendimentoVinculadoDTO(
                         snapshot.getId(),
                         (String) snapshot.get("area"),
-                        (String) snapshot.get("status"),
+                        (String) snapshot.get(STATUS_INPUT),
                         assistidoEnvolvido,
                         estagiarioEnvolvido,
                         (String) snapshot.get("instante")
@@ -299,7 +299,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
 
             boolean dadosEstagiario = snapshot.contains("matricula");
 
-            if (returnMinDTO) {
+            if (Boolean.TRUE.equals(returnMinDTO)) {
                 if (dadosEstagiario) {
                     var object = snapshot.toObject(EstagiarioMinDTO.class);
                     object.setId(snapshot.getId());
@@ -311,7 +311,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                 }
             }
 
-            if (returnAutocomplete) {
+            if (Boolean.TRUE.equals(returnAutocomplete)) {
                 return snapshot.toObject(UsuarioAutocomplete.class);
             }
 
