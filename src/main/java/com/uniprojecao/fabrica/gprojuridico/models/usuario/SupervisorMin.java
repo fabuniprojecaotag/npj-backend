@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SupervisorMin {
-    @Pattern(regexp = "^[a-z]{3,}\\.[a-z]{3,}@projecao\\.br$")
+    @Pattern(regexp = "^([a-z]{3,}\\.[a-z]{3,}@projecao\\.br)$")
     private String id;
 
     @NotBlank

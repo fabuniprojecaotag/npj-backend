@@ -22,13 +22,6 @@ public abstract class Ficha {
     private Boolean dadosSensiveis;
     private List<Testemunha> testemunhas = new ArrayList<>();
 
-    public Ficha(String assinatura, String medidaJuridica, Boolean dadosSensiveis, List<Testemunha> testemunhas) {
-        this.assinatura = assinatura;
-        this.dadosSensiveis = dadosSensiveis;
-        this.medidaJuridica = medidaJuridica;
-        setTestemunhas(testemunhas);
-    }
-
     public void setTestemunhas(List<Testemunha> testemunhas) {
         this.testemunhas.addAll(testemunhas);
     }

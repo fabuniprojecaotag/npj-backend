@@ -32,14 +32,14 @@ public class Usuario implements UserDetails {
     @DocumentId
     private String id;
 
-    @Pattern(regexp = "^[0-9]{9}@projecao\\.edu\\.br|[a-z]{3,}\\.[a-z]{3,}@projecao\\.br$")
+    @Pattern(regexp = "^(\\d{9}@projecao\\.edu\\.br|[a-z]{3,}\\.[a-z]{3,}@projecao\\.br)$")
     private String email;
 
     @NotBlank
     @Size(min = 3, max = 60)
     private String nome;
 
-    @Pattern(regexp = "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$")
+    @Pattern(regexp = "^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2})$")
     private String cpf;
 
     private String unidadeInstitucional;
@@ -110,6 +110,6 @@ public class Usuario implements UserDetails {
     @JsonIgnore
     @Exclude
     public boolean isEnabled() {
-        return true;
+        return status;
     }
 }

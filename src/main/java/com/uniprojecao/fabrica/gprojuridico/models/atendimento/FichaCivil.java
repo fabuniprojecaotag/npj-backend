@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -13,14 +12,4 @@ import java.util.List;
 public class FichaCivil extends Ficha {
     private ParteContraria parteContraria;
 
-    public FichaCivil(
-            String assinatura,
-            Boolean dadosSensiveis,
-            List<Testemunha> testemunhas,
-            ParteContraria parteContraria,
-            String medidaJuridica
-    ) {
-        super(assinatura, medidaJuridica, dadosSensiveis, testemunhas);
-        this.parteContraria = parteContraria;
-    }
 }

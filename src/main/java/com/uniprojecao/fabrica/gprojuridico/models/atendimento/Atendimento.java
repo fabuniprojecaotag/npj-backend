@@ -32,15 +32,6 @@ public abstract class Atendimento {
     private String historico;
     private Map<String, Envolvido> envolvidos = new HashMap<>();
 
-    public Atendimento(String id, String status, String area, String instante, String historico, Map<String, Envolvido> envolvidos) {
-        this.id = id;
-        setStatus(status);
-        setArea(area);
-        this.instante = instante;
-        this.historico = historico;
-        setEnvolvidos(envolvidos);
-    }
-
     public void setStatus(String status) {
         this.status = StatusAtendimento.valueOf(status.replace(" ", "_").toUpperCase()).getValue(); // Ex. "Processo ativo" → "PROCESSO_ATIVO" → "Processo ativo". É necessária esta transformação para o armazenamento customizado de constantes.
     }
