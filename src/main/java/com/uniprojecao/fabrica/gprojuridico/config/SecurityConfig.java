@@ -1,7 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.config;
 
 import com.uniprojecao.fabrica.gprojuridico.services.security.SecurityFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,12 +27,15 @@ import static org.springframework.http.HttpMethod.*;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Autowired
-    SecurityFilter securityFilter;
+    private final SecurityFilter securityFilter;
 
-    private final String professorRole = "PROFESSOR";
-    private final String secretariaRole = "SECRETARIA";
-    private final String coordenadorRole = "COORDENADOR";
+    private static final String PROFESSOR_ROLE = "PROFESSOR";
+    private static final String SECRETARIA_ROLE = "SECRETARIA";
+    private static final String COORDENADOR_ROLE = "COORDENADOR";
+
+    public SecurityConfig(SecurityFilter securityFilter) {
+        this.securityFilter = securityFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -46,14 +48,14 @@ public class SecurityConfig {
 
                         .requestMatchers(POST, "api/auth").permitAll()
 
-                        .requestMatchers(POST, "api/usuarios").hasRole(secretariaRole)
-                        .requestMatchers(POST, "api/processos").hasRole(professorRole)
-                        .requestMatchers(POST, "api/medidas juridicas").hasRole(coordenadorRole)
+                        .requestMatchers(POST, "api/usuarios").hasRole(SECRETARIA_ROLE)
+                        .requestMatchers(POST, "api/processos").hasRole(PROFESSOR_ROLE)
+                        .requestMatchers(POST, "api/medidas juridicas").hasRole(COORDENADOR_ROLE)
 
-                        .requestMatchers(PUT, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(secretariaRole)
+                        .requestMatchers(PUT, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(SECRETARIA_ROLE)
 
-                        .requestMatchers(DELETE, "api/usuarios", "api/assistidos", "api/atendimentos", "api/processos", "api/medidas juridicas").hasRole(coordenadorRole)
-                        .requestMatchers(DELETE, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(coordenadorRole)
+                        .requestMatchers(DELETE, "api/usuarios", "api/assistidos", "api/atendimentos", "api/processos", "api/medidas juridicas").hasRole(COORDENADOR_ROLE)
+                        .requestMatchers(DELETE, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(COORDENADOR_ROLE)
 
                         .anyRequest().authenticated()
                 )

@@ -1,5 +1,9 @@
 package com.uniprojecao.fabrica.gprojuridico.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Constants {
     public static final String ASSISTIDOS_COLLECTION = "assistidos";
     public static final String ATENDIMENTOS_COLLECTION = "atendimentos";
