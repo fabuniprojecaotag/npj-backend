@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCollectionNameException.class)
-    public ResponseEntity<?> handleInvalidCollectionNameException(InvalidCollectionNameException e) {
+    public ResponseEntity<String> handleInvalidCollectionNameException(InvalidCollectionNameException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidReturnTypeException.class)
-    public ResponseEntity<?> handleInvalidReturnTypeException(InvalidReturnTypeException e) {
+    public ResponseEntity<String> handleInvalidReturnTypeException(InvalidReturnTypeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
