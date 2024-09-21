@@ -3,8 +3,11 @@ package com.uniprojecao.fabrica.gprojuridico.services;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,9 +16,11 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.MEDIDAS_JURID
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.listToString;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.stringToList;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IdService {
     /**
      * Gera um ID de 5 casas decimais, contando a partir do 1, com base no prefixo passado.
+     *
      * @param prefix O prefixo a ser passado; OBS: O tamanho não pode exercer 6 caracteres.
      * @return O ID com o prefixo passado e o formato descrito.
      */
@@ -23,7 +28,7 @@ public class IdService {
         int prefixLimit = 6;
         int decimalPlaces = 5;
 
-        if (prefix.length() > prefixLimit) throw new RuntimeException("The prefix length cannot be greater than 6.");
+        if (prefix.length() > prefixLimit) throw new IllegalArgumentException("The prefix length cannot be greater than 6.");
 
         String zeros = "0".repeat(Math.max(0, decimalPlaces - 1));
         return prefix.toUpperCase() + zeros + "1";
@@ -58,7 +63,7 @@ public class IdService {
     /**
      * Usado como método auxiliar, incrementa somente a parte numérica de um ID.
      *
-     * @param numbers O ID a ser incrementado, que consiste somente de números.
+     * @param numbers       O ID a ser incrementado, que consiste somente de números.
      * @param decimalPlaces A quantidade de casas decimais ou o comprimento que o ID possui.
      * @return A parte numérica do ID aumentada em 1, mantendo o mesmo número de dígitos.
      */
@@ -92,7 +97,7 @@ public class IdService {
         return numbers;
     }
 
-    public static Object defineId(Object data, String collectionName, String prefix) throws Exception {
+    public static Object defineId(Object data, String collectionName, String prefix) throws ExecutionException, InterruptedException {
         String id = new FirestoreRepositoryImpl(collectionName).findLastDocumentId(); // Armazena o id
         String newId = (id != null) ? incrementId(id) : generateId(prefix); // Incrementa o id ou gera um novo, caso se não houver um documento criado no banco de dados
 
