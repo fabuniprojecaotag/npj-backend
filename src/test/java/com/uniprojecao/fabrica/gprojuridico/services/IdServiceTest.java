@@ -12,11 +12,11 @@ class IdServiceTest {
     @Test
     void generateId() {
         var prefixes = List.of("ATE", "MEDJUR", "ABCDEF");
-        var ExpectedIds = List.of("ATE00001", "MEDJUR00001", "ABCDEF00001");
+        var expectedIds = List.of("ATE00001", "MEDJUR00001", "ABCDEF00001");
 
         var i = 0;
         for (var id : prefixes) {
-            var expected = ExpectedIds.get(i);
+            var expected = expectedIds.get(i);
 
             var res = IdService.generateId(id);
             print("Prefix: " + id + ", Actual: " + res + ", Expected: " + expected);

@@ -30,8 +30,7 @@ class DataLoaderTest {
     }
 
     @Test
-    public void loadDemoAssistidoData() throws Exception {
-
+    void loadDemoAssistidoData() throws Exception {
         Path path = Path.of("src/test/resources/json/insert-multiple/assistidos-civis.json");
         LinkedHashMap obj = new ObjectMapper().readValue(path.toFile(), LinkedHashMap.class);
 
@@ -55,8 +54,7 @@ class DataLoaderTest {
     }
 
     @Test
-    public void loadDemoUsuarioData() throws Exception {
-
+    void loadDemoUsuarioData() throws Exception {
         Path path = Path.of("src/test/resources/json/insert-multiple/usuarios.json");
         LinkedHashMap obj = new ObjectMapper().readValue(path.toFile(), LinkedHashMap.class);
 
