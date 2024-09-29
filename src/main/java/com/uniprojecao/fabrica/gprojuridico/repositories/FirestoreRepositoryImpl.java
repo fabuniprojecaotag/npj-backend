@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.repositories;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.AssistidosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.AtendimentosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.EstagiariosListDTO;
@@ -74,7 +75,7 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
     }
 
     @Override
-    public Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
+    public ListBodyDTO<T> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
 
         CollectionReference collection = firestore.collection(collectionName);
         String[] fieldNames = getSpecificFieldNamesToReturnClassInstance(collectionName, returnType);
@@ -91,37 +92,28 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
         ApiFuture<QuerySnapshot> future = query.get();
         int totalSize = collection.get().get().size();
 
-        List<Object> docPage = new ArrayList<>();
+        List<T> docPage = new ArrayList<>();
 
         for (QueryDocumentSnapshot snapshot : future.get()) {
             var document = convertSnapshot(collectionName, snapshot, returnType);
-            docPage.add(document);
+            docPage.add((T) document); // Casting para T
         }
 
-        Object firstDoc = "Not available";
-        Object lastDoc = "Not available";
+        T firstDoc = docPage.isEmpty() ? null : docPage.get(0);
+        T lastDoc = docPage.isEmpty() ? null : docPage.get(docPage.size() - 1);
 
-        if (!docPage.isEmpty()) {
-            firstDoc = docPage.get(0);
-            lastDoc = docPage.get(docPage.size() - 1);
-        }
+        int collectionSize = docPage.size();
 
-        int collectionSize = future.get().size();
-
-        return Map.of(
-                "list", docPage,
-                "firstDoc", firstDoc,
-                "lastDoc", lastDoc,
-                "pageSize", collectionSize,
-                "totalSize", totalSize);
+        return new ListBodyDTO<>(docPage, firstDoc, lastDoc, collectionSize, totalSize);
     }
 
+
     @Override
-    public Object findById(String id) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
+    public T findById(String id) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
         DocumentReference document = firestore.collection(collectionName).document(id);
         DocumentSnapshot snapshot = document.get().get();
         if (!snapshot.exists()) return null;
-        return convertSnapshot(collectionName, snapshot, null);
+        return (T) convertSnapshot(collectionName, snapshot, null);
     }
 
     public String findLastDocumentId() throws ExecutionException, InterruptedException, FirestoreException {

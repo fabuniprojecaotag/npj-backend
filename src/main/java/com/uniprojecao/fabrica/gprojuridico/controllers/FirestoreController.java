@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.DeleteBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
@@ -24,7 +25,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertGenericObj
 
 @RestController
 @RequestMapping("/api/{collectionName}")
-public class FirestoreController {
+public class FirestoreController<T> {
 
     @PostMapping
     public ResponseEntity<Object> insert(@PathVariable String collectionName, @RequestBody Object payload)
@@ -61,7 +62,7 @@ public class FirestoreController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> findAll(
+    public ResponseEntity<ListBodyDTO<T>> findAll(
             @PathVariable String collectionName,
             @RequestParam(required = false) String startAfter,
             @RequestParam(required = false) String field,
@@ -71,7 +72,7 @@ public class FirestoreController {
             @RequestParam(defaultValue = "min") String returnType)
             throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
 
-        FirestoreRepositoryImpl firestoreRepository = new FirestoreRepositoryImpl(collectionName);
+        FirestoreRepositoryImpl<T> firestoreRepository = new FirestoreRepositoryImpl<>(collectionName);
 
         Filter queryFilter =
                 (field != null && value != null) ?
@@ -83,10 +84,10 @@ public class FirestoreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable String collectionName, @PathVariable String id)
+    public ResponseEntity<T> findById(@PathVariable String collectionName, @PathVariable String id)
             throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
 
-        Object result = new FirestoreRepositoryImpl(collectionName).findById(id);
+        T result = new FirestoreRepositoryImpl<T>(collectionName).findById(id);
         return ResponseEntity.ok(result);
     }
 
@@ -111,8 +112,7 @@ public class FirestoreController {
 
     @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable String collectionName, @RequestBody DeleteBodyDTO payload) {
-
-        new FirestoreRepositoryImpl(collectionName).delete(payload.ids());
+        new FirestoreRepositoryImpl<T>(collectionName).delete(payload.ids());
         return ResponseEntity.noContent().build();
     }
 }

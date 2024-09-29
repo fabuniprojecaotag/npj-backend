@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.google.cloud.firestore.Filter;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.AtendimentoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.ProcessoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.InvalidPropertiesFormatException;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
@@ -20,7 +20,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COL
 public class AssistidoController {
 
     @GetMapping("/{id}/atendimentos")
-    public ResponseEntity<Map<String, Object>> findAllAtendimentosVinculados(
+    public ResponseEntity<ListBodyDTO<AtendimentoVinculadoDTO>> findAllAtendimentosVinculados(
             @PathVariable String id,
             @RequestParam(required = false) String startAfter,
             @RequestParam(defaultValue = "10") int pageSize)
@@ -32,7 +32,7 @@ public class AssistidoController {
     }
 
     @GetMapping("/{id}/processos")
-    public ResponseEntity<Map<String, Object>> findAllProcessosVinculados(
+    public ResponseEntity<ListBodyDTO<ProcessoVinculadoDTO>> findAllProcessosVinculados(
             @PathVariable String id,
             @RequestParam(required = false) String startAfter,
             @RequestParam(defaultValue = "10") int pageSize)
