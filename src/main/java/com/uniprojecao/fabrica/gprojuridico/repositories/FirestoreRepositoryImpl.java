@@ -2,10 +2,10 @@ package com.uniprojecao.fabrica.gprojuridico.repositories;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.EstagiarioMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.AssistidosListDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.AtendimentosListDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.EstagiariosListDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.UsuariosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.AtendimentoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.ProcessoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
@@ -193,7 +193,7 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
             if (snapshot == null) return null;
 
             if (Boolean.TRUE.equals(returnMinDTO)) {
-                var object = snapshot.toObject(AssistidoMinDTO.class);
+                var object = snapshot.toObject(AssistidosListDTO.class);
                 object.setCpf(snapshot.getId());
                 return object;
             }
@@ -241,7 +241,7 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
                 String formattedDateTime = localDateTime.format(formatter);
 
 
-                return new AtendimentoMinDTO(
+                return new AtendimentosListDTO(
                         snapshot.getId(),
                         (String) snapshot.get("area"),
                         (String) snapshot.get(STATUS_INPUT),
@@ -301,11 +301,11 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
 
             if (Boolean.TRUE.equals(returnMinDTO)) {
                 if (dadosEstagiario) {
-                    var object = snapshot.toObject(EstagiarioMinDTO.class);
+                    var object = snapshot.toObject(EstagiariosListDTO.class);
                     object.setId(snapshot.getId());
                     return object;
                 } else {
-                    var object = snapshot.toObject(UsuarioMinDTO.class);
+                    var object = snapshot.toObject(UsuariosListDTO.class);
                     object.setId(snapshot.getId());
                     return object;
                 }
