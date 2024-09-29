@@ -42,7 +42,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.*;
 @Repository
 @Primary
 @NoArgsConstructor
-public class FirestoreRepositoryImpl implements BaseCRUDRepository {
+public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
 
     public static Firestore firestore;
 
@@ -68,7 +68,7 @@ public class FirestoreRepositoryImpl implements BaseCRUDRepository {
     }
 
     @Override
-    public Object insert(String customId, Object data) throws ExecutionException, InterruptedException {
+    public T insert(String customId, T data) throws ExecutionException, InterruptedException {
         firestore.collection(collectionName).document(customId).set(data).get();
         return data;
     }

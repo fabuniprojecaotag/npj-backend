@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public interface BaseCRUDRepository {
-    Object insert(String customId, Object data) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException;
+public interface BaseCRUDRepository<T> {
+    T insert(String customId, T data) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException;
 
     Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException, InvalidPropertiesFormatException;
 

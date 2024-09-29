@@ -24,7 +24,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.identifyChildClas
 @Service
 public class UsuarioService implements UserDetailsService {
 
-    private final FirestoreRepositoryImpl firestoreRepository = new FirestoreRepositoryImpl(USUARIOS_COLLECTION);
+    private final FirestoreRepositoryImpl<Usuario> firestoreRepository = new FirestoreRepositoryImpl<>(USUARIOS_COLLECTION);
 
     public Usuario insert(Usuario usuario) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
         defineId(usuario);
@@ -105,7 +105,7 @@ public class UsuarioService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         try {
-            return(UserDetails) new FirestoreRepositoryImpl(USUARIOS_COLLECTION).findById(username);
+            return(UserDetails) new FirestoreRepositoryImpl<Usuario>(USUARIOS_COLLECTION).findById(username);
         } catch (ExecutionException | InvalidPropertiesFormatException | InterruptedException e) {
             throw new UsernameNotFoundException(username);
         }

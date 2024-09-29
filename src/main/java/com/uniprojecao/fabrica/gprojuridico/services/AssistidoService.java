@@ -5,6 +5,7 @@ import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ASSISTIDOS_COLLECTION;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.identifyChildClass;
@@ -12,11 +13,11 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.identifyChildClas
 @Service
 public class AssistidoService {
 
-    private final FirestoreRepositoryImpl firestoreRepository = new FirestoreRepositoryImpl(ASSISTIDOS_COLLECTION);
+    private final FirestoreRepositoryImpl<Assistido> firestoreRepository = new FirestoreRepositoryImpl<>(ASSISTIDOS_COLLECTION);
 
-    public Assistido insert(Assistido assistido) throws Exception {
+    public Assistido insert(Assistido assistido) throws ExecutionException, InterruptedException {
         String customId = assistido.getCpf();
-        return (Assistido) firestoreRepository.insert(customId, assistido);
+        return firestoreRepository.insert(customId, assistido);
     }
 
     public void update(String recordId, Map<String, Object> data, String classType) {

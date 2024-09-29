@@ -12,10 +12,10 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COL
 @Service
 public class ProcessoService {
 
-    private final FirestoreRepositoryImpl firestoreRepository = new FirestoreRepositoryImpl(PROCESSOS_COLLECTION);
+    private final FirestoreRepositoryImpl<Processo> firestoreRepository = new FirestoreRepositoryImpl<>(PROCESSOS_COLLECTION);
 
     public Processo insert(Processo processo) throws ExecutionException, InterruptedException {
-        return (Processo) firestoreRepository.insert(processo.getNumero(), processo);
+        return firestoreRepository.insert(processo.getNumero(), processo);
     }
 
     public void update(String recordId, Map<String, Object> data) {

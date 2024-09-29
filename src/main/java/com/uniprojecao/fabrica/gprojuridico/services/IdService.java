@@ -98,7 +98,7 @@ public class IdService {
     }
 
     public static Object defineId(Object data, String collectionName, String prefix) throws ExecutionException, InterruptedException {
-        String id = new FirestoreRepositoryImpl(collectionName).findLastDocumentId(); // Armazena o id
+        String id = new FirestoreRepositoryImpl<>(collectionName).findLastDocumentId(); // Armazena o id
         String newId = (id != null) ? incrementId(id) : generateId(prefix); // Incrementa o id ou gera um novo, caso se não houver um documento criado no banco de dados
 
         return switch (collectionName) {
