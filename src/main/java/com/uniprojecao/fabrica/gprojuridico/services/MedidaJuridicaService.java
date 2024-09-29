@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static com.uniprojecao.fabrica.gprojuridico.services.IdService.defineId;
@@ -20,7 +20,7 @@ public class MedidaJuridicaService {
         return firestoreRepository.insert(medidaJuridicaWithNewId.getId(), medidaJuridicaWithNewId);
     }
 
-    public void update(String recordId, Map<String, Object> data) {
+    public void update(String recordId, UpdateBodyDTO<MedidaJuridica> data) {
         firestoreRepository.update(recordId, data, MedidaJuridicaService.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
@@ -38,30 +40,52 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario findById(String id) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
-        return (Usuario) firestoreRepository.findById(id);
+        return firestoreRepository.findById(id);
     }
 
-    public void update(String recordId, Map<String, Object> data, String classType) {
+    public void update(String recordId, UpdateBodyDTO<Usuario> data, String classType) {
         Class<?> clazz = identifyChildClass(Usuario.class.getSimpleName(), classType);
 
         String senhaKey = "senha";
-        if (data.containsKey(senhaKey)) {
-            var rawPassword = (String) data.get(senhaKey);
-            var encryptedPassword = encryptPassword(rawPassword);
-            Map<String, Object> newData = new HashMap<>();
+        Map<String, Object> newData = new HashMap<>();
 
-            for (var entry : data.entrySet()) {
-                if (!Objects.equals(entry.getKey(), senhaKey)) newData.put(entry.getKey(), entry.getValue());
+        if (!data.getBody().getPassword().isEmpty()) {
+            var rawPassword = data.getBody().getPassword();
+            var encryptedPassword = encryptPassword(rawPassword);
+
+            // Adiciona todos os campos do objeto, exceto a senha original
+            for (Field field : Usuario.class.getDeclaredFields()) {
+                field.setAccessible(true); // Permite acessar campos privados
+                try {
+                    // Verifica se não é a senha e adiciona ao novo Map
+                    if (!field.getName().equals(senhaKey)) {
+                        newData.put(field.getName(), field.get(data.getBody()));
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace(); // Trate a exceção conforme necessário
+                }
             }
 
+            // Adiciona a senha criptografada
             newData.put(senhaKey, encryptedPassword);
 
             // Salva os dados recebidos e com a senha criptografada
-            firestoreRepository.update(recordId, newData, clazz);
+            firestoreRepository.update(recordId, (UpdateBodyDTO<Usuario>) newData, clazz);
         } else {
-            firestoreRepository.update(recordId, data, clazz);
+            // Se não houver senha a ser alterada, usa os dados originais
+            for (Field field : Usuario.class.getDeclaredFields()) {
+                field.setAccessible(true); // Permite acessar campos privados
+                try {
+                    newData.put(field.getName(), field.get(data.getBody()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace(); // Trate a exceção conforme necessário
+                }
+            }
+
+            firestoreRepository.update(recordId, (UpdateBodyDTO) newData, clazz);
         }
     }
+
 
     private void checkIfExists(Usuario data, String id) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
         var result = findById(id);
@@ -105,7 +129,7 @@ public class UsuarioService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         try {
-            return(UserDetails) new FirestoreRepositoryImpl<Usuario>(USUARIOS_COLLECTION).findById(username);
+            return new FirestoreRepositoryImpl<Usuario>(USUARIOS_COLLECTION).findById(username);
         } catch (ExecutionException | InvalidPropertiesFormatException | InterruptedException e) {
             throw new UsernameNotFoundException(username);
         }

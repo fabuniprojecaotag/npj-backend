@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.repositories;
 
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.AssistidoCivil;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Filiacao;
@@ -21,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class FirestoreRepositoryImplTest {
 
     @Autowired
-    FirestoreRepositoryImpl firestoreRepository;
+    FirestoreRepositoryImpl<AssistidoCivil> firestoreRepository;
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException {
-        firestoreRepository = new FirestoreRepositoryImpl("assistidos");
+        firestoreRepository = new FirestoreRepositoryImpl<>("assistidos");
 
         firestoreRepository.delete(List.of("123.456.789-01", "372.897.451-08"));
 
@@ -45,7 +46,7 @@ class FirestoreRepositoryImplTest {
         var resultado = firestoreRepository.findAll(null, 10, null, "min");
         assertNotNull(resultado);
 
-        assertEquals(1, resultado.get("totalSize"));
+        assertEquals(1, resultado.getTotalSize());
     }
 
     @Test
@@ -63,20 +64,21 @@ class FirestoreRepositoryImplTest {
         assertNotNull(resultado);
     }
 
-//    @Test
-//    void testUpdate() throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
-//        var updateAssistido = new AssistidoCivil();
-//        updateAssistido.setNome("Albert Einstein");
-//
-//        Map<String, Object> updateData = new HashMap<>();
-//        updateData.put("nome", updateAssistido.getNome());
-//
-//        firestoreRepository.update("123.456.789-01", updateData, AssistidoCivil.class);
-//
-//        var assistidoResult = firestoreRepository.findById("123.456.789-01");
-//
-//        assertEquals(updateAssistido.getNome(), ((AssistidoCivil) assistidoResult).getNome());
-//    }
+    @Test
+    void testUpdate() throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
+        var updateAssistido = new AssistidoCivil();
+        updateAssistido.setNome("Albert Einstein");
+        updateAssistido.setDependentes("2");
+
+        UpdateBodyDTO<AssistidoCivil> updateData = new UpdateBodyDTO<>(updateAssistido, "Civil");
+
+        firestoreRepository.update("123.456.789-01", updateData, AssistidoCivil.class);
+
+        var assistidoResult = firestoreRepository.findById("123.456.789-01");
+
+        assertEquals(updateAssistido.getNome(), assistidoResult.getNome());
+    }
+
 
 
 
@@ -88,6 +90,6 @@ class FirestoreRepositoryImplTest {
         firestoreRepository.delete(idsList);
         var firestoreList = firestoreRepository.findAll(null, 10, null, "min");
 
-        assertEquals(1, firestoreList.get("totalSize"));
+        assertEquals(1, firestoreList.getTotalSize());
     }
 }

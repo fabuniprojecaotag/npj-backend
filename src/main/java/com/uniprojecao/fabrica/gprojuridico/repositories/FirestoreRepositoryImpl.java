@@ -1,8 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.repositories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.AssistidosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.AtendimentosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.EstagiariosListDTO;
@@ -127,9 +129,10 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
         return !list.isEmpty() ? list.get(0).getId() : null;
     }
 
-    @Override
-    public void update(String recordId, Map<String, Object> data, Class<?> clazz) {
-        Map<String, Object> processedData = getProcessedAndValidDataToInsertAsMap(data, clazz);
+    public void update(String recordId, UpdateBodyDTO<T> data, Class<?> clazz) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        T body = data.getBody();
+        Map processedData = objectMapper.convertValue(body, Map.class);
         firestore.collection(collectionName).document(recordId).update(processedData);
     }
 

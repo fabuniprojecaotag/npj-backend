@@ -1,10 +1,10 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ASSISTIDOS_COLLECTION;
@@ -20,7 +20,7 @@ public class AssistidoService {
         return firestoreRepository.insert(customId, assistido);
     }
 
-    public void update(String recordId, Map<String, Object> data, String classType) {
+    public void update(String recordId, UpdateBodyDTO<Assistido> data, String classType) {
         Class<?> clazz = identifyChildClass(Assistido.class.getSimpleName(), classType);
         firestoreRepository.update(recordId, data, clazz);
     }
