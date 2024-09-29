@@ -42,7 +42,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.*;
 @Repository
 @Primary
 @NoArgsConstructor
-public class FirestoreRepositoryImpl implements FirestoreRepository {
+public class FirestoreRepositoryImpl implements BaseCRUDRepository {
 
     public static Firestore firestore;
 
