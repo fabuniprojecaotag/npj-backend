@@ -13,8 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Map;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -54,5 +52,5 @@ public abstract class Assistido {
 
     @Pattern(regexp = "^(R\\$)\\s\\d+(\\.\\d{1,3})*$") // exemplo[]: ["R$ 9000", "R$ 90.000", "R$ 90.000.000"]
     private String remuneracao;
-    private Map<String, Endereco> endereco;
+    private Endereco endereco;
 }

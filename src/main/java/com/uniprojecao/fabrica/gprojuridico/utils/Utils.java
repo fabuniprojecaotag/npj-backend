@@ -11,6 +11,9 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidCollectionNameException;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidReturnTypeException;
 import jakarta.validation.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 
+@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils {
     public static <T> Map<String, Object> convertUsingReflection(T object, Boolean useSuperClass) {
         if (object instanceof Map<?, ?>) {
@@ -31,7 +36,7 @@ public class Utils {
         Class<?> t = object.getClass();
         Field[] fields;
 
-        if (useSuperClass) {
+        if (Boolean.TRUE.equals(useSuperClass)) {
             fields = getAllFields(t);
         } else {
             fields = t.getDeclaredFields();
@@ -150,7 +155,7 @@ public class Utils {
      * @param message A mensagem a ser impressa.
      */
     public static void print(String message) {
-        System.out.println(message);
+        log.info(message);
     }
 
     public static Object convertGenericObjectToClassInstanceWithValidation(Object body, Class<?> type) throws Exception {
@@ -294,8 +299,7 @@ public class Utils {
 
     public static Map<String, Object> getProcessedAndValidDataToInsertAsMap(Map<String, Object> data, Class<?> clazz) {
         Map<String, Object> filteredData = filterValidKeys(data, clazz);
-        Map<String, Object> processedData = processNestedKeysIntoOne(filteredData);
-        return processedData;
+        return processNestedKeysIntoOne(filteredData);
     }
 
     public static String[] getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {
