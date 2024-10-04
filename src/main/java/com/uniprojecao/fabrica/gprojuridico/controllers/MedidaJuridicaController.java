@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/medidas juridicas")
+@RequestMapping(value = "/medidas juridicas")
 public class MedidaJuridicaController extends FirestoreController<MedidaJuridica> {
     protected MedidaJuridicaController(MedidaJuridicaService genericService) {
         super(genericService);

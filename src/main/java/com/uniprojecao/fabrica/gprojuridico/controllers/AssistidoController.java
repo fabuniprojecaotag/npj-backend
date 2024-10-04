@@ -18,7 +18,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.PROCESSOS_COLLECTION;
 
 @RestController
-@RequestMapping(value = "/api/assistidos")
+@RequestMapping(value = "/assistidos")
 public class AssistidoController extends FirestoreController<Assistido> {
     public AssistidoController(AssistidoService service) {
         super(service);

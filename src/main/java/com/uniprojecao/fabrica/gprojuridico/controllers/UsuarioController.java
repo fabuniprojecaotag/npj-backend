@@ -12,7 +12,7 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping(value = "/api/usuarios")
+@RequestMapping(value = "/usuarios")
 public class UsuarioController {
     private final UsuarioService service;
 
@@ -45,7 +45,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody UpdateBodyDTO<Usuario> payload) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
+    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody UpdateBodyDTO<Usuario> payload) {
         service.update(id, payload);
 
         return ResponseEntity.ok().build();

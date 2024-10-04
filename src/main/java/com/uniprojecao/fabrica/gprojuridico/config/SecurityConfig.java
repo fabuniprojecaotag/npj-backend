@@ -45,8 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**", "**/**").permitAll() // pre-flight
-
-                        .requestMatchers(POST, "api/auth").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
 
                         .requestMatchers(POST, "api/usuarios").hasRole(SECRETARIA_ROLE)
                         .requestMatchers(POST, "api/processos").hasRole(PROFESSOR_ROLE)
