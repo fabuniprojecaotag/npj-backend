@@ -129,12 +129,10 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
         return !list.isEmpty() ? list.get(0).getId() : null;
     }
 
-    public void update(String recordId, UpdateBodyDTO<T> data, Class<?> clazz) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        T body = data.getBody();
-        Map processedData = objectMapper.convertValue(body, Map.class);
-        firestore.collection(collectionName).document(recordId).update(processedData);
+    public void update(String recordId, Map<String, Object> data) {
+        firestore.collection(collectionName).document(recordId).update(data);
     }
+
 
     @Override
     public void delete(List<String> ids) {

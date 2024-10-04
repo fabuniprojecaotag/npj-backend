@@ -1,6 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.DeleteBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
@@ -21,14 +23,12 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.USUARIOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.identifyChildClass;
 
 @Service
 public class UsuarioService implements UserDetailsService {
-
     private final FirestoreRepositoryImpl<Usuario> firestoreRepository = new FirestoreRepositoryImpl<>(USUARIOS_COLLECTION);
 
-    public Usuario insert(Usuario usuario) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
+    public Usuario insert(Usuario usuario) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
         defineId(usuario);
         String id = usuario.getId();
 
@@ -43,49 +43,33 @@ public class UsuarioService implements UserDetailsService {
         return firestoreRepository.findById(id);
     }
 
-    public void update(String recordId, UpdateBodyDTO<Usuario> data, String classType) {
-        Class<?> clazz = identifyChildClass(Usuario.class.getSimpleName(), classType);
-
-        String senhaKey = "senha";
+    public void update(String recordId, UpdateBodyDTO<Usuario> data) {
         Map<String, Object> newData = new HashMap<>();
+        Usuario usuario = data.getBody();
 
-        if (!data.getBody().getPassword().isEmpty()) {
-            var rawPassword = data.getBody().getPassword();
-            var encryptedPassword = encryptPassword(rawPassword);
-
-            // Adiciona todos os campos do objeto, exceto a senha original
-            for (Field field : Usuario.class.getDeclaredFields()) {
-                field.setAccessible(true); // Permite acessar campos privados
-                try {
-                    // Verifica se não é a senha e adiciona ao novo Map
-                    if (!field.getName().equals(senhaKey)) {
-                        newData.put(field.getName(), field.get(data.getBody()));
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace(); // Trate a exceção conforme necessário
-                }
-            }
-
-            // Adiciona a senha criptografada
-            newData.put(senhaKey, encryptedPassword);
-
-            // Salva os dados recebidos e com a senha criptografada
-            firestoreRepository.update(recordId, (UpdateBodyDTO<Usuario>) newData, clazz);
-        } else {
-            // Se não houver senha a ser alterada, usa os dados originais
-            for (Field field : Usuario.class.getDeclaredFields()) {
-                field.setAccessible(true); // Permite acessar campos privados
-                try {
-                    newData.put(field.getName(), field.get(data.getBody()));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace(); // Trate a exceção conforme necessário
-                }
-            }
-
-            firestoreRepository.update(recordId, (UpdateBodyDTO) newData, clazz);
+        // Criptografa a senha se fornecida
+        if (usuario.getSenha() != null && !usuario.getSenha().isEmpty()) {
+            var encryptedPassword = encryptPassword(usuario.getSenha());
+            usuario.setSenha(encryptedPassword);
         }
-    }
 
+        // Preenche o Map com dados do usuário, excluindo o campo "senha" e campos nulos ou vazios
+        for (Field field : Usuario.class.getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(usuario);
+                // Adiciona ao Map apenas se o valor não for nulo, vazio ou se não for o campo "senha"
+                if (value != null && !(value instanceof String && ((String) value).isEmpty()) && !field.getName().equals("senha")) {
+                    newData.put(field.getName(), value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // Trate a exceção conforme necessário
+            }
+        }
+
+        // Atualiza o Firestore com o novo Map, que só contém campos válidos
+        firestoreRepository.update(recordId, newData);
+    }
 
     private void checkIfExists(Usuario data, String id) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
         var result = findById(id);
@@ -105,9 +89,9 @@ public class UsuarioService implements UserDetailsService {
     }
 
     private void defineId(Usuario usuario) {
-        String id = (!(usuario instanceof Estagiario estagiario))
-                ? usuario.getEmail().replace("@projecao\\.br", "") // Retira o "@projecao.br"
-                : estagiario.getMatricula();
+        String id = (usuario instanceof Estagiario estagiario)
+                ? estagiario.getMatricula()
+                : usuario.getEmail().replace("@projecao.br", "");
         usuario.setId(id);
     }
 
@@ -126,12 +110,19 @@ public class UsuarioService implements UserDetailsService {
         return findById(id);
     }
 
-    @Override
     public UserDetails loadUserByUsername(String username) {
         try {
             return new FirestoreRepositoryImpl<Usuario>(USUARIOS_COLLECTION).findById(username);
         } catch (ExecutionException | InvalidPropertiesFormatException | InterruptedException e) {
             throw new UsernameNotFoundException(username);
         }
+    }
+
+    public ListBodyDTO<Usuario> listAll(String startAfter, int pageSize) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
+        return firestoreRepository.findAll(startAfter, pageSize, null, "min");
+    }
+
+    public void delete(DeleteBodyDTO deleteBodyDTO) {
+        firestoreRepository.delete(deleteBodyDTO.ids());
     }
 }

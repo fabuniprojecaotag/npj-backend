@@ -1,9 +1,11 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
+import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
 import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -11,13 +13,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.ATENDIMENTOS_COLLECTION;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.MEDIDAS_JURIDICAS_COLLECTION;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.listToString;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.stringToList;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class IdService {
+@NoArgsConstructor()
+public class IdService<T> {
     /**
      * Gera um ID de 5 casas decimais, contando a partir do 1, com base no prefixo passado.
      *
@@ -30,8 +31,8 @@ public class IdService {
 
         if (prefix.length() > prefixLimit) throw new IllegalArgumentException("The prefix length cannot be greater than 6.");
 
-        String zeros = "0".repeat(Math.max(0, decimalPlaces - 1));
-        return prefix.toUpperCase() + zeros + "1";
+        // Gera o ID formatado com zeros à esquerda
+        return String.format("%s%0" + decimalPlaces + "d", prefix.toUpperCase(), 1);
     }
 
     /**
@@ -97,11 +98,16 @@ public class IdService {
         return numbers;
     }
 
-    public static Object defineId(Object data, String collectionName, String prefix) throws ExecutionException, InterruptedException {
+    public T defineId(T data, String collectionName, String prefix) throws ExecutionException, InterruptedException {
         String id = new FirestoreRepositoryImpl<>(collectionName).findLastDocumentId(); // Armazena o id
         String newId = (id != null) ? incrementId(id) : generateId(prefix); // Incrementa o id ou gera um novo, caso se não houver um documento criado no banco de dados
 
         return switch (collectionName) {
+            case ASSISTIDOS_COLLECTION -> {
+                var model = (Assistido) data;
+                model.setId(newId);
+                yield data;
+            }
             case ATENDIMENTOS_COLLECTION -> {
                 var model = (Atendimento) data;
                 model.setId(newId);
@@ -109,6 +115,16 @@ public class IdService {
             }
             case MEDIDAS_JURIDICAS_COLLECTION -> {
                 var model = (MedidaJuridica) data;
+                model.setId(newId);
+                yield data;
+            }
+            case PROCESSOS_COLLECTION -> {
+                var model = (Processo) data;
+                model.setId(newId);
+                yield data;
+            }
+            case USUARIOS_COLLECTION -> {
+                var model = (Usuario) data;
                 model.setId(newId);
                 yield data;
             }

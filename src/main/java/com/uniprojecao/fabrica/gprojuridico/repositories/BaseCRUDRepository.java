@@ -3,10 +3,10 @@ package com.uniprojecao.fabrica.gprojuridico.repositories;
 import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.FirestoreException;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public interface BaseCRUDRepository<T> {
@@ -16,7 +16,7 @@ public interface BaseCRUDRepository<T> {
 
     T findById(String id) throws FirestoreException, IllegalArgumentException, ExecutionException, InterruptedException, InvalidPropertiesFormatException;
 
-    void update(String recordId, UpdateBodyDTO<T> data, Class<?> clazz);
+    void update(String recordId, Map<String, Object> data);
 
     void delete(List<String> ids);
 }

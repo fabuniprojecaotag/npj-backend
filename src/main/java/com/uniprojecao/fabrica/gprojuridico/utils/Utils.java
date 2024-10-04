@@ -11,7 +11,6 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidCollectionNameException;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidReturnTypeException;
 import jakarta.validation.*;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,8 +22,8 @@ import java.util.stream.Collectors;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Utils {
+@NoArgsConstructor
+public class Utils<T> {
     public static <T> Map<String, Object> convertUsingReflection(T object, Boolean useSuperClass) {
         if (object instanceof Map<?, ?>) {
             @SuppressWarnings("unchecked")
@@ -158,15 +157,15 @@ public class Utils {
         log.info(message);
     }
 
-    public static Object convertGenericObjectToClassInstanceWithValidation(Object body, Class<?> type) throws Exception {
+    public T convertGenericObjectToClassInstanceWithValidation(T body, Class<?> type) throws Exception {
         var data = convertGenericObjectToClassInstance(body, type);
         validateDataConstraints(data);
         return data;
     }
 
-    public static <T> T convertGenericObjectToClassInstance(Object object, Class<T> destinyClazz) throws Exception {
+    public T convertGenericObjectToClassInstance(T object, Class<?> destinyClazz) throws Exception {
         if (destinyClazz.isInstance(object)) {
-            return destinyClazz.cast(object);
+            return (T) destinyClazz.cast(object);
         }
 
         if (object instanceof LinkedHashMap<?, ?> map) {
@@ -213,7 +212,7 @@ public class Utils {
 
                             Class<?> fieldType = isAbstract ? field.getType().getSuperclass() : field.getType();
                             if (fieldType != null)
-                                value = convertGenericObjectToClassInstance(value, fieldType);
+                                value = convertGenericObjectToClassInstance((T) value, fieldType);
                             field.set(instance, isInteger ? value.toString() : value);
                         } else {
                             field.set(instance, isInteger ? value.toString() : value);
@@ -264,24 +263,16 @@ public class Utils {
         throw new IllegalStateException("Unexpected classType: " + classType);
     }
 
-    private static void validateDataConstraints(Object data) {
+    private void validateDataConstraints(T data) {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
 
-            Set<ConstraintViolation<Object>> violations = validator.validate(data);
+            Set<ConstraintViolation<T>> violations = validator.validate(data);
 
             if (!violations.isEmpty()) {
                 throw new ConstraintViolationException(violations);
             }
         }
-    }
-
-    private static Map<String, Object> processNestedKeysIntoOne(Map<String, Object> inputMap) {
-        Map<String, Object> outputMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
-            processMapEntry(entry.getKey(), entry.getValue(), outputMap, "");
-        }
-        return outputMap;
     }
 
     private static void processMapEntry(String key, Object value, Map<String, Object> outputMap, String parentKey) {
@@ -295,11 +286,6 @@ public class Utils {
         } else {
             outputMap.put(parentKey + key, value); // Ex. de entrada percorrida recursivamente a ser adicionada: {"ficha.parteContraria.nome", "Mauro Silva"}
         }
-    }
-
-    public static Map<String, Object> getProcessedAndValidDataToInsertAsMap(Map<String, Object> data, Class<?> clazz) {
-        Map<String, Object> filteredData = filterValidKeys(data, clazz);
-        return processNestedKeysIntoOne(filteredData);
     }
 
     public static String[] getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {

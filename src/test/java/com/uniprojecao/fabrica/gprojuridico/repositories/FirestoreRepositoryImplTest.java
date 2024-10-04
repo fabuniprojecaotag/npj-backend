@@ -69,18 +69,16 @@ class FirestoreRepositoryImplTest {
         var updateAssistido = new AssistidoCivil();
         updateAssistido.setNome("Albert Einstein");
         updateAssistido.setDependentes("2");
+        updateAssistido.setCpf("123.456.789-01");
 
         UpdateBodyDTO<AssistidoCivil> updateData = new UpdateBodyDTO<>(updateAssistido, "Civil");
 
-        firestoreRepository.update("123.456.789-01", updateData, AssistidoCivil.class);
+        firestoreRepository.update("123.456.789-01", (Map<String, Object>) updateData);
 
         var assistidoResult = firestoreRepository.findById("123.456.789-01");
 
         assertEquals(updateAssistido.getNome(), assistidoResult.getNome());
     }
-
-
-
 
     @Test
     void testDelete() throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
