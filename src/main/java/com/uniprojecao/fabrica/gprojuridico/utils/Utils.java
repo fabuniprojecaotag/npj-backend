@@ -275,20 +275,7 @@ public class Utils<T> {
         }
     }
 
-    private static void processMapEntry(String key, Object value, Map<String, Object> outputMap, String parentKey) {
-        // Se o valor é um Map, deve-se percorrer o método recursivamente para concatenar as chaves aninhadas
-        if (value instanceof Map) {
-            @SuppressWarnings("unchecked")
-            var subMap = (Map<String, Object>) value;
-            for (Map.Entry<String, Object> entry : subMap.entrySet()) {
-                processMapEntry(entry.getKey(), entry.getValue(), outputMap, parentKey + key + ".");
-            }
-        } else {
-            outputMap.put(parentKey + key, value); // Ex. de entrada percorrida recursivamente a ser adicionada: {"ficha.parteContraria.nome", "Mauro Silva"}
-        }
-    }
-
-    public static String[] getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {
+    public static List<String> getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {
         boolean isReturnTypeNull = returnType == null;
         boolean isReturnTypeEqualsToMin = false;
         boolean isReturnTypeEqualsToAutoComplete = false;
@@ -302,28 +289,44 @@ public class Utils<T> {
 
         return switch (collection) {
             case ASSISTIDOS_COLLECTION -> {
-                if (isReturnTypeEqualsToMin) yield new String[]{"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
-                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"nome"};
+                if (isReturnTypeEqualsToMin) {
+                    yield List.of("nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone");
+                }
+                if (isReturnTypeEqualsToAutoComplete) {
+                    yield List.of("nome");
+                }
                 throw new InvalidReturnTypeException(returnType);
             }
             case ATENDIMENTOS_COLLECTION -> {
-                if (isReturnTypeEqualsToMin) yield new String[]{"area", "status", "envolvidos.assistido"};
-                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"id"};
-                if (isReturnTypeEqualsToForAssistido) yield new String[]{"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
+                if (isReturnTypeEqualsToMin) {
+                    yield List.of("area", "status", "envolvidos.assistido");
+                }
+                if (isReturnTypeEqualsToAutoComplete) {
+                    yield List.of("id");
+                }
+                if (isReturnTypeEqualsToForAssistido) {
+                    yield List.of("area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante");
+                }
                 throw new InvalidReturnTypeException(returnType);
             }
-            case MEDIDAS_JURIDICAS_COLLECTION -> new String[]{"area", "nome", "descricao"};
+            case MEDIDAS_JURIDICAS_COLLECTION -> List.of("area", "nome", "descricao");
             case PROCESSOS_COLLECTION -> {
-                if (isReturnTypeEqualsToForAssistido) yield new String[]{"vara", "status"};
-                yield new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
+                if (isReturnTypeEqualsToForAssistido) {
+                    yield List.of("vara", "status");
+                }
+                yield List.of("numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status");
             }
             case USUARIOS_COLLECTION -> {
-                if (isReturnTypeEqualsToMin) yield new String[]{"nome", "email", "role", "status", "matricula", "semestre"};
-                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"nome", "role"};
+                if (isReturnTypeEqualsToMin) {
+                    yield List.of("nome", "email", "role", "status", "matricula", "semestre");
+                }
+                if (isReturnTypeEqualsToAutoComplete) {
+                    yield List.of("nome", "role");
+                }
                 throw new InvalidReturnTypeException(returnType);
             }
-
             default -> throw new InvalidCollectionNameException();
         };
     }
+
 }

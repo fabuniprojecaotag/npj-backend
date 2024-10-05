@@ -77,14 +77,15 @@ public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
     }
 
     @Override
-    public ListBodyDTO<T> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
+    public ListBodyDTO<T> findAll(String startAfter, int pageSize, Filter filter, String returnType)
+            throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
 
         CollectionReference collection = firestore.collection(collectionName);
-        String[] fieldNames = getSpecificFieldNamesToReturnClassInstance(collectionName, returnType);
+        List<String> fieldNames = getSpecificFieldNamesToReturnClassInstance(collectionName, returnType);
 
         Query query = (filter != null) ?
-                collection.orderBy("__name__").where(filter).select(fieldNames).limit(pageSize) :
-                collection.orderBy("__name__").select(fieldNames).limit(pageSize);
+                collection.orderBy("__name__").where(filter).select(fieldNames.toArray(new String[0])).limit(pageSize) :
+                collection.orderBy("__name__").select(fieldNames.toArray(new String[0])).limit(pageSize);
 
         if (startAfter != null) {
             DocumentSnapshot lastDoc = firestore.collection(collectionName).document(startAfter).get().get();
