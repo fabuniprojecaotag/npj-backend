@@ -1,5 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers.handlers;
 
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.uniprojecao.fabrica.gprojuridico.dto.error.ErrorResponseDTO;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
@@ -99,6 +101,24 @@ public class GlobalExceptionHandler {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorResponseDTO error = new ErrorResponseDTO(status.value(), e.getMessage());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(JWTCreationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleJWTCreationExceptionException (JWTCreationException e) {
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(status.value(), "Erro ao iniciar a sessão do usuário! (token)");
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleJWTVerificationExceptionException (JWTVerificationException e) {
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ErrorResponseDTO error = new ErrorResponseDTO(status.value(), "Erro ao autorizar o acesso do usuário! (token inválido)");
 
         return ResponseEntity.status(status).body(error);
     }

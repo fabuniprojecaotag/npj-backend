@@ -2,7 +2,6 @@ package com.uniprojecao.fabrica.gprojuridico.services.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,16 +28,12 @@ public class TokenService {
     }
 
     public String validateToken(String token) {
-        try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
             return JWT.require(algorithm)
                     .withIssuer("NPJ-Api")
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException ex) {
-            throw new JWTVerificationException("Erro ao validar o token");
-        }
     }
 
     private Instant genExpirationDate(){
