@@ -22,6 +22,7 @@ public class AssistidoCivil extends Assistido {
     @PositiveOrZero
     private String dependentes;
 
+    // construtor completo para testes:
     public AssistidoCivil(String nome, String rg, String cpf, String nacionalidade, String escolaridade, String estadoCivil, String profissao, String telefone, String email, Filiacao filiacao, String remuneracao, Endereco endereco, String naturalidade, String dataNascimento, String dependentes) {
         super(nome, rg, cpf, nacionalidade, escolaridade, estadoCivil, profissao, telefone, email, filiacao, remuneracao, endereco);
         this.naturalidade = naturalidade;

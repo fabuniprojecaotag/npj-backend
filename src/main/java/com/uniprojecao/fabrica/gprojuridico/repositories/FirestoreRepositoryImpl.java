@@ -1,10 +1,8 @@
 package com.uniprojecao.fabrica.gprojuridico.repositories;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.AssistidosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.AtendimentosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.list.EstagiariosListDTO;
@@ -40,7 +38,8 @@ import java.util.concurrent.ExecutionException;
 import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl.DocumentSnapshotService.convertSnapshot;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.*;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertUsingReflection;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.getSpecificFieldNamesToReturnClassInstance;
 
 @Repository
 @Primary
