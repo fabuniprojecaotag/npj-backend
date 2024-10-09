@@ -43,6 +43,9 @@ As versões das tecnologias acima encontram-se no arquivo **pom.xml**.
 ## Uso
 
 1. Inicie a aplicação com o Maven.
+    
+    1. OBS.: Caso você rode o projeto no Intellij IDEA, através do botão "Play" ou "Run", certifique-se de rodar o projeto com um perfil de execução de produção, pois pode acontecer de você rodar um perfil de testes e, portanto, não conseguir alcançar o resultado esperado. Esse perfil estará visível do lado do botão de "Play" ou "Run" da IDE.
+
 2. Realize o login (de algum usuário cadastro) para acessar os endpoints da aplicação.
 
 ### Firebase Suite Emulator
@@ -57,7 +60,7 @@ Após seguir o passo 4 da seção [Instalação](#instalação), você pode troc
       spring.profiles.active=${APP_PROFILE:local-dev} # não esquecer de voltar para o valor inicial (dev)
       ````
 
-   2. Para iniciar o emulador, execute o seguinte comando:
+   2. Para iniciar o emulador, mude o diretório atual do prompt de comando para a pasta `target` através do comando `cd target`, e execute o seguinte comando:
 
       ````bash
       firebase emulators:start --import=./dir --export-on-exit
