@@ -23,7 +23,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt' # ou 'temurin'
       - name: Build with Maven
-        run: mvn clean install -f npj-back/pom.xml
+        run: mvn clean install
 
       - name: Analyze with SonarQube
         uses: SonarSource/sonarqube-scan-action@v1
