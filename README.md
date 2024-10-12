@@ -60,7 +60,7 @@ Após seguir o passo 4 da seção [Instalação](#instalação), você pode troc
       spring.profiles.active=${APP_PROFILE:local-dev} # não esquecer de voltar para o valor inicial (dev)
       ````
 
-   2. Para iniciar o emulador, mude o diretório atual do prompt de comando para a pasta `target` através do comando `cd target`, e execute o seguinte comando:
+   2. Para iniciar o emulador, mude o diretório atual do prompt de comando para a pasta `emulators` através do comando `cd emulators`, e execute o seguinte comando:
 
       ````bash
       firebase emulators:start --import=./dir --export-on-exit

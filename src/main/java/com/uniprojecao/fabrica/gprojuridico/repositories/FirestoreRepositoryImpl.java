@@ -1,6 +1,7 @@
 package com.uniprojecao.fabrica.gprojuridico.repositories;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.*;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
@@ -49,6 +50,9 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     @Value("${spring.cloud.gcp.project-id}")
     private String projectId;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     private String collectionName;
 
     public FirestoreRepositoryImpl(String collectionName) {
@@ -61,6 +65,15 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     }
 
     private Firestore firestore() {
+        if (activeProfile.equals("local-dev")) {
+            FirestoreOptions options = FirestoreOptions
+                    .getDefaultInstance()
+                    .toBuilder()
+                    .setHost("localhost:8090")
+                    .setCredentials(NoCredentials.getInstance()).build();
+            return options.getService();
+        }
+
         FirestoreOptions options = FirestoreOptions.newBuilder()
                 .setProjectId(projectId)
                 .build();
