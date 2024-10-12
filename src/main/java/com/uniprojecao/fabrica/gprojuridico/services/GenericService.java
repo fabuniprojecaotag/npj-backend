@@ -1,5 +1,6 @@
 package com.uniprojecao.fabrica.gprojuridico.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.DeleteBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
@@ -33,7 +34,10 @@ public abstract class GenericService<T extends BaseModel> {
     }
 
     public void update(String recordId, UpdateBodyDTO<T> data) {
-        firestoreRepository.update(recordId, (Map<String, Object>) data);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> mapObject = objectMapper.convertValue(data.getBody(), Map.class);
+
+        firestoreRepository.update(recordId, mapObject);
     }
 
     public ListBodyDTO<T> listAll(String startAfter, int pageSize) throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
