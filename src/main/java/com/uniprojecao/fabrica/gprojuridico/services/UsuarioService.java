@@ -8,6 +8,8 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Estagiario;
 import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.UserAlreadyCreatedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +29,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.USUARIOS_COLL
 @Service
 public class UsuarioService implements UserDetailsService {
     private final FirestoreRepositoryImpl<Usuario> firestoreRepository = new FirestoreRepositoryImpl<>(USUARIOS_COLLECTION);
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     public Usuario insert(Usuario usuario) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
         defineId(usuario);
@@ -63,7 +66,7 @@ public class UsuarioService implements UserDetailsService {
                     newData.put(field.getName(), value);
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace(); // Trate a exceção conforme necessário
+                logger.error("Failed to access field: {}", field.getName(), e);
             }
         }
 

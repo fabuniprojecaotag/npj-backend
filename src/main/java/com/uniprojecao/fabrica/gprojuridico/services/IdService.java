@@ -39,7 +39,7 @@ public class IdService<T> {
      */
     static String incrementId(String id) {
         Matcher prefixMatcher = Pattern.compile("^[A-Z]+").matcher(id);
-        Matcher numberMatcher = Pattern.compile("\\d+$").matcher(id);
+        Matcher numberMatcher = Pattern.compile("^[^\\\\D]*$").matcher(id);
 
         String prefix;
         String number;
