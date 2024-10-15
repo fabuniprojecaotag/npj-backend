@@ -70,6 +70,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                     .getDefaultInstance()
                     .toBuilder()
                     .setHost("localhost:8090")
+                    .setProjectId("gprojuridico-dev")
                     .setCredentials(NoCredentials.getInstance()).build();
             return options.getService();
         }
