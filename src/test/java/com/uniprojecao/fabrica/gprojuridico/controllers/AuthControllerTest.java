@@ -1,34 +1,70 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
+import com.uniprojecao.fabrica.gprojuridico.dto.auth.AuthenticationDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.auth.LoginResponseDTO;
+import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.security.TokenService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Objects;
 
-@WebMvcTest(AuthController.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 class AuthControllerTest {
 
-    @MockBean
+    @InjectMocks
+    private AuthController authController;
+
+    @Mock
     private AuthenticationManager authenticationManager;
 
-    @MockBean
+    @Mock
     private TokenService tokenService;
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final String username = "testuser";
+    private final String password = "testpassword";
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    void verifyLogin() throws Exception {
-        mockMvc.perform(post("/api/auth")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("\"username\": \"\", \"password\": \"\""))
-                .andExpect(status().isOk());
+    void testVerifyLogin() {
+        AuthenticationDTO authRequest = new AuthenticationDTO(username, password);
+
+        // Criar um mock para o Usuario
+        Usuario usuario = mock(Usuario.class);
+        when(usuario.getId()).thenReturn("1");
+        when(usuario.getNome()).thenReturn("Test User");
+        when(usuario.getRole()).thenReturn("USER");
+
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(usuario);
+        when(auth.getName()).thenReturn(username);
+
+        // Mockando o retorno do authenticationManager.authenticate()
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+        when(authenticationManager.authenticate(authToken)).thenReturn(auth);
+
+        when(tokenService.generateToken(usuario)).thenReturn("mocked-token");
+
+        ResponseEntity<LoginResponseDTO> response = authController.verifyLogin(authRequest);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("mocked-token", Objects.requireNonNull(response.getBody()).access_token());
+        verify(authenticationManager).authenticate(authToken);
+        verify(tokenService).generateToken(usuario);
     }
+
 }

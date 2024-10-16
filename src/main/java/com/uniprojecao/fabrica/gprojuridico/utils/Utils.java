@@ -11,6 +11,8 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidCollectionNameException;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidReturnTypeException;
 import jakarta.validation.*;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -19,7 +21,9 @@ import java.util.stream.Collectors;
 
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
 
-public class Utils {
+@Slf4j
+@NoArgsConstructor
+public class Utils<T> {
     public static <T> Map<String, Object> convertUsingReflection(T object, Boolean useSuperClass) {
         if (object instanceof Map<?, ?>) {
             @SuppressWarnings("unchecked")
@@ -31,7 +35,7 @@ public class Utils {
         Class<?> t = object.getClass();
         Field[] fields;
 
-        if (useSuperClass) {
+        if (Boolean.TRUE.equals(useSuperClass)) {
             fields = getAllFields(t);
         } else {
             fields = t.getDeclaredFields();
@@ -63,105 +67,15 @@ public class Utils {
         return fieldsMap.values().toArray(new Field[0]);
     }
 
-    public static <T> Map<String, Object> filterValidKeys(Map<String, Object> inputMap, Class<T> clazz) {
-        Map<String, Object> filteredMap = new HashMap<>();
-
-        // Creates a Set with the names of the fields in the class passed as parameters
-        Set<String> validKeys = getAllFields2(clazz).stream()
-                .map(Field::getName)
-                .collect(Collectors.toSet());
-
-        // Filters the inputMap, keeping only valid keys
-        for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            if (validKeys.contains(key)) {
-                if (value instanceof Map) {
-                    Field field = getFieldByName(clazz, key);
-                    if (field != null) {
-                        Class<?> fieldType = field.getType();
-                        if (!fieldType.getName().startsWith("java.lang") && !fieldType.isPrimitive()) {
-                            value = filterValidKeys((Map<String, Object>) value, fieldType);
-                        }
-                    }
-                }
-                filteredMap.put(key, value);
-            }
-        }
-
-        return filteredMap;
-    }
-
-    // Recursive method to get all fields of a class and its superclasses
-    private static Set<Field> getAllFields2(Class<?> clazz) {
-        Set<Field> fields = new HashSet<>();
-        while (clazz != null) {
-            for (Field field : clazz.getDeclaredFields()) {
-                fields.add(field);
-                // Checks if the field is a custom class (not primitive or String)
-                if (!field.getType().isPrimitive() && !field.getType().getName().startsWith("java.lang")) {
-                    fields.addAll(getAllFields2(field.getType()));
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return fields;
-    }
-
-    private static Field getFieldByName(Class<?> clazz, String fieldName) {
-        while (clazz != null) {
-            try {
-                return clazz.getDeclaredField(fieldName);
-            } catch (NoSuchFieldException e) {
-                clazz = clazz.getSuperclass();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Método auxiliar que converte Lista em String.
-     *
-     * @param list A list de strings a ser convertida em uma única String.
-     * @return A lista convertida em String.
-     */
-    public static String listToString(List<String> list) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : list) {
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Método auxiliar que converte String em Lista.
-     *
-     * @param string A String a ser convertida em List.
-     * @return A String convertida em List.
-     */
-    public static List<String> stringToList(String string) {
-        return new ArrayList<>(List.of(string.split("")));
-    }
-
-    /**
-     * Método utilitário que otimiza a chamada de método para imprimir uma messagem no Console.
-     *
-     * @param message A mensagem a ser impressa.
-     */
-    public static void print(String message) {
-        System.out.println(message);
-    }
-
-    public static Object convertGenericObjectToClassInstanceWithValidation(Object body, Class<?> type) throws Exception {
+    public T convertGenericObjectToClassInstanceWithValidation(T body, Class<?> type) throws Exception {
         var data = convertGenericObjectToClassInstance(body, type);
         validateDataConstraints(data);
         return data;
     }
 
-    public static <T> T convertGenericObjectToClassInstance(Object object, Class<T> destinyClazz) throws Exception {
+    public T convertGenericObjectToClassInstance(T object, Class<?> destinyClazz) throws Exception {
         if (destinyClazz.isInstance(object)) {
-            return destinyClazz.cast(object);
+            return (T) destinyClazz.cast(object);
         }
 
         if (object instanceof LinkedHashMap<?, ?> map) {
@@ -208,7 +122,7 @@ public class Utils {
 
                             Class<?> fieldType = isAbstract ? field.getType().getSuperclass() : field.getType();
                             if (fieldType != null)
-                                value = convertGenericObjectToClassInstance(value, fieldType);
+                                value = convertGenericObjectToClassInstance((T) value, fieldType);
                             field.set(instance, isInteger ? value.toString() : value);
                         } else {
                             field.set(instance, isInteger ? value.toString() : value);
@@ -259,11 +173,11 @@ public class Utils {
         throw new IllegalStateException("Unexpected classType: " + classType);
     }
 
-    private static void validateDataConstraints(Object data) {
+    private void validateDataConstraints(T data) {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = factory.getValidator();
 
-            Set<ConstraintViolation<Object>> violations = validator.validate(data);
+            Set<ConstraintViolation<T>> violations = validator.validate(data);
 
             if (!violations.isEmpty()) {
                 throw new ConstraintViolationException(violations);
@@ -271,34 +185,7 @@ public class Utils {
         }
     }
 
-    private static Map<String, Object> processNestedKeysIntoOne(Map<String, Object> inputMap) {
-        Map<String, Object> outputMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : inputMap.entrySet()) {
-            processMapEntry(entry.getKey(), entry.getValue(), outputMap, "");
-        }
-        return outputMap;
-    }
-
-    private static void processMapEntry(String key, Object value, Map<String, Object> outputMap, String parentKey) {
-        // Se o valor é um Map, deve-se percorrer o método recursivamente para concatenar as chaves aninhadas
-        if (value instanceof Map) {
-            @SuppressWarnings("unchecked")
-            var subMap = (Map<String, Object>) value;
-            for (Map.Entry<String, Object> entry : subMap.entrySet()) {
-                processMapEntry(entry.getKey(), entry.getValue(), outputMap, parentKey + key + ".");
-            }
-        } else {
-            outputMap.put(parentKey + key, value); // Ex. de entrada percorrida recursivamente a ser adicionada: {"ficha.parteContraria.nome", "Mauro Silva"}
-        }
-    }
-
-    public static Map<String, Object> getProcessedAndValidDataToInsertAsMap(Map<String, Object> data, Class<?> clazz) {
-        Map<String, Object> filteredData = filterValidKeys(data, clazz);
-        Map<String, Object> processedData = processNestedKeysIntoOne(filteredData);
-        return processedData;
-    }
-
-    public static String[] getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {
+    public static List<String> getSpecificFieldNamesToReturnClassInstance(String collection, String returnType) {
         boolean isReturnTypeNull = returnType == null;
         boolean isReturnTypeEqualsToMin = false;
         boolean isReturnTypeEqualsToAutoComplete = false;
@@ -312,28 +199,44 @@ public class Utils {
 
         return switch (collection) {
             case ASSISTIDOS_COLLECTION -> {
-                if (isReturnTypeEqualsToMin) yield new String[]{"nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone"};
-                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"nome"};
+                if (isReturnTypeEqualsToMin) {
+                    yield List.of("nome", "email", "quantidade.atendimentos", "quantidade.processos", "telefone");
+                }
+                if (isReturnTypeEqualsToAutoComplete) {
+                    yield List.of("nome");
+                }
                 throw new InvalidReturnTypeException(returnType);
             }
             case ATENDIMENTOS_COLLECTION -> {
-                if (isReturnTypeEqualsToMin) yield new String[]{"area", "status", "envolvidos.assistido"};
-                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"id"};
-                if (isReturnTypeEqualsToForAssistido) yield new String[]{"area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante"};
+                if (isReturnTypeEqualsToMin) {
+                    yield List.of("area", "status", "envolvidos.assistido");
+                }
+                if (isReturnTypeEqualsToAutoComplete) {
+                    yield List.of("id");
+                }
+                if (isReturnTypeEqualsToForAssistido) {
+                    yield List.of("area", "status", "envolvidos.assistido", "envolvidos.estagiario", "instante");
+                }
                 throw new InvalidReturnTypeException(returnType);
             }
-            case MEDIDAS_JURIDICAS_COLLECTION -> new String[]{"area", "nome", "descricao"};
+            case MEDIDAS_JURIDICAS_COLLECTION -> List.of("area", "nome", "descricao");
             case PROCESSOS_COLLECTION -> {
-                if (isReturnTypeEqualsToForAssistido) yield new String[]{"vara", "status"};
-                yield new String[]{"numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status"};
+                if (isReturnTypeEqualsToForAssistido) {
+                    yield List.of("vara", "status");
+                }
+                yield List.of("numero", "atendimentoId", "nome", "dataDistribuicao", "vara", "forum", "status");
             }
             case USUARIOS_COLLECTION -> {
-                if (isReturnTypeEqualsToMin) yield new String[]{"nome", "email", "role", "status", "matricula", "semestre"};
-                if (isReturnTypeEqualsToAutoComplete) yield new String[]{"nome", "role"};
+                if (isReturnTypeEqualsToMin) {
+                    yield List.of("nome", "email", "role", "status", "matricula", "semestre");
+                }
+                if (isReturnTypeEqualsToAutoComplete) {
+                    yield List.of("nome", "role");
+                }
                 throw new InvalidReturnTypeException(returnType);
             }
-
             default -> throw new InvalidCollectionNameException();
         };
     }
+
 }

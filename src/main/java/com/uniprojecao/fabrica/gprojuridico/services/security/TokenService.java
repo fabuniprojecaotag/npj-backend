@@ -28,12 +28,12 @@ public class TokenService {
     }
 
     public String validateToken(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
-        return JWT.require(algorithm)
-                .withIssuer("NPJ-Api")
-                .build()
-                .verify(token)
-                .getSubject();
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            return JWT.require(algorithm)
+                    .withIssuer("NPJ-Api")
+                    .build()
+                    .verify(token)
+                    .getSubject();
     }
 
     private Instant genExpirationDate(){

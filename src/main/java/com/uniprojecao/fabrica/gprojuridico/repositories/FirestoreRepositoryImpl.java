@@ -3,10 +3,11 @@ package com.uniprojecao.fabrica.gprojuridico.repositories;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.*;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AssistidoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.AtendimentoMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.EstagiarioMinDTO;
-import com.uniprojecao.fabrica.gprojuridico.dto.min.UsuarioMinDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.AssistidosListDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.AtendimentosListDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.EstagiariosListDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.list.UsuariosListDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.AtendimentoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.vinculados.ProcessoVinculadoDTO;
 import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
@@ -38,12 +39,13 @@ import java.util.concurrent.ExecutionException;
 import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl.DocumentSnapshotService.convertSnapshot;
 import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.*;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertUsingReflection;
+import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.getSpecificFieldNamesToReturnClassInstance;
 
 @Repository
 @Primary
 @NoArgsConstructor
-public class FirestoreRepositoryImpl implements FirestoreRepository {
+public class FirestoreRepositoryImpl<T> implements BaseCRUDRepository<T> {
 
     public static Firestore firestore;
 
@@ -82,20 +84,21 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     }
 
     @Override
-    public Object insert(String customId, Object data) throws ExecutionException, InterruptedException {
+    public T insert(String customId, T data) throws ExecutionException, InterruptedException {
         firestore.collection(collectionName).document(customId).set(data).get();
         return data;
     }
 
     @Override
-    public Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
+    public ListBodyDTO<T> findAll(String startAfter, int pageSize, Filter filter, String returnType)
+            throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
 
         CollectionReference collection = firestore.collection(collectionName);
-        String[] fieldNames = getSpecificFieldNamesToReturnClassInstance(collectionName, returnType);
+        List<String> fieldNames = getSpecificFieldNamesToReturnClassInstance(collectionName, returnType);
 
         Query query = (filter != null) ?
-                collection.orderBy("__name__").where(filter).select(fieldNames).limit(pageSize) :
-                collection.orderBy("__name__").select(fieldNames).limit(pageSize);
+                collection.orderBy("__name__").where(filter).select(fieldNames.toArray(new String[0])).limit(pageSize) :
+                collection.orderBy("__name__").select(fieldNames.toArray(new String[0])).limit(pageSize);
 
         if (startAfter != null) {
             DocumentSnapshot lastDoc = firestore.collection(collectionName).document(startAfter).get().get();
@@ -105,37 +108,28 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
         ApiFuture<QuerySnapshot> future = query.get();
         int totalSize = collection.get().get().size();
 
-        List<Object> docPage = new ArrayList<>();
+        List<T> docPage = new ArrayList<>();
 
         for (QueryDocumentSnapshot snapshot : future.get()) {
             var document = convertSnapshot(collectionName, snapshot, returnType);
-            docPage.add(document);
+            docPage.add((T) document); // Casting para T
         }
 
-        Object firstDoc = "Not available";
-        Object lastDoc = "Not available";
+        T firstDoc = docPage.isEmpty() ? null : docPage.get(0);
+        T lastDoc = docPage.isEmpty() ? null : docPage.get(docPage.size() - 1);
 
-        if (!docPage.isEmpty()) {
-            firstDoc = docPage.get(0);
-            lastDoc = docPage.get(docPage.size() - 1);
-        }
+        int collectionSize = docPage.size();
 
-        int collectionSize = future.get().size();
-
-        return Map.of(
-                "list", docPage,
-                "firstDoc", firstDoc,
-                "lastDoc", lastDoc,
-                "pageSize", collectionSize,
-                "totalSize", totalSize);
+        return new ListBodyDTO<>(docPage, firstDoc, lastDoc, collectionSize, totalSize);
     }
 
+
     @Override
-    public Object findById(String id) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
+    public T findById(String id) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
         DocumentReference document = firestore.collection(collectionName).document(id);
         DocumentSnapshot snapshot = document.get().get();
         if (!snapshot.exists()) return null;
-        return convertSnapshot(collectionName, snapshot, null);
+        return (T) convertSnapshot(collectionName, snapshot, null);
     }
 
     public String findLastDocumentId() throws ExecutionException, InterruptedException, FirestoreException {
@@ -149,11 +143,10 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
         return !list.isEmpty() ? list.get(0).getId() : null;
     }
 
-    @Override
-    public void update(String recordId, Map<String, Object> data, Class<?> clazz) {
-        Map<String, Object> processedData = getProcessedAndValidDataToInsertAsMap(data, clazz);
-        firestore.collection(collectionName).document(recordId).update(processedData);
+    public void update(String recordId, Map<String, Object> data) {
+        firestore.collection(collectionName).document(recordId).update(data);
     }
+
 
     @Override
     public void delete(List<String> ids) {
@@ -207,7 +200,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
             if (snapshot == null) return null;
 
             if (Boolean.TRUE.equals(returnMinDTO)) {
-                var object = snapshot.toObject(AssistidoMinDTO.class);
+                var object = snapshot.toObject(AssistidosListDTO.class);
                 object.setCpf(snapshot.getId());
                 return object;
             }
@@ -255,7 +248,7 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
                 String formattedDateTime = localDateTime.format(formatter);
 
 
-                return new AtendimentoMinDTO(
+                return new AtendimentosListDTO(
                         snapshot.getId(),
                         (String) snapshot.get("area"),
                         (String) snapshot.get(STATUS_INPUT),
@@ -315,11 +308,11 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
 
             if (Boolean.TRUE.equals(returnMinDTO)) {
                 if (dadosEstagiario) {
-                    var object = snapshot.toObject(EstagiarioMinDTO.class);
+                    var object = snapshot.toObject(EstagiariosListDTO.class);
                     object.setId(snapshot.getId());
                     return object;
                 } else {
-                    var object = snapshot.toObject(UsuarioMinDTO.class);
+                    var object = snapshot.toObject(UsuariosListDTO.class);
                     object.setId(snapshot.getId());
                     return object;
                 }

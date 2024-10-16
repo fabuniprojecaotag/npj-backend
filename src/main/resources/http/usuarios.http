@@ -1,0 +1,10 @@
+### Login
+
+POST http://localhost:8080/api/auth
+Content-Type: application/json
+Accept: application/json
+
+{
+    "login": "rodrigo.pacheco"
+    "password": "rodrigo-coordenador"
+}

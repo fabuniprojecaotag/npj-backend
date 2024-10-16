@@ -2,9 +2,9 @@ package com.uniprojecao.fabrica.gprojuridico.models.atendimento;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.cloud.firestore.annotation.DocumentId;
 import com.uniprojecao.fabrica.gprojuridico.enums.AreaAtendimento;
 import com.uniprojecao.fabrica.gprojuridico.enums.StatusAtendimento;
+import com.uniprojecao.fabrica.gprojuridico.models.BaseModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,10 +20,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = AtendimentoCivil.class, name = "Civil"),
         @JsonSubTypes.Type(value = AtendimentoTrabalhista.class, name = "Trabalhista")
 })
-public abstract class Atendimento {
-    @DocumentId
-    private String id;
-
+public abstract class Atendimento extends BaseModel {
     private String status; // Enum Status convertido em String
     private String area; // Enum Area convertido em String
 

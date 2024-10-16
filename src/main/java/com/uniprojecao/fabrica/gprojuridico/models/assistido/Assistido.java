@@ -2,7 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.models.assistido;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.cloud.firestore.annotation.DocumentId;
+import com.uniprojecao.fabrica.gprojuridico.models.BaseModel;
 import com.uniprojecao.fabrica.gprojuridico.models.Endereco;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +23,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = AssistidoTrabalhista.class, name = "Trabalhista"),
         @JsonSubTypes.Type(value = AssistidoFull.class, name = "Full"),
 })
-public abstract class Assistido {
+public abstract class Assistido extends BaseModel {
     @NotBlank
     @Size(min = 3, max = 60)
     private String nome;
@@ -33,7 +31,6 @@ public abstract class Assistido {
     @Pattern(regexp = "^\\d\\.\\d{3}\\.\\d{3}$") // exemplo: 0.000.000
     private String rg;
 
-    @DocumentId
     @Pattern(regexp = "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$") // exemplo: 000.000.000-00
     private String cpf;
 
@@ -54,5 +51,5 @@ public abstract class Assistido {
 
     @Pattern(regexp = "^(R\\$)\\s\\d+(\\.\\d{1,3})*$") // exemplo[]: ["R$ 9000", "R$ 90.000", "R$ 90.000.000"]
     private String remuneracao;
-    private Map<String, Endereco> endereco;
+    private Endereco endereco;
 }

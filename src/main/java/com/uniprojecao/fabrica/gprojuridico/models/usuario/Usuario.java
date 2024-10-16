@@ -3,8 +3,8 @@ package com.uniprojecao.fabrica.gprojuridico.models.usuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.Exclude;
+import com.uniprojecao.fabrica.gprojuridico.models.BaseModel;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -28,10 +28,7 @@ import java.util.List;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Estagiario.class, name = "Estagiario"),
 })
-public class Usuario implements UserDetails {
-    @DocumentId
-    private String id;
-
+public class Usuario extends BaseModel implements UserDetails {
     @Pattern(regexp = "^(\\d{9}@projecao\\.edu\\.br|[a-z]{3,}\\.[a-z]{3,}@projecao\\.br)$")
     private String email;
 

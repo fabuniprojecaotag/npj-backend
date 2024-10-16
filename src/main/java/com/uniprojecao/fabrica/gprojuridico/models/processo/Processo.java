@@ -1,19 +1,16 @@
 package com.uniprojecao.fabrica.gprojuridico.models.processo;
 
-import com.google.cloud.firestore.annotation.DocumentId;
+import com.uniprojecao.fabrica.gprojuridico.models.BaseModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
 @NoArgsConstructor
 @Getter
 @Setter
-public class Processo {
-    @DocumentId
+public class Processo extends BaseModel {
     @NotBlank
     private String numero;
     @NotBlank

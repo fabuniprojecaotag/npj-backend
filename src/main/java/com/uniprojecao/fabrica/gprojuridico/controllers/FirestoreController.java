@@ -1,118 +1,66 @@
 package com.uniprojecao.fabrica.gprojuridico.controllers;
 
-import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.DeleteBodyDTO;
+import com.uniprojecao.fabrica.gprojuridico.dto.body.ListBodyDTO;
 import com.uniprojecao.fabrica.gprojuridico.dto.body.UpdateBodyDTO;
-import com.uniprojecao.fabrica.gprojuridico.models.MedidaJuridica;
-import com.uniprojecao.fabrica.gprojuridico.models.assistido.Assistido;
-import com.uniprojecao.fabrica.gprojuridico.models.atendimento.Atendimento;
-import com.uniprojecao.fabrica.gprojuridico.models.processo.Processo;
-import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
-import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
-import com.uniprojecao.fabrica.gprojuridico.services.*;
-import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidCollectionNameException;
+import com.uniprojecao.fabrica.gprojuridico.models.BaseModel;
+import com.uniprojecao.fabrica.gprojuridico.services.GenericService;
+import com.uniprojecao.fabrica.gprojuridico.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.InvalidPropertiesFormatException;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.uniprojecao.fabrica.gprojuridico.services.QueryFilterService.getFilter;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Constants.*;
-import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertGenericObjectToClassInstanceWithValidation;
+public abstract class FirestoreController<T extends BaseModel> {
 
-@RestController
-@RequestMapping("/api/{collectionName}")
-public class FirestoreController {
+    private final GenericService<T> genericService;
+    private final Utils<T> utils;
+
+    @Autowired
+    protected FirestoreController(GenericService<T> genericService) {
+        this.genericService = genericService;
+        this.utils = new Utils<>();
+    }
 
     @PostMapping
-    public ResponseEntity<Object> insert(@PathVariable String collectionName, @RequestBody Object payload)
-            throws Exception {
+    public ResponseEntity<T> insert(@RequestBody T payload) throws Exception {
+        T result;
+        T data;
 
-        Object result;
-        Object data;
-
-        switch (collectionName) {
-            case ASSISTIDOS_COLLECTION -> {
-                data = convertGenericObjectToClassInstanceWithValidation(payload, Assistido.class);
-                result = new AssistidoService().insert((Assistido) data);
-            }
-            case ATENDIMENTOS_COLLECTION -> {
-                data = convertGenericObjectToClassInstanceWithValidation(payload, Atendimento.class);
-                result = new AtendimentoService().insert((Atendimento) data);
-            }
-            case MEDIDAS_JURIDICAS_COLLECTION -> {
-                data = convertGenericObjectToClassInstanceWithValidation(payload, MedidaJuridica.class);
-                result = new MedidaJuridicaService().insert((MedidaJuridica) data);
-            }
-            case PROCESSOS_COLLECTION -> {
-                data = convertGenericObjectToClassInstanceWithValidation(payload, Processo.class);
-                result = new ProcessoService().insert((Processo) data);
-            }
-            case USUARIOS_COLLECTION -> {
-                data = convertGenericObjectToClassInstanceWithValidation(payload, Usuario.class);
-                result = new UsuarioService().insert((Usuario) data);
-            }
-            default -> throw new InvalidCollectionNameException();
-        }
+        data = utils.convertGenericObjectToClassInstanceWithValidation(payload, payload.getClass());
+        result = genericService.insert(data);
 
         return ResponseEntity.status(201).body(result);
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> findAll(
-            @PathVariable String collectionName,
+    public ResponseEntity<ListBodyDTO<T>> findAll(
             @RequestParam(required = false) String startAfter,
-            @RequestParam(required = false) String field,
-            @RequestParam(required = false) String operator,
-            @RequestParam(required = false) String value,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "min") String returnType)
+            @RequestParam(defaultValue = "10") int pageSize)
             throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
-
-        FirestoreRepositoryImpl firestoreRepository = new FirestoreRepositoryImpl(collectionName);
-
-        Filter queryFilter =
-                (field != null && value != null) ?
-                        getFilter(field, operator, value) :
-                        null;
-
-        var docs = firestoreRepository.findAll(startAfter, pageSize, queryFilter, returnType);
+        var docs = genericService.listAll(startAfter, pageSize);
         return ResponseEntity.ok(docs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable String collectionName, @PathVariable String id)
+    public ResponseEntity<T> findById(@PathVariable String id)
             throws InvalidPropertiesFormatException, ExecutionException, InterruptedException {
-
-        Object result = new FirestoreRepositoryImpl(collectionName).findById(id);
+        T result = genericService.findById(id);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable String collectionName, @PathVariable String id, @RequestBody UpdateBodyDTO payload) {
-
-        switch (collectionName) {
-            case ASSISTIDOS_COLLECTION ->
-                    new AssistidoService().update(id, (Map<String, Object>) payload.body(), payload.classType());
-            case ATENDIMENTOS_COLLECTION ->
-                    new AtendimentoService().update(id, (Map<String, Object>) payload.body(), payload.classType());
-            case MEDIDAS_JURIDICAS_COLLECTION ->
-                    new MedidaJuridicaService().update(id, (Map<String, Object>) payload.body());
-            case PROCESSOS_COLLECTION -> new ProcessoService().update(id, (Map<String, Object>) payload.body());
-            case USUARIOS_COLLECTION ->
-                    new UsuarioService().update(id, (Map<String, Object>) payload.body(), payload.classType());
-            default -> throw new InvalidCollectionNameException();
-        }
+    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody UpdateBodyDTO<T> payload) {
+        genericService.update(id, payload);
 
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@PathVariable String collectionName, @RequestBody DeleteBodyDTO payload) {
-
-        new FirestoreRepositoryImpl(collectionName).delete(payload.ids());
+    public ResponseEntity<Void> delete(@RequestBody DeleteBodyDTO payload) {
+        genericService.delete(payload);
         return ResponseEntity.noContent().build();
     }
 }

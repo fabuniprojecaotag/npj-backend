@@ -45,17 +45,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**", "**/**").permitAll() // pre-flight
+                        .requestMatchers(HttpMethod.POST, "/auth").permitAll()
 
-                        .requestMatchers(POST, "api/auth").permitAll()
+                        .requestMatchers(POST, "/usuarios").hasRole(SECRETARIA_ROLE)
+                        .requestMatchers(POST, "/processos").hasRole(PROFESSOR_ROLE)
+                        .requestMatchers(POST, "/medidas juridicas").hasRole(COORDENADOR_ROLE)
 
-                        .requestMatchers(POST, "api/usuarios").hasRole(SECRETARIA_ROLE)
-                        .requestMatchers(POST, "api/processos").hasRole(PROFESSOR_ROLE)
-                        .requestMatchers(POST, "api/medidas juridicas").hasRole(COORDENADOR_ROLE)
+                        .requestMatchers(PUT, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**", "/medidas juridicas/**").hasRole(SECRETARIA_ROLE)
 
-                        .requestMatchers(PUT, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(SECRETARIA_ROLE)
-
-                        .requestMatchers(DELETE, "api/usuarios", "api/assistidos", "api/atendimentos", "api/processos", "api/medidas juridicas").hasRole(COORDENADOR_ROLE)
-                        .requestMatchers(DELETE, "api/usuarios/**", "api/assistidos/**", "api/atendimentos/**", "api/processos/**", "api/medidas juridicas/**").hasRole(COORDENADOR_ROLE)
+                        .requestMatchers(DELETE, "/usuarios", "/assistidos", "/atendimentos", "/processos", "/medidas juridicas").hasRole(COORDENADOR_ROLE)
+                        .requestMatchers(DELETE, "/usuarios/**", "/assistidos/**", "/atendimentos/**", "/processos/**", "/medidas juridicas/**").hasRole(COORDENADOR_ROLE)
 
                         .anyRequest().authenticated()
                 )
