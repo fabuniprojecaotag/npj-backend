@@ -11,6 +11,8 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
 import com.uniprojecao.fabrica.gprojuridico.services.*;
 import com.uniprojecao.fabrica.gprojuridico.services.exceptions.InvalidCollectionNameException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ import static com.uniprojecao.fabrica.gprojuridico.utils.Utils.convertGenericObj
 public class FirestoreController {
 
     @PostMapping
+    @Cacheable(value = "cache")
     public ResponseEntity<Object> insert(@PathVariable String collectionName, @RequestBody Object payload)
             throws Exception {
 
@@ -61,6 +64,7 @@ public class FirestoreController {
     }
 
     @GetMapping
+    @Cacheable(value = "cache")
     public ResponseEntity<Map<String, Object>> findAll(
             @PathVariable String collectionName,
             @RequestParam(required = false) String startAfter,
@@ -91,6 +95,7 @@ public class FirestoreController {
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = "cache", allEntries = true)
     public ResponseEntity<Void> update(@PathVariable String collectionName, @PathVariable String id, @RequestBody UpdateBodyDTO payload) {
 
         switch (collectionName) {
@@ -110,6 +115,7 @@ public class FirestoreController {
     }
 
     @DeleteMapping
+    @CacheEvict(value = "cache", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable String collectionName, @RequestBody DeleteBodyDTO payload) {
 
         new FirestoreRepositoryImpl(collectionName).delete(payload.ids());

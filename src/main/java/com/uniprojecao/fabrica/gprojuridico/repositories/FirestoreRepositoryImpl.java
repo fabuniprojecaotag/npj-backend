@@ -25,6 +25,8 @@ import com.uniprojecao.fabrica.gprojuridico.models.usuario.Usuario;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -82,12 +84,14 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     }
 
     @Override
+    @CacheEvict(value = "cache", allEntries = true)
     public Object insert(String customId, Object data) throws ExecutionException, InterruptedException {
         firestore.collection(collectionName).document(customId).set(data).get();
         return data;
     }
 
     @Override
+    @Cacheable(value =  "Assistido")
     public Map<String, Object> findAll(String startAfter, int pageSize, Filter filter, String returnType) throws ExecutionException, InterruptedException, InvalidPropertiesFormatException {
 
         CollectionReference collection = firestore.collection(collectionName);
@@ -150,17 +154,20 @@ public class FirestoreRepositoryImpl implements FirestoreRepository {
     }
 
     @Override
+    @CacheEvict(value = "cache", allEntries = true)
     public void update(String recordId, Map<String, Object> data, Class<?> clazz) {
         Map<String, Object> processedData = getProcessedAndValidDataToInsertAsMap(data, clazz);
         firestore.collection(collectionName).document(recordId).update(processedData);
     }
 
     @Override
+    @CacheEvict(value = "cache", allEntries = true)
     public void delete(List<String> ids) {
         for (var id : ids) {
             firestore.collection(collectionName).document(id).delete();
         }
     }
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     protected static class DocumentSnapshotService {
         static Object convertSnapshot(String collection, DocumentSnapshot snapshot, String returnType) throws InvalidPropertiesFormatException {

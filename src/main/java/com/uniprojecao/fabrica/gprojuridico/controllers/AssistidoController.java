@@ -2,6 +2,7 @@ package com.uniprojecao.fabrica.gprojuridico.controllers;
 
 import com.google.cloud.firestore.Filter;
 import com.uniprojecao.fabrica.gprojuridico.repositories.FirestoreRepositoryImpl;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class AssistidoController {
     }
 
     @GetMapping("/{id}/processos")
+    @Cacheable(value =  "Assistido")
     public ResponseEntity<Map<String, Object>> findAllProcessosVinculados(
             @PathVariable String id,
             @RequestParam(required = false) String startAfter,
